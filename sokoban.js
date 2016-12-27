@@ -27,12 +27,51 @@ var gameState = {
 }
 
 class Cell {
-    constructor() {
+    constructor(row, col) {
         this.block = false;
         this.slider = false;
         this.player = false;
         this.goal = false;
+        this.row = row;
+        this.col = col;
     }
+
+
+    // This cell is being "pushed" in the direction of dir
+    push(dir) {
+        if (this.slider) {
+            var [dr, dc] = drdc(dir);
+            var [newRow, newCol] = [this.row + dr, this.col + dc];
+            var cell = gameState.matrix[newRow][newCol];
+            cell.push(dir);
+            cell.addPiece(SLIDER);
+            this.removePiece(SLIDER);
+        }
+    }
+
+    // This cell is being "nudged" in the direction of dir
+    // Returns true iff the cell can be "pushed"
+    nudge(dir) {
+        var pushable = true;
+
+        if (this.block) {
+            pushable = false;
+        } else if (this.slider) {
+            var [dr, dc] = drdc(dir);
+            var [newRow, newCol] = [this.row + dr, this.col + dc];
+
+            if (!inBounds(newRow, newCol)) {
+                return false;
+            }
+
+            return gameState.matrix[newRow][newCol].nudge(dir);
+        } else if (this.player) {
+            console.error("Player should never be nudged");
+        } else {
+            return true;
+        }
+    }
+
 
     addPiece(pieceId) {
         if (pieceId == BLOCK) {
@@ -72,7 +111,7 @@ function initGameState() {
 
         for (var col = 0; col < numCols; col++) {
             var pieceId = boardInit[row][col];
-            var cell = new Cell();
+            var cell = new Cell(row, col);
 
             if (pieceId != EMPTY) {
                 cell.addPiece(pieceId);
@@ -183,11 +222,20 @@ function move(direction) {
     var [dr, dc] = drdc(direction);
     var [newRow, newCol] = [row + dr, col + dc];
 
-    if (inBounds(newRow, newCol)) {
-        gameState.matrix[row][col].removePiece(PLAYER);
-        gameState.playerRow = newRow;
-        gameState.playerCol = newCol;
-        gameState.matrix[newRow][newCol].addPiece(PLAYER);
+    if (!inBounds(newRow, newCol)) {
+        return;
+    } else {
+        var cell = gameState.matrix[newRow][newCol]
+        var pushable = cell.nudge(direction);
+        if (pushable) {
+            cell.push(direction);
+            gameState.matrix[row][col].removePiece(PLAYER);
+            gameState.playerRow = newRow;
+            gameState.playerCol = newCol;
+            gameState.matrix[newRow][newCol].addPiece(PLAYER);
+        }
+
+
     }
 
     drawGame();
