@@ -104,24 +104,31 @@ function drawGame() {
 
             var src = undefined;
 
-            if (cell.block) {
-                src = "block.png";
-            } else if (cell.slider) {
-                src = "slider.png";
-            } else if (cell.player) {
-                src = "player.png"
-            } else if (cell.goal) {
+            if (cell.goal) {
                 src = "goal.png"
-            }
-
-            if (src != undefined) {
-                var imgTag = "<img src='" + src + "' width='" + cellSize + "'>";
+                var imgTag = "<img style='position:absolute;' src='" + src + "' width='" + cellSize + "'>";
                 $(cellId).append(imgTag);
             }
 
+            if (cell.block) {
+                src = "block.png";
+                var imgTag = "<img style='position:absolute;' src='" + src + "' width='" + cellSize + "'>";
+                $(cellId).append(imgTag);
+            }
+
+            if (cell.slider) {
+                src = "slider.png";
+                var imgTag = "<img style='position:absolute;' src='" + src + "' width='" + cellSize + "'>";
+                $(cellId).append(imgTag);
+            }
+
+            if (cell.player) {
+                src = "player.png"
+                var imgTag = "<img style='position:absolute;' src='" + src + "' width='" + cellSize + "'>";
+                $(cellId).append(imgTag);
+            }
         }
     }
-
 }
 
 function createSokoban(boardId) {
