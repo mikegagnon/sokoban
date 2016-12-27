@@ -1,0 +1,13 @@
+
+.row {
+    clear: left;
+}
+
+.cell {
+    height: 30px;
+    width: 30px;
+    margin-left: 1px;
+    margin-top: 1px;
+    float: left; 
+    background-color: lightgray;
+}
