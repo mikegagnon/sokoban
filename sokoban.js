@@ -93,6 +93,10 @@ function getCellId(row, col) {
     return "cell-" + row + "-" + col;
 }
 
+function getImgTag(src) {
+    return "<img style='position:absolute;' src='" + src + "' width='" + cellSize + "'>";
+}
+
 function drawGame() {
 
     $("img").remove();
@@ -105,27 +109,20 @@ function drawGame() {
             var src = undefined;
 
             if (cell.goal) {
-                src = "goal.png"
-                var imgTag = "<img style='position:absolute;' src='" + src + "' width='" + cellSize + "'>";
-                $(cellId).append(imgTag);
+                $(cellId).append(getImgTag("goal.png"));
             }
 
             if (cell.block) {
-                src = "block.png";
-                var imgTag = "<img style='position:absolute;' src='" + src + "' width='" + cellSize + "'>";
-                $(cellId).append(imgTag);
+                  $(cellId).append(getImgTag("block.png"));
             }
 
             if (cell.slider) {
-                src = "slider.png";
-                var imgTag = "<img style='position:absolute;' src='" + src + "' width='" + cellSize + "'>";
-                $(cellId).append(imgTag);
+                $(cellId).append(getImgTag("slider.png"));
             }
 
             if (cell.player) {
-                src = "player.png"
-                var imgTag = "<img style='position:absolute;' src='" + src + "' width='" + cellSize + "'>";
-                $(cellId).append(imgTag);
+                $(cellId).append(getImgTag("player.png"));
+
             }
         }
     }
