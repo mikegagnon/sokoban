@@ -20,7 +20,11 @@ var boardInit = [
     [0, 3, 0, 0, 0, 0, 2, 0],
 ];
 
-var matrix = undefined;
+var gameState = {
+    playerRow: undefined,
+    playerCol: undefined,
+    matrix: undefined 
+}
 
 class Cell {
     constructor() {
@@ -57,16 +61,14 @@ class Cell {
             console.error("Unrecognized pieceId: " + pieceId);
         }
     }
-
 }
 
-
-function initMatrix() {
-    matrix = new Array(numRows);
+function initGameState() {
+    gameState.matrix = new Array(numRows);
 
     for (var row = 0; row < numRows; row++) {
 
-        matrix[row] = new Array(numCols);
+        gameState.matrix[row] = new Array(numCols);
 
         for (var col = 0; col < numCols; col++) {
             var pieceId = boardInit[row][col];
@@ -76,7 +78,12 @@ function initMatrix() {
                 cell.addPiece(pieceId);
             }
 
-            matrix[row][col] = cell;
+            if (pieceId == PLAYER) {
+                gameState.playerRow = row;
+                gameState.playerCol = col;
+            }
+
+            gameState.matrix[row][col] = cell;
         }
     }
 }
@@ -89,7 +96,7 @@ function getCellId(row, col) {
 function drawGame() {
     for (var row = 0; row < numRows; row++) {
         for (var col = 0; col < numCols; col++) {
-            var cell = matrix[row][col];
+            var cell = gameState.matrix[row][col];
             var cellId = "#" + getCellId(row, col);
 
             var src = undefined;
@@ -131,6 +138,37 @@ function createSokoban(boardId) {
         }
     }
 
-    initMatrix();
+    initGameState();
     drawGame();
+}
+
+function move(direction) {
+
+}
+
+function getPlayerMovment(keyCode) {
+
+    var keyCodeMap = {
+        38: "up",
+        40: "down",
+        37: "left",
+        39: "right"
+    };
+
+    return keyCodeMap[keyCode];
+}
+
+function keydown(event) {
+
+    var direction = getPlayerMovment(event.keyCode);
+
+    // If the user pressed a key we're uninterested in
+    if (direction == undefined) {
+        return;
+    }
+
+    // disable browser scrolling on arrow keys
+    event.preventDefault();
+
+    move(direction);
 }
