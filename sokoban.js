@@ -23,7 +23,8 @@ var boardInit = [
 var gameState = {
     playerRow: undefined,
     playerCol: undefined,
-    matrix: undefined 
+    matrix: undefined,
+    numGoals: 0,
 }
 
 class Cell {
@@ -82,6 +83,7 @@ class Cell {
             this.player = true;
         } else if (pieceId == GOAL) {
             this.goal = true;
+            gameState.numGoals += 1;
         } else {
             console.error("Unrecognized pieceId: " + pieceId);
         }
@@ -96,6 +98,7 @@ class Cell {
             this.player = false;
         } else if (pieceId == Goal) {
             this.goal = false;
+            gameState.numGoals -= 1;
         } else {
             console.error("Unrecognized pieceId: " + pieceId);
         }
@@ -217,6 +220,23 @@ function inBounds(row, col) {
            col < numCols;
 }
 
+function checkForVictory() {
+    var occupiedGoals = 0;
+
+    for (var row = 0; row < numRows; row++) {
+        for (var col = 0; col < numCols; col++) {
+            var cell = gameState.matrix[row][col];
+            if (cell.goal && cell.slider) {
+                occupiedGoals += 1;
+            }
+        }
+    }
+
+    if (occupiedGoals == gameState.numGoals) {
+        alert("You win!");
+    }
+}
+
 function move(direction) {
     var [row, col] = [gameState.playerRow, gameState.playerCol];
     var [dr, dc] = drdc(direction);
@@ -239,6 +259,7 @@ function move(direction) {
     }
 
     drawGame();
+    checkForVictory();
 }
 
 function getPlayerMovment(keyCode) {
