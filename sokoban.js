@@ -25,6 +25,7 @@ var gameState = {
     playerCol: undefined,
     matrix: undefined,
     numGoals: 0,
+    gameOver: false
 }
 
 class Cell {
@@ -233,11 +234,18 @@ function checkForVictory() {
     }
 
     if (occupiedGoals == gameState.numGoals) {
-        alert("You win!");
+        gameState.gameOver = true;
+        $(".cell").css("background", "pink");
     }
 }
 
 function move(direction) {
+
+    if (gameState.gameOver) {
+        return;
+    }
+
+
     var [row, col] = [gameState.playerRow, gameState.playerCol];
     var [dr, dc] = drdc(direction);
     var [newRow, newCol] = [row + dr, col + dc];
