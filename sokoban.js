@@ -94,6 +94,9 @@ function getCellId(row, col) {
 }
 
 function drawGame() {
+
+    $("img").remove();
+
     for (var row = 0; row < numRows; row++) {
         for (var col = 0; col < numCols; col++) {
             var cell = gameState.matrix[row][col];
@@ -111,9 +114,7 @@ function drawGame() {
                 src = "goal.png"
             }
 
-            if (src == undefined) {
-                $(cellId +" img").remove();
-            } else {
+            if (src != undefined) {
                 var imgTag = "<img src='" + src + "' width='" + cellSize + "'>";
                 $(cellId).append(imgTag);
             }
@@ -142,8 +143,50 @@ function createSokoban(boardId) {
     drawGame();
 }
 
-function move(direction) {
+// returns a 2-tuple [dr, dc], where:
+//      dr == difference in row
+//      dc == difference in column
+function drdc(direction) {
+    if (direction == "up") {
+        return [-1, 0];
+    } else if (direction == "down") {
+        return [1, 0];
+    } else if (direction == "left") {
+        return [0, -1];
+    } else if (direction == "right") {
+        return [0, 1];
+    } else {
+        console.error("Bad direction: " + direction)
+    }
+}
 
+function inBounds(row, col) {
+    return row >= 0 &&
+           row < numRows &&
+           col >= 0 &&
+           col < numCols;
+}
+
+function inBounds(row, col) {
+    return row >= 0 &&
+           row < numRows &&
+           col >= 0 &&
+           col < numCols;
+}
+
+function move(direction) {
+    var [row, col] = [gameState.playerRow, gameState.playerCol];
+    var [dr, dc] = drdc(direction);
+    var [newRow, newCol] = [row + dr, col + dc];
+
+    if (inBounds(newRow, newCol)) {
+        gameState.matrix[row][col].removePiece(PLAYER);
+        gameState.playerRow = newRow;
+        gameState.playerCol = newCol;
+        gameState.matrix[newRow][newCol].addPiece(PLAYER);
+    }
+
+    drawGame();
 }
 
 function getPlayerMovment(keyCode) {
@@ -172,3 +215,5 @@ function keydown(event) {
 
     move(direction);
 }
+
+document.onkeydown = keydown;
