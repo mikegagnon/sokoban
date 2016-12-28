@@ -40,41 +40,38 @@ class Cell {
         this.col = col;
     }
 
-    // This cell is being "pushed" in the direction of dir
-    push(dir) {
+    getMovablePiece() {
         if (this.slider) {
-            var [dr, dc] = drdc(dir);
-            var [newRow, newCol] = [this.row + dr, this.col + dc];
-            var cell = gameState.matrix[newRow][newCol];
-            cell.push(dir);
-            cell.addPiece(SLIDER);
-            this.removePiece(SLIDER);
+            return SLIDER;
+        } else if (this.player) {
+            return PLAYER;
+        } else {
+            console.error("cannot call getMovablePiece() on an immovable piece");
         }
     }
 
-    // This cell is being "nudged" in the direction of dir
-    // Returns true iff the cell can be "pushed"
-    nudge(dir) {
-        var pushable = true;
+    getPieces() {
+        var pieces = [];
 
         if (this.block) {
-            pushable = false;
-        } else if (this.slider) {
-            var [dr, dc] = drdc(dir);
-            var [newRow, newCol] = [this.row + dr, this.col + dc];
-
-            if (!inBounds(newRow, newCol)) {
-                return false;
-            }
-
-            return gameState.matrix[newRow][newCol].nudge(dir);
-        } else if (this.player) {
-            console.error("Player should never be nudged");
-        } else {
-            return true;
+            pieces.append(BLOCK);
         }
-    }
 
+        if (this.slider) {
+            pieces.append(SLIDER);
+        }
+        
+        if (this.player) {
+            pieces.append(PLAYER);
+        }
+        
+        if (this.GOAL) {
+            pieces.append(GOAL);
+        }
+
+        return pieces;
+
+    }
 
     addPiece(pieceId) {
         if (pieceId == BLOCK) {
@@ -105,6 +102,50 @@ class Cell {
             console.error("Unrecognized pieceId: " + pieceId);
         }
     }
+
+    // This cell is being "pushed" in the direction of dir
+    push(dir) {
+        if (this.slider || this.player) {
+            var [dr, dc] = drdc(dir);
+            var newRow = this.row + dr;
+            var newCol = this.col + dc;
+            var newCell = gameState.matrix[newRow][newCol];
+            newCell.push(dir);
+
+            var piece = this.getMovablePiece();
+            newCell.addPiece(piece);
+            this.removePiece(piece);
+
+            if (piece== PLAYER) {
+                gameState.playerRow = newRow;
+                gameState.playerCol = newCol;
+            }
+        }
+    }
+
+    // This cell is being "nudged" in the direction of dir
+    // Returns true iff the cell can be "pushed"
+    nudge(dir) {
+        var pushable = true;
+
+        if (this.block) {
+            pushable = false;
+        } else if (this.slider || this.player) {
+            var [dr, dc] = drdc(dir);
+            var newRow = this.row + dr;
+            var newCol = this.col + dc;
+
+            if (inBounds(newRow, newCol)) {
+                var newCell = gameState.matrix[newRow][newCol];
+                return newCell.nudge(dir);
+            } else {
+                return false;
+            }
+        } else {
+            return true;
+        }
+    }
+
 }
 
 function initGameState() {
@@ -266,7 +307,6 @@ function move(direction) {
         return;
     }
 
-
     var [row, col] = [gameState.playerRow, gameState.playerCol];
     var [dr, dc] = drdc(direction);
     var [newRow, newCol] = [row + dr, col + dc];
@@ -274,17 +314,10 @@ function move(direction) {
     if (!inBounds(newRow, newCol)) {
         return;
     } else {
-        var cell = gameState.matrix[newRow][newCol]
-        var pushable = cell.nudge(direction);
-        if (pushable) {
+        var cell = gameState.matrix[row][col];
+        if (cell.nudge(direction)) {
             cell.push(direction);
-            gameState.matrix[row][col].removePiece(PLAYER);
-            gameState.playerRow = newRow;
-            gameState.playerCol = newCol;
-            gameState.matrix[newRow][newCol].addPiece(PLAYER);
         }
-
-
     }
 
     drawGame();
