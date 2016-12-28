@@ -1,5 +1,5 @@
 
-var CELL_SIZE = 50;
+var CELL_SIZE = 70;
 
 var EMPTY = 0;
 var BLOCK = 1;
@@ -33,7 +33,6 @@ function getCellId(row, col) {
 function getImgTag(filename) {
     return "<img src='" + filename + "' width='" + CELL_SIZE + "'>";
 }
-
 
 /* Sokoban ********************************************************************/
 class Sokoban {
@@ -279,6 +278,9 @@ function createSokoban(boardId, boardInit) {
             var cellId = getCellId(row, col);
             var cellTag = "<div id='" + cellId + "' class='cell'></div>";
             $("#" + rowId).append(cellTag);
+            $("#" + cellId).css("width", CELL_SIZE);
+            $("#" + cellId).css("height", CELL_SIZE);
+
         }
     }
 
