@@ -178,13 +178,27 @@ function drawGame() {
             }
 
             if (cell.player) {
-                $(cellId).append(getImgTag("player.png"));
+                if (gameState.gameOver) {
+                    $(cellId).append(getImgTag("player-win.png"));                    
+                } else {
+                    $(cellId).append(getImgTag("player.png"));
+                }
+            }
+
+            if (!cell.goal &&
+                !cell.block &&
+                !cell.slider &&
+                !cell.player) {
+
+                if (gameState.gameOver) {
+                    $(cellId).append(getImgTag("empty-win.png"));
+                } else {
+                    $(cellId).append(getImgTag("empty.png"));
+                }
             }
 
             if (cell.slider && cell.goal) {
-                $(cellId).css("background", "#e37abf");
-            } else {
-                $(cellId).css("background", "lightgray");
+                $(cellId).append(getImgTag("slider-goal.png"));
             }
 
         }
@@ -255,7 +269,7 @@ function checkForVictory() {
 
     if (occupiedGoals == gameState.numGoals) {
         gameState.gameOver = true;
-        $(".cell").css("background", "pink");
+        drawGame();
     }
 }
 
