@@ -1,7 +1,7 @@
 var numRows = 9;
 var numCols = 8;
 
-cellSize = 50;
+var cellSize = 50;
 
 EMPTY = 0;
 BLOCK = 1;
