@@ -30,6 +30,7 @@ var gameState = {
 }
 
 class Cell {
+
     constructor(row, col) {
         this.block = false;
         this.slider = false;
@@ -38,7 +39,6 @@ class Cell {
         this.row = row;
         this.col = col;
     }
-
 
     // This cell is being "pushed" in the direction of dir
     push(dir) {
