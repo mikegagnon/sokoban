@@ -1,4 +1,4 @@
-var numRows = 8;
+var numRows = 9;
 var numCols = 8;
 
 cellSize = 50;
@@ -9,7 +9,7 @@ SLIDER = 2;
 PLAYER = 3;
 GOAL = 4;
 
-var boardInit = [
+var simpleBoard = [
     [0, 0, 0, 0, 0, 0, 0, 0],
     [0, 1, 1, 0, 0, 0, 0, 4],
     [0, 0, 0, 0, 0, 0, 0, 0],
@@ -19,6 +19,20 @@ var boardInit = [
     [0, 0, 0, 1, 0, 0, 0, 0],
     [0, 3, 0, 0, 0, 0, 2, 0],
 ];
+
+var puzzleBoard =  [
+    [0, 0, 1, 1, 1, 1, 1, 0],
+    [1, 1, 1, 0, 0, 0, 1, 0],
+    [1, 4, 3, 2, 0, 0, 1, 0],
+    [1, 1, 1, 0, 2, 4, 1, 0],
+    [1, 4, 1, 1, 2, 0, 1, 0],
+    [1, 0, 1, 0, 4, 0, 1, 1],
+    [1, 2, 0, 0, 2, 2, 4, 1],
+    [1, 0, 0, 0, 4, 0, 0, 1],
+    [1, 1, 1, 1, 1, 1, 1, 1]
+]
+
+var boardInit = puzzleBoard;
 
 var gameState = {
     playerRow: undefined,
@@ -165,8 +179,14 @@ function drawGame() {
 
             if (cell.player) {
                 $(cellId).append(getImgTag("player.png"));
-
             }
+
+            if (cell.slider && cell.goal) {
+                $(cellId).css("background", "#e37abf");
+            } else {
+                $(cellId).css("background", "lightgray");
+            }
+
         }
     }
 }
