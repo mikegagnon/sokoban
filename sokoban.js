@@ -1,256 +1,13 @@
-var numRows = 9;
-var numCols = 8;
 
-var cellSize = 50;
+var CELL_SIZE = 50;
 
-EMPTY = 0;
-BLOCK = 1;
-SLIDER = 2;
-PLAYER = 3;
-GOAL = 4;
+var EMPTY = 0;
+var BLOCK = 1;
+var SLIDER = 2;
+var PLAYER = 3;
+var GOAL = 4;
 
-var boardInit =  [
-    [0, 0, 1, 1, 1, 1, 1, 0],
-    [1, 1, 1, 0, 0, 0, 1, 0],
-    [1, 4, 3, 2, 0, 0, 1, 0],
-    [1, 1, 1, 0, 2, 4, 1, 0],
-    [1, 4, 1, 1, 2, 0, 1, 0],
-    [1, 0, 1, 0, 4, 0, 1, 1],
-    [1, 2, 0, 0, 2, 2, 4, 1],
-    [1, 0, 0, 0, 4, 0, 0, 1],
-    [1, 1, 1, 1, 1, 1, 1, 1]
-]
-
-var gameState = {
-    playerRow: undefined,
-    playerCol: undefined,
-    matrix: undefined,
-    numGoals: 0,
-    gameOver: false
-}
-
-class Cell {
-
-    constructor(row, col) {
-        this.block = false;
-        this.slider = false;
-        this.player = false;
-        this.goal = false;
-        this.row = row;
-        this.col = col;
-    }
-
-    getMovablePiece() {
-        if (this.slider) {
-            return SLIDER;
-        } else if (this.player) {
-            return PLAYER;
-        } else {
-            console.error("cannot call getMovablePiece() on an immovable piece");
-        }
-    }
-
-    getPieces() {
-        var pieces = [];
-
-        if (this.block) {
-            pieces.append(BLOCK);
-        }
-
-        if (this.slider) {
-            pieces.append(SLIDER);
-        }
-        
-        if (this.player) {
-            pieces.append(PLAYER);
-        }
-        
-        if (this.GOAL) {
-            pieces.append(GOAL);
-        }
-
-        return pieces;
-
-    }
-
-    addPiece(pieceId) {
-        if (pieceId == BLOCK) {
-            this.block = true;
-        } else if (pieceId == SLIDER) {
-            this.slider = true;
-        } else if (pieceId == PLAYER) {
-            this.player = true;
-        } else if (pieceId == GOAL) {
-            this.goal = true;
-            gameState.numGoals += 1;
-        } else {
-            console.error("Unrecognized pieceId: " + pieceId);
-        }
-    }
-
-    removePiece(pieceId) {
-        if (pieceId == BLOCK) {
-            this.block = false;
-        } else if (pieceId == SLIDER) {
-            this.slider = false;
-        } else if (pieceId == PLAYER) {
-            this.player = false;
-        } else if (pieceId == Goal) {
-            this.goal = false;
-            gameState.numGoals -= 1;
-        } else {
-            console.error("Unrecognized pieceId: " + pieceId);
-        }
-    }
-
-    // This cell is being "pushed" in the direction of dir
-    push(dir) {
-        if (this.slider || this.player) {
-            var [dr, dc] = drdc(dir);
-            var newRow = this.row + dr;
-            var newCol = this.col + dc;
-            var newCell = gameState.matrix[newRow][newCol];
-            newCell.push(dir);
-
-            var piece = this.getMovablePiece();
-            newCell.addPiece(piece);
-            this.removePiece(piece);
-
-            if (piece== PLAYER) {
-                gameState.playerRow = newRow;
-                gameState.playerCol = newCol;
-            }
-        }
-    }
-
-    // This cell is being "nudged" in the direction of dir
-    // Returns true iff the cell can be "pushed"
-    nudge(dir) {
-        var pushable = true;
-
-        if (this.block) {
-            pushable = false;
-        } else if (this.slider || this.player) {
-            var [dr, dc] = drdc(dir);
-            var newRow = this.row + dr;
-            var newCol = this.col + dc;
-
-            if (inBounds(newRow, newCol)) {
-                var newCell = gameState.matrix[newRow][newCol];
-                return newCell.nudge(dir);
-            } else {
-                return false;
-            }
-        } else {
-            return true;
-        }
-    }
-
-}
-
-function initGameState() {
-    gameState.matrix = new Array(numRows);
-
-    for (var row = 0; row < numRows; row++) {
-
-        gameState.matrix[row] = new Array(numCols);
-
-        for (var col = 0; col < numCols; col++) {
-            var pieceId = boardInit[row][col];
-            var cell = new Cell(row, col);
-
-            if (pieceId != EMPTY) {
-                cell.addPiece(pieceId);
-            }
-
-            if (pieceId == PLAYER) {
-                gameState.playerRow = row;
-                gameState.playerCol = col;
-            }
-
-            gameState.matrix[row][col] = cell;
-        }
-    }
-}
-
-
-function getCellId(row, col) {
-    return "cell-" + row + "-" + col;
-}
-
-function getImgTag(src) {
-    return "<img style='position:absolute;' src='" + src + "' width='" + cellSize + "'>";
-}
-
-function drawGame() {
-
-    $("img").remove();
-
-    for (var row = 0; row < numRows; row++) {
-        for (var col = 0; col < numCols; col++) {
-            var cell = gameState.matrix[row][col];
-            var cellId = "#" + getCellId(row, col);
-
-            var src = undefined;
-
-            if (cell.goal) {
-                $(cellId).append(getImgTag("goal.png"));
-            }
-
-            if (cell.block) {
-                  $(cellId).append(getImgTag("block.png"));
-            }
-
-            if (cell.slider) {
-                $(cellId).append(getImgTag("slider.png"));
-            }
-
-            if (cell.player) {
-                if (gameState.gameOver) {
-                    $(cellId).append(getImgTag("player-win.png"));                    
-                } else {
-                    $(cellId).append(getImgTag("player.png"));
-                }
-            }
-
-            if (!cell.goal &&
-                !cell.block &&
-                !cell.slider &&
-                !cell.player) {
-
-                if (gameState.gameOver) {
-                    $(cellId).append(getImgTag("empty-win.png"));
-                } else {
-                    $(cellId).append(getImgTag("empty.png"));
-                }
-            }
-
-            if (cell.slider && cell.goal) {
-                $(cellId).append(getImgTag("slider-goal.png"));
-            }
-
-        }
-    }
-}
-
-function createSokoban(boardId) {
-
-    for (var row = 0; row < numRows; row++) {
-        var rowId = "row-" + row;
-        var rowTag = "<div id='" + rowId + "' class='row'></div>"
-
-        $(boardId).append(rowTag);
-
-        for (var col = 0; col < numCols; col++) {
-            var cellId = getCellId(row, col);
-            var cellTag = "<div id='" + cellId + "' class='cell'></div>";
-            $("#" + rowId).append(cellTag);
-        }
-    }
-
-    initGameState();
-    drawGame();
-}
+var sokoban = undefined;
 
 // returns a 2-tuple [dr, dc], where:
 //      dr == difference in row
@@ -265,64 +22,275 @@ function drdc(direction) {
     } else if (direction == "right") {
         return [0, 1];
     } else {
-        console.error("Bad direction: " + direction)
+        console.error("Bad direction: " + direction);
     }
 }
 
-function inBounds(row, col) {
-    return row >= 0 &&
-           row < numRows &&
-           col >= 0 &&
-           col < numCols;
+function getCellId(row, col) {
+    return "cell-" + row + "-" + col;
 }
 
-function inBounds(row, col) {
-    return row >= 0 &&
-           row < numRows &&
-           col >= 0 &&
-           col < numCols;
+function getImgTag(filename) {
+    return "<img src='" + filename + "' width='" + CELL_SIZE + "'>";
 }
 
-function checkForVictory() {
-    var occupiedGoals = 0;
 
-    for (var row = 0; row < numRows; row++) {
-        for (var col = 0; col < numCols; col++) {
-            var cell = gameState.matrix[row][col];
-            if (cell.goal && cell.slider) {
-                occupiedGoals += 1;
+/* Sokoban ********************************************************************/
+class Sokoban {
+
+    constructor(boardInit) {
+        this.playerRow = undefined;
+        this.playerCol = undefined;
+        this.matrix = undefined;
+        this.numRows = undefined;
+        this.numCols = undefined;
+        this.numGoals = 0;
+        this.gameOver = false;
+
+        this.initGameState(boardInit);
+        this.drawGame();
+    }
+
+    initGameState(boardInit) {
+
+        this.numRows = boardInit.length;
+        this.numCols = boardInit[0].length;
+        this.matrix = new Array(this.numRows);
+
+        for (var row = 0; row < this.numRows; row++) {
+
+            this.matrix[row] = new Array(this.numCols);
+
+            for (var col = 0; col < this.numCols; col++) {
+                var piece = boardInit[row][col];
+                var cell = new Cell(row, col, this);
+
+                cell.addPiece(piece);
+
+                if (piece == GOAL) {
+                    this.numGoals += 1;
+                } else if (piece == PLAYER) {
+                    this.playerRow = row;
+                    this.playerCol = col;
+                }
+
+                this.matrix[row][col] = cell;
             }
         }
     }
 
-    if (occupiedGoals == gameState.numGoals) {
-        gameState.gameOver = true;
-        drawGame();
-    }
-}
-
-function move(direction) {
-
-    if (gameState.gameOver) {
-        return;
+    inBounds(row, col) {
+        return row >= 0 &&
+               row < this.numRows &&
+               col >= 0 &&
+               col < this.numCols;
     }
 
-    var [row, col] = [gameState.playerRow, gameState.playerCol];
-    var [dr, dc] = drdc(direction);
-    var [newRow, newCol] = [row + dr, col + dc];
+    drawGame() {
 
-    if (!inBounds(newRow, newCol)) {
-        return;
-    } else {
-        var cell = gameState.matrix[row][col];
-        if (cell.nudge(direction)) {
-            cell.push(direction);
+        $("img").remove();
+
+        for (var row = 0; row < this.numRows; row++) {
+            for (var col = 0; col < this.numCols; col++) {
+                var cell = this.matrix[row][col];
+
+                var filename = undefined;
+
+                if (cell.player && this.gameOver) {
+                    filename = "player-win.png";
+                } else if (cell.player) {
+                    filename = "player.png";
+                } else if (cell.slider && cell.goal) {
+                    filename = "slider-goal.png";
+                } else if (cell.slider) {
+                    filename = "slider.png";
+                } else if (cell.goal) {
+                    filename = "goal.png";
+                } else if (cell.block) {
+                    filename = "block.png";
+                } else if (this.gameOver) {
+                    filename = "empty-win.png";
+                } else {
+                    filename = "empty.png";
+                }
+
+                var cellId = "#" + getCellId(row, col);
+                $(cellId).append(getImgTag(filename));
+            }
         }
     }
 
-    drawGame();
-    checkForVictory();
+    checkForVictory() {
+        var occupiedGoals = 0;
+
+        for (var row = 0; row < this.numRows; row++) {
+            for (var col = 0; col < this.numCols; col++) {
+                var cell = this.matrix[row][col];
+                if (cell.goal && cell.slider) {
+                    occupiedGoals += 1;
+                }
+            }
+        }
+
+        if (occupiedGoals == this.numGoals) {
+            this.gameOver = true;
+            this.drawGame();
+        }
+    }
+
+    move(direction) {
+
+        if (this.gameOver) {
+            return;
+        }
+
+        var [row, col] = [this.playerRow, this.playerCol];
+        var [dr, dc] = drdc(direction);
+        var [newRow, newCol] = [row + dr, col + dc];
+
+        if (!this.inBounds(newRow, newCol)) {
+            return;
+        } else {
+            var cell = this.matrix[row][col];
+            if (cell.nudge(direction)) {
+                cell.push(direction);
+            }
+        }
+
+        this.drawGame();
+        this.checkForVictory();
+    }
+
 }
+
+/* Cell ***********************************************************************/
+class Cell {
+
+    constructor(row, col, sokoban) {
+        this.sokoban = sokoban;
+        this.row = row;
+        this.col = col;
+        this.block = false;
+        this.slider = false;
+        this.player = false;
+        this.goal = false;
+    }
+
+    getMovablePiece() {
+        if (this.slider) {
+            return SLIDER;
+        } else if (this.player) {
+            return PLAYER;
+        } else {
+            console.error("cannot call getMovablePiece() on an immovable piece");
+        }
+    }
+
+    addPiece(piece) {
+        if (piece == BLOCK) {
+            this.block = true;
+        } else if (piece == SLIDER) {
+            this.slider = true;
+        } else if (piece == PLAYER) {
+            this.player = true;
+        } else if (piece == GOAL) {
+            this.goal = true;
+        } else if (piece == EMPTY) {
+            // do nothing
+        } else {
+            console.error("Unrecognized piece: " + piece);
+        }
+    }
+
+    removePiece(piece) {
+        if (piece == SLIDER) {
+            this.slider = false;
+        } else if (piece == PLAYER) {
+            this.player = false;
+        } else {
+            console.error("cannot remove an immovable piece");
+        }
+    }
+
+    // This cell is being "pushed" in the direction of dir
+    // This function may only be called on a cell, if that cell contains
+    // exactly one movable piece (i.e. PLAYER or SLIDER)
+    push(dir) {
+        if (this.slider || this.player) {
+            var [dr, dc] = drdc(dir);
+            var newRow = this.row + dr;
+            var newCol = this.col + dc;
+            var newCell = this.sokoban.matrix[newRow][newCol];
+
+            newCell.push(dir);
+
+            var piece = this.getMovablePiece();
+            newCell.addPiece(piece);
+            this.removePiece(piece);
+
+            if (piece == PLAYER) {
+                this.sokoban.playerRow = newRow;
+                this.sokoban.playerCol = newCol;
+            }
+        }
+    }
+
+    // This cell is being "nudged" in the direction of dir
+    // Returns true iff the cell can be "pushed"
+    nudge(dir) {
+
+        if (this.block) {
+            return false;
+        } else if (this.slider || this.player) {
+            var [dr, dc] = drdc(dir);
+            var newRow = this.row + dr;
+            var newCol = this.col + dc;
+
+            if (sokoban.inBounds(newRow, newCol)) {
+                var newCell = sokoban.matrix[newRow][newCol];
+                return newCell.nudge(dir);
+            } else {
+                return false;
+            }
+        } else {
+            return true;
+        }
+    }
+
+}
+
+
+
+
+
+
+
+function createSokoban(boardId, boardInit) {
+
+    sokoban = new Sokoban(boardInit);
+
+    for (var row = 0; row < sokoban.numRows; row++) {
+        var rowId = "row-" + row;
+        var rowTag = "<div id='" + rowId + "' class='row'></div>"
+
+        $(boardId).append(rowTag);
+
+        for (var col = 0; col < sokoban.numCols; col++) {
+            var cellId = getCellId(row, col);
+            var cellTag = "<div id='" + cellId + "' class='cell'></div>";
+            $("#" + rowId).append(cellTag);
+        }
+    }
+
+    sokoban.drawGame();
+}
+
+
+
+
+
+
+
 
 function getPlayerMovment(keyCode) {
 
@@ -348,7 +316,8 @@ function keydown(event) {
     // disable browser scrolling on arrow keys
     event.preventDefault();
 
-    move(direction);
+    sokoban.move(direction);
 }
 
 document.onkeydown = keydown;
+
