@@ -1,5 +1,5 @@
 
-var CELL_SIZE = 70;
+var CELL_SIZE = 35;
 
 var EMPTY = 0;
 var BLOCK = 1;
@@ -45,7 +45,6 @@ class Sokoban {
         this.numCols = undefined;
         this.numGoals = 0;
         this.gameOver = false;
-
         this.initGameState(boardInit);
         this.drawGame();
     }
