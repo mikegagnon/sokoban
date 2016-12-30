@@ -14,11 +14,12 @@ And familiarity with OOP (object-orient programming) in JavaScript.
 
 ## Contents
 
-## Lecture 1. OOP Approach
+## Lecture 1. Modular approach
 
-I regret to report that in Lights Out and Thumb wrestling, our code was a jumbled mess of global variables, global functions, game logic, and vizualizations.
+I regret to report that in Lights Out and Thumb wrestling, our code was a jumbled mess of spaghetti code.
 
-In this project, we'll develop our code with better practices.
+In this project, we'll develop better code by using better design. Specifically, we'll be using modular
+design which includes OOP (object-oriented programming).
 
 Benefits of modular design:
 
