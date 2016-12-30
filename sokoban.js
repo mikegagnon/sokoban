@@ -11,6 +11,7 @@ var GOAL_PLAYER = 6;
 
 
 var SOKOBAN = undefined;
+var VIZ = undefined;
 
 /* Viz class ******************************************************************/
 class Viz {
@@ -27,23 +28,24 @@ class Viz {
 
     /* Instance methods *******************************************************/
 
-    constructor(sokoban, boardId) {
-        this.sokoban = sokoban;
+    constructor(boardId, boardInit, numRows, numCols) {
         this.boardId = boardId;
-
+        this.numRows = numRows;
+        this.numCols = numCols;
         this.drawBoard();
+        this.drawGame(boardInit);
     }
 
     drawBoard() {
 
-        for (var row = 0; row < this.sokoban.numRows; row++) {
+        for (var row = 0; row < this.numRows; row++) {
 
             var rowId = "row-" + row;
             var rowTag = "<div id='" + rowId + "' class='row'></div>"
 
             $(this.boardId).append(rowTag);
 
-            for (var col = 0; col < this.sokoban.numCols; col++) {
+            for (var col = 0; col < this.numCols; col++) {
 
                 var cellId = Viz.getCellId(row, col);
                 var cellTag = "<div id='" + cellId + "' class='cell'></div>";
@@ -53,34 +55,31 @@ class Viz {
 
             }
         }
-
-        this.drawGame();
     }
 
-    drawGame() {
+    drawGame(snapshot) {
 
         $("img").remove();
 
-        for (var row = 0; row < this.sokoban.numRows; row++) {
-            for (var col = 0; col < this.sokoban.numCols; col++) {
-                var cell = this.sokoban.matrix[row][col];
+        for (var row = 0; row < this.numRows; row++) {
+            for (var col = 0; col < this.numCols; col++) {
+                var pieceId = snapshot[row][col];
 
                 var filename = undefined;
 
-                if (cell.player && this.sokoban.gameOver) {
-                    filename = "player-win.png";
-                } else if (cell.player) {
-                    filename = "player.png";
-                } else if (cell.slider && cell.goal) {
-                    filename = "slider-goal.png";
-                } else if (cell.slider) {
-                    filename = "slider.png";
-                } else if (cell.goal) {
-                    filename = "goal.png";
-                } else if (cell.block) {
+                // TODO: victory
+                if (pieceId == BLOCK) {
                     filename = "block.png";
-                } else if (this.sokoban.gameOver) {
-                    filename = "empty-win.png";
+                } else if (pieceId == GOAL_SLIDER) {
+                    filename = "slider-goal.png";
+                } else if (pieceId == GOAL_PLAYER) {
+                    filename = "player.png";
+                } else if (pieceId == GOAL) {
+                    filename = "goal.png";
+                } else if (pieceId == SLIDER) {
+                    filename = "slider.png";
+                } else if (pieceId == PLAYER) {
+                    filename = "player.png";
                 } else {
                     filename = "empty.png";
                 }
@@ -138,6 +137,7 @@ class Sokoban {
         return matrix;
     }
 
+    // TODO: handle new piece codes
     initGameState(boardInit) {
 
         this.numRows = boardInit.length;
@@ -170,8 +170,6 @@ class Sokoban {
                col < this.numCols;
     }
 
-
-
     checkForVictory() {
         var occupiedGoals = 0;
 
@@ -189,10 +187,22 @@ class Sokoban {
         }
     }
 
+    getSnapshot() {
+        var snapshot = this.newMatrix();
+
+        for (var row = 0; row < this.numRows; row++) {
+            for (var col = 0; col < this.numCols; col++) {
+                snapshot[row][col] = this.matrix[row][col].getPieceId();
+            }
+        }
+
+        return snapshot;
+    }
+
     move(direction) {
 
         if (this.gameOver) {
-            return;
+            return this.getSnapshot();
         }
 
         var [row, col] = [this.playerRow, this.playerCol];
@@ -209,6 +219,8 @@ class Sokoban {
         }
 
         this.checkForVictory();
+
+        return this.getSnapshot();
     }
 
 }
@@ -226,6 +238,27 @@ class Cell {
         this.goal = false;
     }
 
+    getPieceId() {
+        if (this.block) {
+            return BLOCK;
+        } else if (this.goal) {
+            if (this.slider) {
+                return GOAL_SLIDER;
+            } else if (this.player) {
+                return GOAL_PLAYER;
+            } else {
+                return GOAL;
+            }
+        } else if (this.slider) {
+            return SLIDER;
+        } else if (this.player) {
+            return PLAYER;
+        } else {
+            return EMPTY;
+        }
+    }
+
+    // TODO: replace with getPieceId?
     getMovablePiece() {
         if (this.slider) {
             return SLIDER;
@@ -335,8 +368,8 @@ function keydown(event) {
     // disable browser scrolling on arrow keys
     event.preventDefault();
 
-    SOKOBAN.move(direction);
-    VIZ.drawGame();
+    var snapshot = SOKOBAN.move(direction);
+    VIZ.drawGame(snapshot);
 }
 
 document.onkeydown = keydown;
