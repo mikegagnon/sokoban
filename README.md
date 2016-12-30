@@ -58,6 +58,37 @@ In this case, clients of the `Queue` class don't need to know anything about how
 They don't need to know about `Node` objects, nor `prev` references, etc. They just need to know
 `enqueue(...)` and `dequeue(...)`.
 
+### Interfaces for Sokoban+
+
+The `Sokoban` class has a thin interface: there are only two methods.
+
+```js
+class Sokoban {
+
+    // The snapshot argument defines the initial gamestate
+    constructor(snapshot) {...}
+    
+    // Moves the player in the specified direction.
+    // Returns a snapshot object that defines the game state after the player is moved
+    move(direction) {...}
+}
+```
+
+The `Viz` class has a thin interface: there are only two methods.
+
+```js
+class Viz {
+    
+    // The boardId argument specifies the HTML id for the <div> element that will
+    // hold the game board
+    //
+    // The snapshot argument defines the initial gamestate
+    constructor(boardId, snapshot) {...}
+    
+    // The snapshot argument defines the game state that is to be drawn on the web page
+    drawGame(snapshot) {...}
+}
+```
 
 Benefits of modular design:
 
