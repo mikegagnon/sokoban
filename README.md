@@ -54,7 +54,7 @@ is *thin*: there are only two methods.
 - There is a `dequeue(...)` method which retrieves data from the queue
 
 An important principle of modular design is that thin interfaces hide complexity.
-In this case, clients of the `Queue` class don't need to know anything about how the Queue class is implemented.
+In this case, clients of the `Queue` class don't need to know anything about how the `Queue` class is implemented.
 They don't need to know about `Node` objects, nor `prev` references, etc. They just need to know
 `enqueue(...)` and `dequeue(...)`.
 
