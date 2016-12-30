@@ -9,9 +9,16 @@ var GOAL = 4;
 var GOAL_SLIDER = 5;
 var GOAL_PLAYER = 6;
 
-
 var SOKOBAN = undefined;
 var VIZ = undefined;
+
+/* Snapshot class *************************************************************/
+class Snapshot {
+    constructor(board, gameOver) {
+        this.board = board;
+        this.gameOver = gameOver;
+    }
+}
 
 /* Viz class ******************************************************************/
 class Viz {
@@ -33,7 +40,7 @@ class Viz {
         this.numRows = numRows;
         this.numCols = numCols;
         this.drawBoard();
-        this.drawGame(boardInit);
+        this.drawGame(new Snapshot(boardInit, false));
     }
 
     drawBoard() {
@@ -63,7 +70,7 @@ class Viz {
 
         for (var row = 0; row < this.numRows; row++) {
             for (var col = 0; col < this.numCols; col++) {
-                var pieceId = snapshot[row][col];
+                var pieceId = snapshot.board[row][col];
 
                 var filename = undefined;
 
@@ -188,15 +195,15 @@ class Sokoban {
     }
 
     getSnapshot() {
-        var snapshot = this.newMatrix();
+        var board = this.newMatrix();
 
         for (var row = 0; row < this.numRows; row++) {
             for (var col = 0; col < this.numCols; col++) {
-                snapshot[row][col] = this.matrix[row][col].getPieceId();
+                board[row][col] = this.matrix[row][col].getPieceId();
             }
         }
 
-        return snapshot;
+        return new Snapshot(board, this.gameOver);
     }
 
     move(direction) {
@@ -210,7 +217,7 @@ class Sokoban {
         var [newRow, newCol] = [row + dr, col + dc];
 
         if (!this.inBounds(newRow, newCol)) {
-            return;
+            return this.getSnapshot();;
         } else {
             var cell = this.matrix[row][col];
             if (cell.nudge(direction)) {
