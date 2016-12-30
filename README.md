@@ -10,4 +10,10 @@ Mastery of [Lights Out](https://github.com/mikegagnon/lights-out/blob/master/REA
 [Thumb Wrestling](https://github.com/mikegagnon/thumb-wrestling/blob/master/README.md), and
 recursion (see [linked lists](https://github.com/mikegagnon/linked-lists/blob/master/README.md) and
 [binary search trees](https://github.com/mikegagnon/bst/blob/master/README.md)).
-And familiarity with object-orient programming in JavaScript.
+And familiarity with OOP (object-orient programming) in JavaScript.
+
+## Contents
+
+## Lecture 1. OOP Approach
+
+I regret to report that in Lights Out and Thumb wrestling, our code was a jumbled mess of global variables, global functions, game logic, and vizualizations.
