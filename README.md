@@ -104,6 +104,37 @@ function keydown(event) {
 }
 ```
 
+`snapshot` objects are defined by the `Snapshot` class:
+
+```js
+// pieceId values
+var EMPTY = 0;
+var BLOCK = 1;
+var SLIDER = 2;
+var PLAYER = 3;
+var GOAL = 4;
+var GOAL_SLIDER = 5;
+var GOAL_PLAYER = 6;
+
+/* Snapshot class *************************************************************/
+class Snapshot {
+
+    // The board argument is a 2-dimensional matrix describing board state.
+    // Each item in the matrix is a pieceId. Namely, either EMPTY, BLOCK,
+    // SLIDER, PLAYER, GOAL, GOAL_SLIDER, GOAL_PLAYER.
+    //
+    // The gameOver argument is a boolen that is true iff the player has solved
+    // the puzzle.
+    constructor(board, gameOver) {
+        this.board = board;
+        this.gameOver = gameOver;
+    }
+}
+```
+
+Hopefully it is clear that the `Snapshot` class is the keystone that glues 
+together the interfaces between all modules for Sokoban+.
+
 ### Benefits of modular design
 
 #### Parallel development
