@@ -27,7 +27,7 @@ A classic example of modular design is MVC (model, view, controller). With regar
 
 - The *model* module encapsulates all game logic for Sokoban+
 - The *view* module visualizes the game state (by drawing it on the webpage)
-- The *controller* receives input from the player
+- The *controller* module receives input from the player
 
 Translating this design into code, we have:
 
