@@ -7,7 +7,7 @@ var SLIDER = 2;
 var PLAYER = 3;
 var GOAL = 4;
 
-var sokoban = undefined;
+var SOKOBAN = undefined;
 
 // returns a 2-tuple [dr, dc], where:
 //      dr == difference in row
@@ -244,8 +244,8 @@ class Cell {
             var newRow = this.row + dr;
             var newCol = this.col + dc;
 
-            if (sokoban.inBounds(newRow, newCol)) {
-                var newCell = sokoban.matrix[newRow][newCol];
+            if (this.sokoban.inBounds(newRow, newCol)) {
+                var newCell = this.sokoban.matrix[newRow][newCol];
                 return newCell.nudge(dir);
             } else {
                 return false;
@@ -263,9 +263,7 @@ class Cell {
 
 
 
-function createSokoban(boardId, boardInit) {
-
-    sokoban = new Sokoban(boardInit);
+function createSokoban(boardId, sokoban) {
 
     for (var row = 0; row < sokoban.numRows; row++) {
         var rowId = "row-" + row;
@@ -317,7 +315,7 @@ function keydown(event) {
     // disable browser scrolling on arrow keys
     event.preventDefault();
 
-    sokoban.move(direction);
+    SOKOBAN.move(direction);
 }
 
 document.onkeydown = keydown;
