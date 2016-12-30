@@ -151,7 +151,7 @@ class Sokoban {
         this.numRows = undefined;
         this.numCols = undefined;
         this.numGoals = 0;
-        this.gameOver = false;
+        this.gameOver = snapshot.gameOver;
         this.initGameState(snapshot);
     }
 
