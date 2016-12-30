@@ -36,8 +36,12 @@
       [1, 1, 1, 1, 1, 1, 1, 1]
   ];
 
-  SOKOBAN = new Sokoban(boardInit);
-  VIZ = new Viz("#board", boardInit, SOKOBAN.numRows, SOKOBAN.numCols);
+  var gameOver = false;
+
+  var snapshot = new Snapshot(boardInit, gameOver);
+
+  SOKOBAN = new Sokoban(snapshot);
+  VIZ = new Viz("#board", snapshot);
 
 </script>
 
