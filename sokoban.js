@@ -6,6 +6,9 @@ var BLOCK = 1;
 var SLIDER = 2;
 var PLAYER = 3;
 var GOAL = 4;
+var GOAL_SLIDER = 5;
+var GOAL_PLAYER = 6;
+
 
 var SOKOBAN = undefined;
 
@@ -124,16 +127,24 @@ class Sokoban {
         this.initGameState(boardInit);
     }
 
+    newMatrix() {
+
+        var matrix = new Array(this.numRows);
+
+        for (var row = 0; row < this.numRows; row++) {
+            matrix[row] = new Array(this.numCols);
+        }
+
+        return matrix;
+    }
+
     initGameState(boardInit) {
 
         this.numRows = boardInit.length;
         this.numCols = boardInit[0].length;
-        this.matrix = new Array(this.numRows);
+        this.matrix = this.newMatrix();
 
         for (var row = 0; row < this.numRows; row++) {
-
-            this.matrix[row] = new Array(this.numCols);
-
             for (var col = 0; col < this.numCols; col++) {
                 var piece = boardInit[row][col];
                 var cell = new Cell(row, col, this);
