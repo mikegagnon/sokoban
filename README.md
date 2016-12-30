@@ -90,11 +90,48 @@ class Viz {
 }
 ```
 
-Benefits of modular design:
+The `keydown` function is therefore simple:
 
-- Design the modules and interfaces first, then parallelize development
-- Manage complexity
-- Code reuse
-- Once an interface is created, you can safely forget its implementatio
-- Supports refactoring
+```js
+// SOKOBAN is a reference to an instance of the Sokoban class
+// VIZ is a reference to an instance of the Viz class
+function keydown(event) {
+
+    var direction = // the direction of the arrow key that was pressed
+
+    var snapshot = SOKOBAN.move(direction);
+    VIZ.drawGame(snapshot);
+}
+```
+
+### Benefits of modular design
+
+#### Parallel development
+
+If we had two developers building Sokoban+ at the same time,
+one developer could build the `Sokoban` class, while at the same time the other 
+developer could build the `Viz` class (independently). 
+
+#### Manage complexity
+
+If the vizualization code were interwoven with the game logic code (i.e. non modular design),
+the code would be more complex, more difficult to read, reason about, test, etc.
+
+#### Forgetting code
+
+Once an interface is created, you can safely forget its implementation.
+
+For example, you could implement `Sokoban` before implementing `Viz`. Then, you
+could forget all the complexities of how `Sokoban` is implemented, and
+code `Viz`, since `Viz` and `Sokoban` interact over a thin interface.
+
+#### Refactoring modules
+
+Refactoring essentially means reimplementing. Imagine
+a software system with 10 modules, connected via various thin interfaces.
+You could easily refactor one module (say, to make it more efficient),
+without touching any other module.
+
+Without modular design, you would have a bunch of spaghetti code
+and you would have to refactor the whole thing.
 
