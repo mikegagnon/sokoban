@@ -1,6 +1,12 @@
 
 var CELL_SIZE = 35;
 
+var SOKOBAN = undefined;
+var VIZ = undefined;
+
+// TODO: isValid
+
+// pieceId values
 var EMPTY = 0;
 var BLOCK = 1;
 var SLIDER = 2;
@@ -9,11 +15,15 @@ var GOAL = 4;
 var GOAL_SLIDER = 5;
 var GOAL_PLAYER = 6;
 
-var SOKOBAN = undefined;
-var VIZ = undefined;
-
 /* Snapshot class *************************************************************/
 class Snapshot {
+
+    // The board argument is a 2-dimensional matrix describing board state.
+    // Each item in the matrix is a pieceId. Namely, either EMPTY, BLOCK,
+    // SLIDER, PLAYER, GOAL, GOAL_SLIDER, GOAL_PLAYER.
+    //
+    // The gameOver argument is a boolen that is true iff the player has solved
+    // the puzzle.
     constructor(board, gameOver) {
         this.board = board;
         this.gameOver = gameOver;
@@ -35,6 +45,7 @@ class Viz {
 
     /* Instance methods *******************************************************/
 
+    // TODO: rm numRows, numCols, and take a snapshot object
     constructor(boardId, boardInit, numRows, numCols) {
         this.boardId = boardId;
         this.numRows = numRows;
@@ -130,6 +141,7 @@ class Sokoban {
 
     /* Instance methods *******************************************************/
 
+    // TODO: change to snapshot
     constructor(boardInit) {
         this.playerRow = undefined;
         this.playerCol = undefined;
