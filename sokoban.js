@@ -86,9 +86,17 @@ class Viz {
                 } else if (pieceId == SLIDER) {
                     filename = "slider.png";
                 } else if (pieceId == PLAYER) {
-                    filename = "player.png";
+                    if (snapshot.gameOver) {
+                        filename = "player-win.png";
+                    } else {
+                        filename = "player.png";
+                    }
                 } else {
-                    filename = "empty.png";
+                    if (snapshot.gameOver) {
+                        filename = "empty-win.png";
+                    } else {
+                        filename = "empty.png"
+                    }
                 }
 
                 var cellId = "#" + Viz.getCellId(row, col);
