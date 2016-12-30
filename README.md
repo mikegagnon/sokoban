@@ -21,6 +21,22 @@ I regret to report that in Lights Out and Thumb wrestling, our code was a jumble
 In this project, we'll develop better code by using better design. Specifically, we'll be using modular
 design which includes OOP.
 
+In modular design we divide the program into different modules (classes in OOP).
+
+A classic example of modular design is MVC (model, view, controller). With regards to Sokoban+:
+
+- The *model* module encapsulates all game logic for Sokoban+
+- The *view* module visualizes the game state (by drawing it on the webpage)
+- The *controller* receives input from the player
+
+Translating this design into code, we have:
+
+- The `Sokoban` class, which implements all game logic
+- The `Viz` class, which draws the game state on the webpage
+- The `keydown` function, which receives input from the player
+
+
+
 Benefits of modular design:
 
 - Design the modules and interfaces first, then parallelize development
