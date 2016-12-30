@@ -14,7 +14,7 @@ And familiarity with OOP (object-orient programming) in JavaScript.
 
 ## Contents
 
-## Lecture 1. Modular approach
+## Lecture 1. Modular design
 
 I regret to report that in Lights Out and Thumb wrestling, our code was a jumbled mess of spaghetti code.
 
