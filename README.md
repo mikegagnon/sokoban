@@ -19,7 +19,7 @@ And familiarity with OOP (object-orient programming) in JavaScript.
 I regret to report that in Lights Out and Thumb wrestling, our code was a jumbled mess of spaghetti code.
 
 In this project, we'll develop better code by using better design. Specifically, we'll be using modular
-design which includes OOP (object-oriented programming).
+design which includes OOP.
 
 Benefits of modular design:
 
