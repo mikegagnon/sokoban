@@ -156,6 +156,9 @@ For example, you could implement `Sokoban` before implementing `Viz`. Then, you
 could forget all the complexities of how `Sokoban` is implemented, and
 code `Viz`, since `Viz` and `Sokoban` interact over a thin interface.
 
+Forgetting code is nice, because it's impossible to remember
+all the code in a large enough system.
+
 #### Refactoring modules
 
 Refactoring essentially means reimplementing. Imagine
