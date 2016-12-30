@@ -26,6 +26,8 @@ class Snapshot {
     // the puzzle.
     constructor(board, gameOver) {
         this.board = board;
+        this.numRows = board.length;
+        this.numCols = board[0].length;
         this.gameOver = gameOver;
     }
 }
@@ -46,12 +48,12 @@ class Viz {
     /* Instance methods *******************************************************/
 
     // TODO: rm numRows, numCols, and take a snapshot object
-    constructor(boardId, boardInit, numRows, numCols) {
+    constructor(boardId, snapshot) {
         this.boardId = boardId;
-        this.numRows = numRows;
-        this.numCols = numCols;
+        this.numRows = snapshot.numRows;
+        this.numCols = snapshot.numCols;
         this.drawBoard();
-        this.drawGame(new Snapshot(boardInit, false));
+        this.drawGame(snapshot);
     }
 
     drawBoard() {
@@ -142,7 +144,7 @@ class Sokoban {
     /* Instance methods *******************************************************/
 
     // TODO: change to snapshot
-    constructor(boardInit) {
+    constructor(snapshot) {
         this.playerRow = undefined;
         this.playerCol = undefined;
         this.matrix = undefined;
@@ -150,7 +152,7 @@ class Sokoban {
         this.numCols = undefined;
         this.numGoals = 0;
         this.gameOver = false;
-        this.initGameState(boardInit);
+        this.initGameState(snapshot);
     }
 
     newMatrix() {
@@ -165,9 +167,9 @@ class Sokoban {
     }
 
     // TODO: handle new piece codes
-    initGameState(boardInit) {
+    initGameState(snapshot) {
 
-        this.numRows = boardInit.length;
+        this.numRows = snapshot.numRows;
         this.numCols = boardInit[0].length;
         this.matrix = this.newMatrix();
 
