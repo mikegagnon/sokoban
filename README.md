@@ -17,3 +17,5 @@ And familiarity with OOP (object-orient programming) in JavaScript.
 ## Lecture 1. OOP Approach
 
 I regret to report that in Lights Out and Thumb wrestling, our code was a jumbled mess of global variables, global functions, game logic, and vizualizations.
+
+In this project, we'll develop our code with better practices.
