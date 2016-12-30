@@ -9,33 +9,109 @@ var GOAL = 4;
 
 var SOKOBAN = undefined;
 
-// returns a 2-tuple [dr, dc], where:
-//      dr == difference in row
-//      dc == difference in column
-function drdc(direction) {
-    if (direction == "up") {
-        return [-1, 0];
-    } else if (direction == "down") {
-        return [1, 0];
-    } else if (direction == "left") {
-        return [0, -1];
-    } else if (direction == "right") {
-        return [0, 1];
-    } else {
-        console.error("Bad direction: " + direction);
+/* Viz class ******************************************************************/
+class Viz {
+
+    /* Static functions *******************************************************/
+
+    static getCellId(row, col) {
+        return "cell-" + row + "-" + col;
+    }
+
+    static getImgTag(filename) {
+        return "<img src='" + filename + "' width='" + CELL_SIZE + "'>";
+    }
+
+    /* Instance methods *******************************************************/
+
+    constructor(sokoban, boardId) {
+        this.sokoban = sokoban;
+        this.boardId = boardId;
+
+        this.drawBoard();
+    }
+
+    drawBoard() {
+
+        for (var row = 0; row < this.sokoban.numRows; row++) {
+
+            var rowId = "row-" + row;
+            var rowTag = "<div id='" + rowId + "' class='row'></div>"
+
+            $(this.boardId).append(rowTag);
+
+            for (var col = 0; col < this.sokoban.numCols; col++) {
+
+                var cellId = Viz.getCellId(row, col);
+                var cellTag = "<div id='" + cellId + "' class='cell'></div>";
+                $("#" + rowId).append(cellTag);
+                $("#" + cellId).css("width", CELL_SIZE);
+                $("#" + cellId).css("height", CELL_SIZE);
+
+            }
+        }
+
+        this.drawGame();
+    }
+
+    drawGame() {
+
+        $("img").remove();
+
+        for (var row = 0; row < this.sokoban.numRows; row++) {
+            for (var col = 0; col < this.sokoban.numCols; col++) {
+                var cell = this.sokoban.matrix[row][col];
+
+                var filename = undefined;
+
+                if (cell.player && this.sokoban.gameOver) {
+                    filename = "player-win.png";
+                } else if (cell.player) {
+                    filename = "player.png";
+                } else if (cell.slider && cell.goal) {
+                    filename = "slider-goal.png";
+                } else if (cell.slider) {
+                    filename = "slider.png";
+                } else if (cell.goal) {
+                    filename = "goal.png";
+                } else if (cell.block) {
+                    filename = "block.png";
+                } else if (this.sokoban.gameOver) {
+                    filename = "empty-win.png";
+                } else {
+                    filename = "empty.png";
+                }
+
+                var cellId = "#" + Viz.getCellId(row, col);
+                $(cellId).append(Viz.getImgTag(filename));
+            }
+        }
     }
 }
 
-function getCellId(row, col) {
-    return "cell-" + row + "-" + col;
-}
-
-function getImgTag(filename) {
-    return "<img src='" + filename + "' width='" + CELL_SIZE + "'>";
-}
-
-/* Sokoban ********************************************************************/
+/* Sokoban class **************************************************************/
 class Sokoban {
+
+    /* Static functions *******************************************************/
+
+    // returns a 2-tuple [dr, dc], where:
+    //      dr == difference in row
+    //      dc == difference in column
+    static drdc(direction) {
+        if (direction == "up") {
+            return [-1, 0];
+        } else if (direction == "down") {
+            return [1, 0];
+        } else if (direction == "left") {
+            return [0, -1];
+        } else if (direction == "right") {
+            return [0, 1];
+        } else {
+            console.error("Bad direction: " + direction);
+        }
+    }
+
+    /* Instance methods *******************************************************/
 
     constructor(boardInit) {
         this.playerRow = undefined;
@@ -46,7 +122,6 @@ class Sokoban {
         this.numGoals = 0;
         this.gameOver = false;
         this.initGameState(boardInit);
-        this.drawGame();
     }
 
     initGameState(boardInit) {
@@ -84,39 +159,7 @@ class Sokoban {
                col < this.numCols;
     }
 
-    drawGame() {
 
-        $("img").remove();
-
-        for (var row = 0; row < this.numRows; row++) {
-            for (var col = 0; col < this.numCols; col++) {
-                var cell = this.matrix[row][col];
-
-                var filename = undefined;
-
-                if (cell.player && this.gameOver) {
-                    filename = "player-win.png";
-                } else if (cell.player) {
-                    filename = "player.png";
-                } else if (cell.slider && cell.goal) {
-                    filename = "slider-goal.png";
-                } else if (cell.slider) {
-                    filename = "slider.png";
-                } else if (cell.goal) {
-                    filename = "goal.png";
-                } else if (cell.block) {
-                    filename = "block.png";
-                } else if (this.gameOver) {
-                    filename = "empty-win.png";
-                } else {
-                    filename = "empty.png";
-                }
-
-                var cellId = "#" + getCellId(row, col);
-                $(cellId).append(getImgTag(filename));
-            }
-        }
-    }
 
     checkForVictory() {
         var occupiedGoals = 0;
@@ -132,7 +175,6 @@ class Sokoban {
 
         if (occupiedGoals == this.numGoals) {
             this.gameOver = true;
-            this.drawGame();
         }
     }
 
@@ -143,7 +185,7 @@ class Sokoban {
         }
 
         var [row, col] = [this.playerRow, this.playerCol];
-        var [dr, dc] = drdc(direction);
+        var [dr, dc] = Sokoban.drdc(direction);
         var [newRow, newCol] = [row + dr, col + dc];
 
         if (!this.inBounds(newRow, newCol)) {
@@ -155,7 +197,6 @@ class Sokoban {
             }
         }
 
-        this.drawGame();
         this.checkForVictory();
     }
 
@@ -215,7 +256,7 @@ class Cell {
     // exactly one movable piece (i.e. PLAYER or SLIDER)
     push(dir) {
         if (this.slider || this.player) {
-            var [dr, dc] = drdc(dir);
+            var [dr, dc] = Sokoban.drdc(dir);
             var newRow = this.row + dr;
             var newCol = this.col + dc;
             var newCell = this.sokoban.matrix[newRow][newCol];
@@ -240,7 +281,7 @@ class Cell {
         if (this.block) {
             return false;
         } else if (this.slider || this.player) {
-            var [dr, dc] = drdc(dir);
+            var [dr, dc] = Sokoban.drdc(dir);
             var newRow = this.row + dr;
             var newCol = this.col + dc;
 
@@ -257,39 +298,7 @@ class Cell {
 
 }
 
-
-
-
-
-
-
-function createSokoban(boardId, sokoban) {
-
-    for (var row = 0; row < sokoban.numRows; row++) {
-        var rowId = "row-" + row;
-        var rowTag = "<div id='" + rowId + "' class='row'></div>"
-
-        $(boardId).append(rowTag);
-
-        for (var col = 0; col < sokoban.numCols; col++) {
-            var cellId = getCellId(row, col);
-            var cellTag = "<div id='" + cellId + "' class='cell'></div>";
-            $("#" + rowId).append(cellTag);
-            $("#" + cellId).css("width", CELL_SIZE);
-            $("#" + cellId).css("height", CELL_SIZE);
-
-        }
-    }
-
-    sokoban.drawGame();
-}
-
-
-
-
-
-
-
+/* Global functions ***********************************************************/
 
 function getPlayerMovment(keyCode) {
 
@@ -316,6 +325,7 @@ function keydown(event) {
     event.preventDefault();
 
     SOKOBAN.move(direction);
+    VIZ.drawGame();
 }
 
 document.onkeydown = keydown;
