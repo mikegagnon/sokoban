@@ -251,7 +251,7 @@ VIZ = new Viz("#board", snapshot);
 
 ### Example 3
 
-<img src="snapshot-03.png">
+<img src="snapshot-03.png" width="300px">
 
 ```js
 
