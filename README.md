@@ -138,6 +138,8 @@ class Snapshot {
     constructor(board, gameOver) {
         this.board = board;
         this.gameOver = gameOver;
+        this.numRows = board.length;
+        this.numCols = board[0].length;
     }
 }
 ```
