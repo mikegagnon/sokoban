@@ -253,6 +253,36 @@ VIZ = new Viz("#board", snapshot);
 
 <img src="snapshot-03.png">
 
+```js
+
+// Recall:
+//    EMPTY == 0
+//    BLOCK == 1
+//    SLIDER == 2
+//    PLAYER == 3
+//    GOAL == 4
+//    GOAL_SLIDER == 5
+//    GOAL_PLAYER == 6
+
+var boardInit =  [
+    [5, 0, 1, 1, 1, 1, 1, 0],
+    [1, 1, 1, 0, 0, 0, 1, 0],
+    [1, 4, 3, 2, 0, 0, 1, 0],
+    [1, 1, 1, 0, 2, 4, 1, 0],
+    [1, 4, 1, 1, 2, 0, 1, 0],
+    [1, 0, 1, 0, 4, 0, 1, 1],
+    [1, 2, 0, 0, 2, 2, 4, 1],
+    [1, 0, 0, 0, 4, 0, 0, 1],
+    [1, 1, 1, 1, 1, 1, 1, 1]
+];
+
+var gameOver = false;
+
+var snapshot = new Snapshot(boardInit, gameOver);
+
+VIZ = new Viz("#board", snapshot);
+```
+
 # Part 1. `Sokoban` class
 
 Since `Sokoban` and `Viz` are independent modules, we can implement them in any order.
