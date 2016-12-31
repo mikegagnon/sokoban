@@ -349,7 +349,7 @@ assert(snapshot.numCols == 2);
 # <a name="part2">Part 2. The `Sokoban` class</a>
 
 Since `Sokoban` and `Viz` are independent modules, we can implement them in any order.
-Skip to Part 3 if you feel like it.
+Skip to [The `Viz` class](#part3) if you feel like it.
 
 ## Lecture 3.
 
