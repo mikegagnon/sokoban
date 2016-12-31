@@ -207,6 +207,21 @@ To help understand the exact usage of this class, here are some examples.
 
 ### Example 1
 
+<img src="snapshot-01.png">
+
+```js
+var boardInit =  [
+[1, 1, 1],
+[1, 0, 1],
+[0, 0, 0]
+];
+
+var gameOver = false;
+
+var snapshot = new Snapshot(boardInit, gameOver);
+
+VIZ = new Viz("#board", snapshot);
+```
 
 
 # Part 1. `Sokoban` class
