@@ -291,6 +291,58 @@ var snapshot = new Snapshot(boardInit, gameOver);
 VIZ = new Viz("#board", snapshot);
 ```
 
+### Tests for the `Snapshot` class
+
+```js
+function assert(condition) {
+    if (!condition) {
+        console.error("Test failed");
+        $("html").append("<p style='color: red'>Test failed. See JS console " +
+            "for details.</p>");
+    }
+}
+
+// Snapshot test 1
+var board = [
+    [0, 0, 0],
+    [0, 0, 0],
+    [0, 0, 0],
+];
+var gameOver = false;
+var snapshot = new Snapshot(board, gameOver);
+assert(snapshot.board == board);
+assert(snapshot.gameOver == gameOver);
+assert(snapshot.numRows == 3);
+assert(snapshot.numCols == 3);
+
+// Snapshot test 2
+var board = [
+    [0, 0, 0],
+    [0, 0, 0],
+];
+var gameOver = true;
+var snapshot = new Snapshot(board, gameOver);
+assert(snapshot.board == board);
+assert(snapshot.gameOver == gameOver);
+assert(snapshot.numRows == 2);
+assert(snapshot.numCols == 3);
+
+// Snapshot test 3
+var board = [
+    [0, 0],
+    [0, 0],
+    [0, 0],
+];
+var gameOver = true;
+var snapshot = new Snapshot(board, gameOver);
+assert(snapshot.board == board);
+assert(snapshot.gameOver == gameOver);
+assert(snapshot.numRows == 3);
+assert(snapshot.numCols == 2);
+
+
+```
+
 # Part 1. `Sokoban` class
 
 Since `Sokoban` and `Viz` are independent modules, we can implement them in any order.
