@@ -205,6 +205,8 @@ class Snapshot {
     constructor(board, gameOver) {
         this.board = board;
         this.gameOver = gameOver;
+        this.numRows = board.length;
+        this.numCols = board[0].length;
     }
 }
 ```
@@ -293,6 +295,10 @@ VIZ = new Viz("#board", snapshot);
 
 Since `Sokoban` and `Viz` are independent modules, we can implement them in any order.
 Skip to Part 2 if you feel like it.
+
+## Lecture 3.
+
+Put together an `index.html` file that imports `sokoban.js`. Add the `Snapshot` class and the *pieceId* values to `sokoban.js`.
 
 # Part 2. `Viz` class
 
