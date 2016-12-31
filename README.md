@@ -227,6 +227,27 @@ var snapshot = new Snapshot(boardInit, gameOver);
 VIZ = new Viz("#board", snapshot);
 ```
 
+### Example 2
+
+<img src="snapshot-02.png">
+
+```js
+// Recall:
+//    SLIDER == 2
+//    PLAYER == 3
+
+var boardInit =  [
+    [1, 1, 1],
+    [2, 2, 2],
+    [0, 3, 0]
+];
+
+var gameOver = false;
+
+var snapshot = new Snapshot(boardInit, gameOver);
+
+VIZ = new Viz("#board", snapshot);
+```
 
 # Part 1. `Sokoban` class
 
