@@ -14,7 +14,7 @@ And familiarity with OOP (object-orient programming) in JavaScript.
 
 ## Contents
 
-## Lecture 1. Modular approach
+## Introduction. Modular design
 
 I regret to report that in Lights Out and Thumb wrestling, our code was a jumbled mess of spaghetti code.
 
@@ -156,6 +156,9 @@ For example, you could implement `Sokoban` before implementing `Viz`. Then, you
 could forget all the complexities of how `Sokoban` is implemented, and
 code `Viz`, since `Viz` and `Sokoban` interact over a thin interface.
 
+Forgetting code is nice, because it's impossible to remember
+all the code in a large enough system.
+
 #### Refactoring modules
 
 Refactoring essentially means reimplementing. Imagine
@@ -168,5 +171,49 @@ and you would have to refactor the whole thing.
 
 #### And more...
 
-See these articles on [Module Design](https://en.wikipedia.org/wiki/Modular_design) and [Object Oriented Programming](https://www.cs.drexel.edu/~introcs/Fa15/notes/06.1_OOP/Advantages.html?CurrentSlide=3).
+...
 
+## `Snapshot` class
+
+Recall from the Introduction, `snapshot` objects are defined by the `Snapshot` class:
+
+```js
+// pieceId values
+var EMPTY = 0;
+var BLOCK = 1;
+var SLIDER = 2;
+var PLAYER = 3;
+var GOAL = 4;
+var GOAL_SLIDER = 5;
+var GOAL_PLAYER = 6;
+
+/* Snapshot class *************************************************************/
+class Snapshot {
+
+    // The board argument is a 2-dimensional matrix describing board state.
+    // Each item in the matrix is a pieceId. Namely, either EMPTY, BLOCK,
+    // SLIDER, PLAYER, GOAL, GOAL_SLIDER, GOAL_PLAYER.
+    //
+    // The gameOver argument is a boolen that is true iff the player has solved
+    // the puzzle.
+    constructor(board, gameOver) {
+        this.board = board;
+        this.gameOver = gameOver;
+    }
+}
+```
+
+To help understand the exact usage of this class, here are some examples.
+
+### Example 1
+
+
+
+# Part 1. `Sokoban` class
+
+Since `Sokoban` and `Viz` are independent modules, we can implement them in any order.
+Skip to Part 2 if you feel like it.
+
+# Part 2. `Viz` class
+
+# Part 3. Putting it all together
