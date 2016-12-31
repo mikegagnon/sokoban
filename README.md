@@ -249,6 +249,10 @@ var snapshot = new Snapshot(boardInit, gameOver);
 VIZ = new Viz("#board", snapshot);
 ```
 
+### Example 3
+
+<img src="snapshot-03.png">
+
 # Part 1. `Sokoban` class
 
 Since `Sokoban` and `Viz` are independent modules, we can implement them in any order.
