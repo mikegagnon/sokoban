@@ -171,5 +171,3 @@ and you would have to refactor the whole thing.
 
 #### And more...
 
-See these articles on [Module Design](https://en.wikipedia.org/wiki/Modular_design) and [Object Oriented Programming](https://www.cs.drexel.edu/~introcs/Fa15/notes/06.1_OOP/Advantages.html?CurrentSlide=3).
-
