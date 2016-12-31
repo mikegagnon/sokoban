@@ -14,7 +14,9 @@ And familiarity with OOP (object-orient programming) in JavaScript.
 
 ## Contents
 
-## Introduction. Modular design
+# Part 1. Introduction & Setup
+
+## Lecture 1. Modular design
 
 I regret to report that in Lights Out and Thumb wrestling, our code was a jumbled mess of spaghetti code.
 
@@ -173,7 +175,7 @@ and you would have to refactor the whole thing.
 
 ...
 
-## `Snapshot` class
+## Lecture 2. `Snapshot` class
 
 Recall from the Introduction, `snapshot` objects are defined by the `Snapshot` class:
 
