@@ -27,9 +27,46 @@ class Snapshot {
     // the puzzle.
     constructor(board, gameOver) {
         this.board = board;
+        this.gameOver = gameOver;
         this.numRows = board.length;
         this.numCols = board[0].length;
-        this.gameOver = gameOver;
     }
 }
+
+/* Snapshot tests *************************************************************/
+var board = [
+    [0, 0, 0],
+    [0, 0, 0],
+    [0, 0, 0],
+];
+var gameOver = false;
+var snapshot = new Snapshot(board, gameOver);
+assert(snapshot.board == board);
+assert(snapshot.gameOver == gameOver);
+assert(snapshot.numRows == 3);
+assert(snapshot.numCols == 3);
+
+
+var board = [
+    [0, 0, 0],
+    [0, 0, 0],
+];
+var gameOver = true;
+var snapshot = new Snapshot(board, gameOver);
+assert(snapshot.board == board);
+assert(snapshot.gameOver == gameOver);
+assert(snapshot.numRows == 2);
+assert(snapshot.numCols == 3);
+
+var board = [
+    [0, 0],
+    [0, 0],
+    [0, 0],
+];
+var gameOver = true;
+var snapshot = new Snapshot(board, gameOver);
+assert(snapshot.board == board);
+assert(snapshot.gameOver == gameOver);
+assert(snapshot.numRows == 3);
+assert(snapshot.numCols == 2);
 
