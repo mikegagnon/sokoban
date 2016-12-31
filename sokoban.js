@@ -148,8 +148,8 @@ class Sokoban {
         this.playerRow = undefined;
         this.playerCol = undefined;
         this.matrix = undefined;
-        this.numRows = undefined;
-        this.numCols = undefined;
+        this.numRows = snapshot.numRows;
+        this.numCols = snapshot.numCols;
         this.numGoals = 0;
         this.gameOver = snapshot.gameOver;
         this.initGameState(snapshot);
@@ -168,9 +168,6 @@ class Sokoban {
 
     // TODO: handle new piece codes
     initGameState(snapshot) {
-
-        this.numRows = snapshot.numRows;
-        this.numCols = boardInit[0].length;
         this.matrix = this.newMatrix();
 
         for (var row = 0; row < this.numRows; row++) {
