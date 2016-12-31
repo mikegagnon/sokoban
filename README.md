@@ -362,9 +362,58 @@ assert(snapshot.numCols == 2);
 Since `Sokoban` and `Viz` are independent modules, we can implement them in any order.
 Skip to [The `Viz` class](#part3) if you feel like it.
 
-## Lecture 3.
+## Section 1. Lecture: Empty squares and player
 
-Put together an `index.html` file that imports `sokoban.js`. Add the `Snapshot` class and the *pieceId* values to `sokoban.js`.
+- Put together an `index.html` file that imports `sokoban.js`.
+- Add the `Snapshot` class and the *pieceId* values to `sokoban.js`.
+- Add the shell for the `Sokoban` class.
+
+### `sokoban.js`
+
+```js
+// pieceId values
+var EMPTY = 0;
+var BLOCK = 1;
+var SLIDER = 2;
+var PLAYER = 3;
+var GOAL = 4;
+var GOAL_SLIDER = 5;
+var GOAL_PLAYER = 6;
+
+/* Snapshot class *************************************************************/
+class Snapshot {
+
+    // The board argument is a 2-dimensional matrix describing board state.
+    // Each item in the matrix is a pieceId. Namely, either EMPTY, BLOCK,
+    // SLIDER, PLAYER, GOAL, GOAL_SLIDER, GOAL_PLAYER.
+    //
+    // The gameOver argument is a boolen that is true iff the player has solved
+    // the puzzle.
+    constructor(board, gameOver) {
+        this.board = board;
+        this.gameOver = gameOver;
+        this.numRows = board.length;
+        this.numCols = board[0].length;
+    }
+}
+
+/* Sokoban class **************************************************************/
+class Sokoban {
+
+    // The snapshot argument defines the initial gamestate
+    constructor(snapshot) {
+        // To be implemented...
+    }
+
+    // Moves the player in the specified direction. direction must be either:
+    // "up", "down", "left", or "right"
+    // Returns a snapshot object that defines the game state after the player is moved
+    move(direction) {
+        // To be implemented...
+    }
+}
+
+```
 
 # <a name="part3">Part 3. The `Viz` class</a>
 
