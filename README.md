@@ -417,6 +417,14 @@ class Sokoban {
 
 ```
 
+### Getting started
+
+To get started, let's implement `move(..)`, but only for the case where:
+
+- The player's movement stays in bounds
+- The incoming `snapshot` contains only `EMPTY` squares and one `PLAYER`
+
+
 # <a name="part3">Part 3. The `Viz` class</a>
 
 # <a name="part4">Part 4. Putting it all together</a>
