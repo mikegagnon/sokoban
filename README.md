@@ -364,7 +364,7 @@ assert(snapshot.numCols == 2);
 Since `Sokoban` and `Viz` are independent modules, we can implement them in any order.
 Skip to [The `Viz` class](#part3) if you feel like it.
 
-## Section 1. Lecture: Empty squares and player
+## Section 1. Challenge: Empty squares and player
 
 - Put together an `index.html` file that imports `sokoban.js`.
 - Add the `Snapshot` class and the *pieceId* values to `sokoban.js`.
