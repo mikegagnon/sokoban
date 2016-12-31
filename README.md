@@ -346,7 +346,7 @@ assert(snapshot.numCols == 2);
 
 ```
 
-# Part 2. The `Sokoban` class
+# <a name="part2">Part 2. The `Sokoban` class</a>
 
 Since `Sokoban` and `Viz` are independent modules, we can implement them in any order.
 Skip to Part 3 if you feel like it.
@@ -355,6 +355,6 @@ Skip to Part 3 if you feel like it.
 
 Put together an `index.html` file that imports `sokoban.js`. Add the `Snapshot` class and the *pieceId* values to `sokoban.js`.
 
-# Part 3. The `Viz` class
+# <a name="part3">Part 3. The `Viz` class</a>
 
-# Part 4. Putting it all together
+# <a name="part4">Part 4. Putting it all together</a>
