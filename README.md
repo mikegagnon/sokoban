@@ -210,10 +210,14 @@ To help understand the exact usage of this class, here are some examples.
 <img src="snapshot-01.png">
 
 ```js
+// Recall:
+//    EMPTY == 0
+//    BLOCK == 1
+
 var boardInit =  [
-[1, 1, 1],
-[1, 0, 1],
-[0, 0, 0]
+   [1, 1, 1],
+   [1, 0, 1],
+   [0, 0, 0]
 ];
 
 var gameOver = false;
