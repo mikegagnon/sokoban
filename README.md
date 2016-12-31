@@ -14,7 +14,7 @@ And familiarity with OOP (object-orient programming) in JavaScript.
 
 ## Contents
 
-## Lecture 1. Modular design
+## Introduction. Modular design
 
 I regret to report that in Lights Out and Thumb wrestling, our code was a jumbled mess of spaghetti code.
 
@@ -172,3 +172,12 @@ and you would have to refactor the whole thing.
 #### And more...
 
 ...
+
+# Part 1. `Sokoban` class
+
+Since `Sokoban` and `Viz` are independent modules, we can implement them in any order.
+Skip to Part 2 if you feel like it.
+
+# Part 2. `Viz` class
+
+# Part 3. Putting it all together
