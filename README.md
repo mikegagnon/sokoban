@@ -14,9 +14,12 @@ And familiarity with OOP (object-orient programming) in JavaScript.
 
 ## Contents
 
-- Part 1. Introduction & Setup
+- [Part 1. Introduction & Setup](#part1)
     - [Lecture 1. Modular design](#lec1)
     - [Lecture 2. The `Snapshot` class](#lec2)
+- [Part 2. The `Sokoban` class](#part2)
+- [Part 3. The `Viz` class](#part3)
+- [Part 4. Putting it all together](#part4)
 
 # Part 1. Introduction & Setup
 
@@ -343,15 +346,15 @@ assert(snapshot.numCols == 2);
 
 ```
 
-# Part 1. `Sokoban` class
+# Part 2. The `Sokoban` class
 
 Since `Sokoban` and `Viz` are independent modules, we can implement them in any order.
-Skip to Part 2 if you feel like it.
+Skip to Part 3 if you feel like it.
 
 ## Lecture 3.
 
 Put together an `index.html` file that imports `sokoban.js`. Add the `Snapshot` class and the *pieceId* values to `sokoban.js`.
 
-# Part 2. `Viz` class
+# Part 3. The `Viz` class
 
-# Part 3. Putting it all together
+# Part 4. Putting it all together
