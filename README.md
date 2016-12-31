@@ -14,9 +14,13 @@ And familiarity with OOP (object-orient programming) in JavaScript.
 
 ## Contents
 
+- Part 1. Introduction & Setup
+    - [Lecture 1. Modular design](#lec1)
+    - [Lecture 2. `Snapshot` class](#lec2)
+
 # Part 1. Introduction & Setup
 
-## Lecture 1. Modular design
+## <a name="lec1">Lecture 1. Modular design</a>
 
 I regret to report that in Lights Out and Thumb wrestling, our code was a jumbled mess of spaghetti code.
 
@@ -175,7 +179,7 @@ and you would have to refactor the whole thing.
 
 ...
 
-## Lecture 2. `Snapshot` class
+## <a name="lec2">Lecture 2. `Snapshot` class</a>
 
 Recall from the Introduction, `snapshot` objects are defined by the `Snapshot` class:
 
