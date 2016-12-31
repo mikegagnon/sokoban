@@ -77,7 +77,8 @@ class Sokoban {
     // The snapshot argument defines the initial gamestate
     constructor(snapshot) {...}
     
-    // Moves the player in the specified direction.
+    // Moves the player in the specified direction. direction must be either:
+    // "up", "down", "left", or "right"
     // Returns a snapshot object that defines the game state after the player is moved
     move(direction) {...}
 }
