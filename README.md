@@ -178,9 +178,19 @@ without touching any other module.
 Without modular design, you would have a bunch of spaghetti code
 and you would have to refactor the whole thing.
 
-#### And more...
+#### And more
 
 ...
+
+### Art
+
+Modular design is more of an art than a science. It takes lots of experience to be able to design good interfaces.
+
+When I worked at Twitter, at the beginning of a project our team would get together and brainstorm.
+Then the senior engineer on the team would declare what modules we would build and the interfaces 
+between these modules. Then we'd adjourn the meeting, and all the junior engineers would 
+implement the modules in parallel, over a period of about a month, and we'd stitch the modules
+together as we finished each module.
 
 ## <a name="lec2">Lecture 2. The `Snapshot` class</a>
 
