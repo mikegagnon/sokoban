@@ -173,7 +173,7 @@ function snapshots_equal(snapshot1, snapshot2) {
 
 /* Only in bounds. Only empty squares and player ******************************/
 
-// Test move up
+// Init sokoban
 var board = [
     [0, 0],
     [0, 3],
@@ -181,18 +181,46 @@ var board = [
 ];
 
 var snapshot_init = new Snapshot(board, false);
-
 var sokoban = new Sokoban(snapshot_init);
 
-var snapshot_result = sokoban.move("up");
 
+// Test move up
+var snapshot_result = sokoban.move("up");
 var board_expected = [
     [0, 3],
     [0, 0],
     [0, 0],
 ];
-
 var snapshot_expected = new Snapshot(board_expected, false);
+assert(snapshots_equal(snapshot_result, snapshot_expected));
 
+// Test move down
+var snapshot_result = sokoban.move("down");
+var board_expected = [
+    [0, 0],
+    [0, 3],
+    [0, 0],
+];
+var snapshot_expected = new Snapshot(board_expected, false);
+assert(snapshots_equal(snapshot_result, snapshot_expected));
+
+// Test move left
+var snapshot_result = sokoban.move("left");
+var board_expected = [
+    [0, 0],
+    [3, 0],
+    [0, 0],
+];
+var snapshot_expected = new Snapshot(board_expected, false);
+assert(snapshots_equal(snapshot_result, snapshot_expected));
+
+// Test move right
+var snapshot_result = sokoban.move("right");
+var board_expected = [
+    [0, 0],
+    [0, 3],
+    [0, 0],
+];
+var snapshot_expected = new Snapshot(board_expected, false);
 assert(snapshots_equal(snapshot_result, snapshot_expected));
 
