@@ -535,6 +535,8 @@ assert(snapshots_equal(snapshot_result, snapshot_expected));
 ### Challenge: implement `move(...)` such that the four tests pass
 
 - [Hint 1](#hint2-1-1)
+- [Hint 2](#hint2-1-2)
+- [Hint 3](#hint2-1-3)
 
 # <a name="part3">Part 3. The `Viz` class</a>
 
