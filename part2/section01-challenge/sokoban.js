@@ -126,6 +126,15 @@ assert(snapshot.numCols == 2);
 /* sokoban.move tests *********************************************************/
 /******************************************************************************/
 
+// Returns true iff the two snapshots are identical
+function snapshots_equal(snapshot1, snapshot2) {
+    return matrices_equal(snapshot1.board, snapshot2.board) &&
+        snapshot1.gameOver == snapshot2.gameOver &&
+        snapshot1.numRows == snapshot2.numRows &&
+        snapshot1.numCols == snapshot2.numCols;
+}
+
+// Returns true iff matrix1 and matrix2 have the same dimensions and values
 function matrices_equal(matrix1, matrix2) {
 
     var numRows1 = matrix1.length;
@@ -149,14 +158,7 @@ function matrices_equal(matrix1, matrix2) {
     return true;
 }
 
-function snapshots_equal(snapshot1, snapshot2) {
-    return matrices_equal(snapshot1.board, snapshot2.board) &&
-        snapshot1.gameOver == snapshot2.gameOver &&
-        snapshot1.numRows == snapshot2.numRows &&
-        snapshot1.numCols == snapshot2.numCols;
-}
-
-/* Only in bounds. Only empty squares and player ******************************/
+/* Test case: only in bounds. Only empty squares and player *******************/
 
 // Init sokoban
 var board = [
@@ -180,17 +182,17 @@ var snapshot_expected = new Snapshot(board_expected, false);
 assert(snapshots_equal(snapshot_result, snapshot_expected));
 
 // Test move down
-var snapshot_result = sokoban.move("down");
+var snapshot_result = sokoban.move("left");
 var board_expected = [
+    [3, 0],
     [0, 0],
-    [0, 3],
     [0, 0],
 ];
 var snapshot_expected = new Snapshot(board_expected, false);
 assert(snapshots_equal(snapshot_result, snapshot_expected));
 
 // Test move left
-var snapshot_result = sokoban.move("left");
+var snapshot_result = sokoban.move("down");
 var board_expected = [
     [0, 0],
     [3, 0],
