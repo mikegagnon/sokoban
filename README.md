@@ -561,8 +561,8 @@ The two-way mapping between *L* and *M* is an "isomorphism between *L* and *M*."
 
 ### Definition of "isomorphism"
 
-An isomorphism is a class that relates two datatypes, say *A* and *B*. Every isomorphism
-class has two static functions: `atob(...)` and `btoa(...)`.
+In JavaScript, an isomorphism is a class that relates two datatypes, say *A* and *B*. Every isomorphism
+class has two static functions: `toB(...)` and `toA(...)`.
 
 ```js
 class IsoAB {
