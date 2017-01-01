@@ -18,7 +18,7 @@ And familiarity with OOP (object-orient programming) in JavaScript.
     - [Lecture 1.1 Modular design](#lec1-1)
     - [Lecture 1.2 The `Snapshot` class](#lec1-2)
 - [Part 2. The `Sokoban` class](#part2)
-    - [Challenge 2.1 `move(...)`, for player among empty squares](#c2-1)
+    - [Challenge 2.1 A player among empty squares](#c2-1)
 - [Part 3. The `Viz` class](#part3)
 - [Part 4. Putting it all together](#part4)
 
@@ -365,7 +365,7 @@ assert(snapshot.numCols == 2);
 Since `Sokoban` and `Viz` are independent modules, we can implement them in any order.
 Skip to [The `Viz` class](#part3) if you feel like it.
 
-## <a name="c2-1">Challenge 2.1 `move(...)`, for player among empty squares</a>
+## Template for project
 
 First:
 
@@ -419,6 +419,9 @@ class Sokoban {
 }
 
 ```
+
+
+## <a name="c2-1">Challenge 2.1 A player among empty squares</a>
 
 ### Partial implementation of `Sokoban`
 
