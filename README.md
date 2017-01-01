@@ -14,7 +14,17 @@ And familiarity with OOP (object-orient programming) in JavaScript.
 
 ## Contents
 
-## Introduction. Modular design
+- [Part 1. Introduction & Setup](#part1)
+    - [Lecture 1.1 Modular design](#lec1-1)
+    - [Lecture 1.2 The `Snapshot` class](#lec1-2)
+- [Part 2. The `Sokoban` class](#part2)
+    - [Challenge 2.1 A player among empty squares](#c2-1)
+- [Part 3. The `Viz` class](#part3)
+- [Part 4. Putting it all together](#part4)
+
+# Part 1. Introduction & Setup
+
+## <a name="lec1-1">Lecture 1.1 Modular design</a>
 
 I regret to report that in Lights Out and Thumb wrestling, our code was a jumbled mess of spaghetti code.
 
@@ -68,7 +78,8 @@ class Sokoban {
     // The snapshot argument defines the initial gamestate
     constructor(snapshot) {...}
     
-    // Moves the player in the specified direction.
+    // Moves the player in the specified direction. direction must be either:
+    // "up", "down", "left", or "right"
     // Returns a snapshot object that defines the game state after the player is moved
     move(direction) {...}
 }
@@ -128,6 +139,8 @@ class Snapshot {
     constructor(board, gameOver) {
         this.board = board;
         this.gameOver = gameOver;
+        this.numRows = board.length;
+        this.numCols = board[0].length;
     }
 }
 ```
@@ -169,11 +182,21 @@ without touching any other module.
 Without modular design, you would have a bunch of spaghetti code
 and you would have to refactor the whole thing.
 
-#### And more...
+#### And more
 
 ...
 
-## `Snapshot` class
+### Art
+
+Modular design is more of an art than a science. It takes lots of experience to be able to design good interfaces.
+
+When I worked at Twitter, at the beginning of a project our team would get together and brainstorm.
+Then the senior engineer on the team would declare what modules we would build and the interfaces 
+between these modules. Then we'd adjourn the meeting, and all the junior engineers would 
+implement the modules in parallel, over a period of about a month, and we'd stitch the modules
+together as we finished each module.
+
+## <a name="lec1-2">Lecture 1.2 The `Snapshot` class</a>
 
 Recall from the Introduction, `snapshot` objects are defined by the `Snapshot` class:
 
@@ -199,6 +222,8 @@ class Snapshot {
     constructor(board, gameOver) {
         this.board = board;
         this.gameOver = gameOver;
+        this.numRows = board.length;
+        this.numCols = board[0].length;
     }
 }
 ```
@@ -251,13 +276,463 @@ VIZ = new Viz("#board", snapshot);
 
 ### Example 3
 
-<img src="snapshot-03.png">
+<img src="snapshot-03.png" width="300px">
 
-# Part 1. `Sokoban` class
+```js
+
+// Recall:
+//    EMPTY == 0
+//    BLOCK == 1
+//    SLIDER == 2
+//    PLAYER == 3
+//    GOAL == 4
+//    GOAL_SLIDER == 5
+//    GOAL_PLAYER == 6
+
+var boardInit =  [
+    [5, 0, 1, 1, 1, 1, 1, 0],
+    [1, 1, 1, 0, 0, 0, 1, 0],
+    [1, 4, 3, 2, 0, 0, 1, 0],
+    [1, 1, 1, 0, 2, 4, 1, 0],
+    [1, 4, 1, 1, 2, 0, 1, 0],
+    [1, 0, 1, 0, 4, 0, 1, 1],
+    [1, 2, 0, 0, 2, 2, 4, 1],
+    [1, 0, 0, 0, 4, 0, 0, 1],
+    [1, 1, 1, 1, 1, 1, 1, 1]
+];
+
+var gameOver = false;
+
+var snapshot = new Snapshot(boardInit, gameOver);
+
+VIZ = new Viz("#board", snapshot);
+```
+
+### Tests for the `Snapshot` class
+
+```js
+function assert(condition) {
+    if (!condition) {
+        console.error("Test failed");
+        $("html").append("<p style='color: red'>Test failed. See JS console " +
+            "for details.</p>");
+    }
+}
+
+// Snapshot test 1
+var board = [
+    [0, 0, 0],
+    [0, 0, 0],
+    [0, 0, 0],
+];
+var gameOver = false;
+var snapshot = new Snapshot(board, gameOver);
+assert(snapshot.board == board);
+assert(snapshot.gameOver == gameOver);
+assert(snapshot.numRows == 3);
+assert(snapshot.numCols == 3);
+
+// Snapshot test 2
+var board = [
+    [0, 0, 0],
+    [0, 0, 0],
+];
+var gameOver = true;
+var snapshot = new Snapshot(board, gameOver);
+assert(snapshot.board == board);
+assert(snapshot.gameOver == gameOver);
+assert(snapshot.numRows == 2);
+assert(snapshot.numCols == 3);
+
+// Snapshot test 3
+var board = [
+    [0, 0],
+    [0, 0],
+    [0, 0],
+];
+var gameOver = true;
+var snapshot = new Snapshot(board, gameOver);
+assert(snapshot.board == board);
+assert(snapshot.gameOver == gameOver);
+assert(snapshot.numRows == 3);
+assert(snapshot.numCols == 2);
+
+
+```
+
+# <a name="part2">Part 2. The `Sokoban` class</a>
 
 Since `Sokoban` and `Viz` are independent modules, we can implement them in any order.
-Skip to Part 2 if you feel like it.
+Skip to [The `Viz` class](#part3) if you feel like it.
 
-# Part 2. `Viz` class
+## Template for project
 
-# Part 3. Putting it all together
+First:
+
+- Put together an `index.html` file that imports `sokoban.js`.
+- Add the `Snapshot` class and the *pieceId* values to `sokoban.js`.
+- Add the shell for the `Sokoban` class.
+
+### `sokoban.js`
+
+```js
+// pieceId values
+var EMPTY = 0;
+var BLOCK = 1;
+var SLIDER = 2;
+var PLAYER = 3;
+var GOAL = 4;
+var GOAL_SLIDER = 5;
+var GOAL_PLAYER = 6;
+
+/* Snapshot class *************************************************************/
+class Snapshot {
+
+    // The board argument is a 2-dimensional matrix describing board state.
+    // Each item in the matrix is a pieceId. Namely, either EMPTY, BLOCK,
+    // SLIDER, PLAYER, GOAL, GOAL_SLIDER, GOAL_PLAYER.
+    //
+    // The gameOver argument is a boolen that is true iff the player has solved
+    // the puzzle.
+    constructor(board, gameOver) {
+        this.board = board;
+        this.gameOver = gameOver;
+        this.numRows = board.length;
+        this.numCols = board[0].length;
+    }
+}
+
+/* Sokoban class **************************************************************/
+class Sokoban {
+
+    // The snapshot argument defines the initial gamestate
+    constructor(snapshot) {
+        // To be implemented...
+    }
+
+    // Moves the player in the specified direction. direction must be either:
+    // "up", "down", "left", or "right"
+    // Returns a snapshot object that defines the game state after the player is moved
+    move(direction) {
+        // To be implemented...
+    }
+}
+
+```
+
+
+## <a name="c2-1">Challenge 2.1 A player among empty squares</a>
+
+We will implement `move(...)`, but only for the case where:
+
+- The player's movement stays in bounds
+- The incoming `snapshot` contains only `EMPTY` cells and one `PLAYER` cell
+
+### Write tests first
+
+In divergence from previous projects, we will write our tests first, and our code second.
+
+Before writing our tests we implement a helper function `snapshots_equal(...)`
+that compares two snapshots and returns true iff the snapshots are identical. The helper function
+`snapshots_equal(...)` depends on another helper method `matrices_equal(...)` that checks
+two matrices for equality.
+
+```js
+// Returns true iff the two snapshots are identical
+function snapshots_equal(snapshot1, snapshot2) {
+    return matrices_equal(snapshot1.board, snapshot2.board) &&
+        snapshot1.gameOver == snapshot2.gameOver &&
+        snapshot1.numRows == snapshot2.numRows &&
+        snapshot1.numCols == snapshot2.numCols;
+}
+
+// Returns true iff matrix1 and matrix2 have the same dimensions and values
+function matrices_equal(matrix1, matrix2) {
+
+    var numRows1 = matrix1.length;
+    var numCols1 = matrix1[0].length;
+
+    var numRows2 = matrix2.length;
+    var numCols2 = matrix2[0].length;
+
+    if (numRows1 != numRows2 || numCols1 != numCols2) {
+        return false;
+    }
+
+    for (var row = 0; row < numRows1; row++) {
+        for (var col = 0; col < numCols1; col++) {
+            if (matrix1[row][col] != matrix2[row][col]) {
+                return false;
+            }
+        }
+    }
+
+    return true;
+}
+```
+
+Having implemented `snapshots_equal(...)`, we next write
+four tests for the `Sokoban(...)` class: one for each direction (up, down, left, right).
+
+```js
+
+/* Test case: only in bounds. Only empty squares and player *******************/
+
+// Init sokoban
+var board = [
+    [0, 0],
+    [0, 3],
+    [0, 0],
+];
+
+var snapshot_init = new Snapshot(board, false);
+var sokoban = new Sokoban(snapshot_init);
+
+
+// Test move up
+var snapshot_result = sokoban.move("up");
+var board_expected = [
+    [0, 3],
+    [0, 0],
+    [0, 0],
+];
+var snapshot_expected = new Snapshot(board_expected, false);
+assert(snapshots_equal(snapshot_result, snapshot_expected));
+
+// Test move left
+var snapshot_result = sokoban.move("left");
+var board_expected = [
+    [3, 0],
+    [0, 0],
+    [0, 0],
+];
+var snapshot_expected = new Snapshot(board_expected, false);
+assert(snapshots_equal(snapshot_result, snapshot_expected));
+
+// Test move down
+var snapshot_result = sokoban.move("down");
+var board_expected = [
+    [0, 0],
+    [3, 0],
+    [0, 0],
+];
+var snapshot_expected = new Snapshot(board_expected, false);
+assert(snapshots_equal(snapshot_result, snapshot_expected));
+
+// Test move right
+var snapshot_result = sokoban.move("right");
+var board_expected = [
+    [0, 0],
+    [0, 3],
+    [0, 0],
+];
+var snapshot_expected = new Snapshot(board_expected, false);
+assert(snapshots_equal(snapshot_result, snapshot_expected));
+
+
+```
+
+### Challenge: implement `move(...)` such that the four tests pass
+
+- [Hint 1](#hint2-1-1)
+- [Hint 2](#hint2-1-2)
+- [Hint 3](#hint2-1-3)
+- [Hint 4](#hint2-1-4)
+- [Hint 5](#hint2-1-5)
+- [Hint 6](#hint2-1-6)
+- [Solution](#solution2-1)
+
+# <a name="part3">Part 3. The `Viz` class</a>
+
+# <a name="part4">Part 4. Putting it all together</a>
+
+
+# Hints
+
+<br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
+
+## <a name="hint2-1-1">Hint 1 for Challenge 2.1</a>
+
+Implement a method in the Sokoban class called `findPlayer()` that returns
+the row and column of the player in a `snapshot`.
+
+[Back to challenge](#c2-1)
+
+<br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
+
+## <a name="hint2-1-2">Hint 2 for Challenge 2.1</a>
+
+The `findPlayer()` function should iterate over every cell in the `snapshot` (using `for` loops)
+until it finds the player.
+
+[Back to challenge](#c2-1)
+
+
+<br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
+
+## <a name="hint2-1-3">Hint 3 for Challenge 2.1</a>
+
+Here is a `static` implementation of `findPlayer()`:
+
+```js
+class Sokoban {
+    
+    ...
+
+    static findPlayer(snapshot) {
+        for (var row = 0; row < snapshot.numRows; row++) {
+            for (var col = 0; col < snapshot.numCols; col++) {
+                var pieceId = snapshot.board[row][col];
+                if (pieceId == PLAYER) {
+                    return [row, col];
+                }
+            }
+        }
+
+        // If there is no player
+        assert(false);
+    }
+}
+```
+
+[Back to challenge](#c2-1)
+
+<br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
+
+## <a name="hint2-1-4">Hint 4 for Challenge 2.1</a>
+
+Implement the `Sokoban` `constructor` as so:
+
+```js
+class Sokoban {
+
+    ...
+    
+    constructor(snapshot) {
+        this.snapshot = snapshot;
+        var [row, col] = Sokoban.findPlayer(snapshot);
+        this.playerRow = row;
+        this.playerCol = col;
+    }
+    
+    ...
+}
+```
+
+[Back to challenge](#c2-1)
+
+<br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
+
+## <a name="hint2-1-5">Hint 5 for Challenge 2.1</a>
+
+The `move(...)` function needs to perform the following operations:
+
+1. On the board, set the old position of the player to EMPTY
+2. Compute the new position of the player
+3. On the board, set the new position of the player to PLAYER
+4. Return the snapshot
+
+
+[Back to challenge](#c2-1)
+
+<br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
+
+## <a name="hint2-1-6">Hint 6 for Challenge 2.1</a>
+
+Implement the `Sokoban` `move(...)` method as so:
+
+```js
+class Sokoban {
+
+    ...
+
+    // Moves the player in the specified direction. direction must be either:
+    // "up", "down", "left", or "right"
+    // Returns a snapshot object that defines the game state after the player is moved
+    move(direction) {
+
+        this.snapshot.board[this.playerRow][this.playerCol] = EMPTY;
+
+        if (direction == "up") {
+            this.playerRow -= 1;
+        } else if (direction == "down") {
+            this.playerRow += 1;
+        } else if (direction == "left") {
+            this.playerCol -= 1;
+        } else if (direction == "right") {
+            this.playerCol += 1;
+        } else {
+            assert(false);
+        }
+
+        this.snapshot.board[this.playerRow][this.playerCol] = PLAYER;
+
+        return this.snapshot;
+    }
+}
+```
+
+
+[Back to challenge](#c2-1)
+
+<br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
+
+## <a name="solution2-1">Solution for Challenge 2.1</a>
+
+```js
+/* Sokoban class **************************************************************/
+class Sokoban {
+
+    /* Static functions *******************************************************/
+    static findPlayer(snapshot) {
+        for (var row = 0; row < snapshot.numRows; row++) {
+            for (var col = 0; col < snapshot.numCols; col++) {
+                var pieceId = snapshot.board[row][col];
+                if (pieceId == PLAYER) {
+                    return [row, col];
+                }
+            }
+        }
+
+        // If there is no player
+        assert(false);
+    }
+
+    /* Instance methods *******************************************************/
+
+    // The snapshot argument defines the initial gamestate
+    constructor(snapshot) {
+        this.snapshot = snapshot;
+        var [row, col] = Sokoban.findPlayer(snapshot);
+        this.playerRow = row;
+        this.playerCol = col;
+    }
+
+    // Moves the player in the specified direction. direction must be either:
+    // "up", "down", "left", or "right"
+    // Returns a snapshot object that defines the game state after the player is moved
+    move(direction) {
+
+        this.snapshot.board[this.playerRow][this.playerCol] = EMPTY;
+
+        if (direction == "up") {
+            this.playerRow -= 1;
+        } else if (direction == "down") {
+            this.playerRow += 1;
+        } else if (direction == "left") {
+            this.playerCol -= 1;
+        } else if (direction == "right") {
+            this.playerCol += 1;
+        } else {
+            assert(false);
+        }
+
+        this.snapshot.board[this.playerRow][this.playerCol] = PLAYER;
+
+        return this.snapshot;
+    }
+}
+```
+
+
+[Back to challenge](#c2-1)
