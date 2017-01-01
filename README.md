@@ -556,6 +556,14 @@ In this challenge we refactor the `Sokoban` class for two reasons:
 Recall from [Challenge 2.1](#c2-1), the `move(...)` function directly operated on the 
 `snapshot.matrix` datastructure.
 
+In this challenge, we will define a new data structure, called `Board` that is
+analagous to the `Snapshot` class. Like `Snapshot`, the `Board` data structure :
+
+- Holds a `matrix` that represents the layout of the pieces
+- Holds `numRows` and `numCols`
+
+Unlike `Snapshot`, the `Board` `matrix` doesn't hold `pieceId` values. Rather, the `Board` `matrix`
+stores `Cell` objects.
 
 
    
