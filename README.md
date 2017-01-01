@@ -577,10 +577,10 @@ class has two static functions: `atob(...)` and `btoa(...)`.
 class IsoAB {
 
     // converts an instance of datatype A to an instance of datatype B
-    static atob(a) {...}
+    static toB(a) {...}
     
     // converts an instance of datatype B to an instance of datatype A
-    static btoa(b) {...}
+    static toA(b) {...}
 }
 ```
 
@@ -595,7 +595,7 @@ For every element `b` of `B`: `atob(btoa(b))` must equal `b`.
 ```js
 class IsoLetterMorse {
 
-    static letterToMorse(letter) {
+    static toMorse(letter) {
         if (letter == "a") {
             return ".-";
         } else if (letter == "b") {
@@ -604,7 +604,7 @@ class IsoLetterMorse {
             ...
     }
     
-    static morseToLetter(morse) {
+    static toLetter(morse) {
         if (morse == ".-") {
             return "a";
         } else if (morse == "-...") {
@@ -616,11 +616,17 @@ class IsoLetterMorse {
 ```
 
 
+### Overview of our refactor
 
-### Overview of refactor
+We will implement a `Board` class that is isomorphic with the `Snapshot` class.
 
-Recall from [Challenge 2.1](#c2-1), the `move(...)` function directly operated on the 
-`snapshot.matrix` datastructure.
+Then  we will implement an isomorphism, `IsoSnapshotBoard`, so that 
+`Snapshot` objects can be converted to `Board` objects, and vice versa.
+
+The reason we implement the `Board` class is because the `Sokoban` class
+can store gamestate 
+
+The `Board` class is like the `Snapshot`
 
 #### `Board` class
 
