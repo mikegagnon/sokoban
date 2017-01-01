@@ -428,7 +428,7 @@ We will implement `move(...)`, but only for the case where:
 - The player's movement stays in bounds
 - The incoming `snapshot` contains only `EMPTY` cells and one `PLAYER` cell
 
-#### Write tests first
+### Write tests first
 
 In divergence from previous projects, we will write our tests first, and our code second.
 
@@ -499,18 +499,18 @@ var board_expected = [
 var snapshot_expected = new Snapshot(board_expected, false);
 assert(snapshots_equal(snapshot_result, snapshot_expected));
 
-// Test move down
-var snapshot_result = sokoban.move("down");
+// Test move left
+var snapshot_result = sokoban.move("left");
 var board_expected = [
+    [3, 0],
     [0, 0],
-    [0, 3],
     [0, 0],
 ];
 var snapshot_expected = new Snapshot(board_expected, false);
 assert(snapshots_equal(snapshot_result, snapshot_expected));
 
-// Test move left
-var snapshot_result = sokoban.move("left");
+// Test move down
+var snapshot_result = sokoban.move("down");
 var board_expected = [
     [0, 0],
     [3, 0],
@@ -529,8 +529,10 @@ var board_expected = [
 var snapshot_expected = new Snapshot(board_expected, false);
 assert(snapshots_equal(snapshot_result, snapshot_expected));
 
+
 ```
 
+### Challenge: implement `move(...)` such that the four tests pass
 
 # <a name="part3">Part 3. The `Viz` class</a>
 
