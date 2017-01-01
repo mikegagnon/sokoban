@@ -566,17 +566,17 @@ until it finds the player.
 
 ## <a name="hint2-1-3">Hint 3 for Challenge 2.1</a>
 
-Here is an implementation of `findPlayer()`:
+Here is a `static` implementation of `findPlayer()`:
 
 ```js
 class Sokoban {
     
     ...
 
-    findPlayer() {
-        for (var row = 0; row < this.snapshot.numRows; row++) {
-            for (var col = 0; col < this.snapshot.numCols; col++) {
-                var pieceId = this.snapshot.board[row][col];
+    static findPlayer(snapshot) {
+        for (var row = 0; row < snapshot.numRows; row++) {
+            for (var col = 0; col < snapshot.numCols; col++) {
+                var pieceId = snapshot.board[row][col];
                 if (pieceId == PLAYER) {
                     return [row, col];
                 }
