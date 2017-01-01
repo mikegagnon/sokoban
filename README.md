@@ -17,7 +17,6 @@ And familiarity with OOP (object-orient programming) in JavaScript.
 - [Part 1. Introduction & Setup](#part1)
     - [Lecture 1. Modular design](#lec1)
     - [Lecture 2. The `Snapshot` class](#lec2)
-    - [Lecture 3. The `assert` function](#lec3)
 - [Part 2. The `Sokoban` class](#part2)
 - [Part 3. The `Viz` class](#part3)
 - [Part 4. Putting it all together](#part4)
