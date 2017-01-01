@@ -365,7 +365,9 @@ assert(snapshot.numCols == 2);
 Since `Sokoban` and `Viz` are independent modules, we can implement them in any order.
 Skip to [The `Viz` class](#part3) if you feel like it.
 
-## Section 1. Challenge: Empty squares and player
+## Challenge 1: `move(...)` for player among empty squares
+
+First:
 
 - Put together an `index.html` file that imports `sokoban.js`.
 - Add the `Snapshot` class and the *pieceId* values to `sokoban.js`.
@@ -418,12 +420,115 @@ class Sokoban {
 
 ```
 
-### Getting started
+### Partial implementation of `Sokoban`
 
-To get started, let's implement `move(..)`, but only for the case where:
+We will implement `move(...)`, but only for the case where:
 
 - The player's movement stays in bounds
 - The incoming `snapshot` contains only `EMPTY` squares and one `PLAYER`
+
+#### Write tests first
+
+In divergence from previous projects, we will write our tests first, and our code second.
+
+Before writing our tests we implement a helper function `snapshots_equal(...)`
+that compares two snapshots and returns true iff the snapshots are identical. The helper function
+`snapshots_equal(...)` depends on another helper method `matrices_equal(...)` that checks
+two matrices for equality.
+
+```js
+// Returns true iff the two snapshots are identical
+function snapshots_equal(snapshot1, snapshot2) {
+    return matrices_equal(snapshot1.board, snapshot2.board) &&
+        snapshot1.gameOver == snapshot2.gameOver &&
+        snapshot1.numRows == snapshot2.numRows &&
+        snapshot1.numCols == snapshot2.numCols;
+}
+
+// Returns true iff matrix1 and matrix2 have the same dimensions and values
+function matrices_equal(matrix1, matrix2) {
+
+    var numRows1 = matrix1.length;
+    var numCols1 = matrix1[0].length;
+
+    var numRows2 = matrix2.length;
+    var numCols2 = matrix2[0].length;
+
+    if (numRows1 != numRows2 || numCols1 != numCols2) {
+        return false;
+    }
+
+    for (var row = 0; row < numRows1; row++) {
+        for (var col = 0; col < numCols1; col++) {
+            if (matrix1[row][col] != matrix2[row][col]) {
+                return false;
+            }
+        }
+    }
+
+    return true;
+}
+```
+
+Having implemented `snapshots_equal(...)`, we next write
+four tests for the `Sokoban(...)` class: one for each direction (up, down, left, right).
+
+```js
+
+/* Test case: only in bounds. Only empty squares and player *******************/
+
+// Init sokoban
+var board = [
+    [0, 0],
+    [0, 3],
+    [0, 0],
+];
+
+var snapshot_init = new Snapshot(board, false);
+var sokoban = new Sokoban(snapshot_init);
+
+
+// Test move up
+var snapshot_result = sokoban.move("up");
+var board_expected = [
+    [0, 3],
+    [0, 0],
+    [0, 0],
+];
+var snapshot_expected = new Snapshot(board_expected, false);
+assert(snapshots_equal(snapshot_result, snapshot_expected));
+
+// Test move down
+var snapshot_result = sokoban.move("down");
+var board_expected = [
+    [0, 0],
+    [0, 3],
+    [0, 0],
+];
+var snapshot_expected = new Snapshot(board_expected, false);
+assert(snapshots_equal(snapshot_result, snapshot_expected));
+
+// Test move left
+var snapshot_result = sokoban.move("left");
+var board_expected = [
+    [0, 0],
+    [3, 0],
+    [0, 0],
+];
+var snapshot_expected = new Snapshot(board_expected, false);
+assert(snapshots_equal(snapshot_result, snapshot_expected));
+
+// Test move right
+var snapshot_result = sokoban.move("right");
+var board_expected = [
+    [0, 0],
+    [0, 3],
+    [0, 0],
+];
+var snapshot_expected = new Snapshot(board_expected, false);
+assert(snapshots_equal(snapshot_result, snapshot_expected));
+
+```
 
 
 # <a name="part3">Part 3. The `Viz` class</a>
