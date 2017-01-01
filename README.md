@@ -551,10 +551,12 @@ In this challenge we refactor the `Sokoban` class for two reasons:
 2. The refactor will demonstrate how we can refactor the internals of the Sokoban class,
    without changing the interface.
 
-###
+### Overview of refactor
 
 Recall from [Challenge 2.1](#c2-1), the `move(...)` function directly operated on the 
 `snapshot.matrix` datastructure.
+
+#### `Board` class
 
 In this challenge, we will define a new data structure, called `Board` that is
 analagous to the `Snapshot` class. Like `Snapshot`, the `Board` data structure :
@@ -562,10 +564,41 @@ analagous to the `Snapshot` class. Like `Snapshot`, the `Board` data structure :
 - Holds a `matrix` that represents the layout of the pieces
 - Holds `numRows` and `numCols`
 
-Unlike `Snapshot`, the `Board` `matrix` doesn't hold `pieceId` values. Rather, the `Board` `matrix`
-stores `Cell` objects.
+#### `Cell` class
 
+Unlike the `Snapshot` `matrix`, the `Board` `matrix` doesn't hold `pieceId` values. Rather, the `Board` `matrix`
+holds `Cell` objects.
 
+Study this partial definition of the `Cell` class:
+
+```js
+class Cell {
+    constructor(pieceId) {
+        this.block = false;
+        this.slider = false;
+        this.player = false;
+        this.goal = false;
+
+        if (pieceId == BLOCK) {
+            this.block = true;
+        } else if (pieceId == SLIDER) {
+            this.slider = true;
+        } else if (pieceId == PLAYER) {
+            this.player = true;
+        } else if (pieceId == GOAL) {
+            this.goal = true;
+        } else if (pieceId == GOAL_SLIDER) {
+            this.goal = true;
+            this.slider = true;
+        } else if (pieceId == GOAL_PLAYER) {
+            this.goal = true;
+            this.player = true;
+        }
+    }
+    
+    ...
+}
+```
    
 
 # <a name="part3">Part 3. The `Viz` class</a>
