@@ -545,7 +545,18 @@ assert(snapshots_equal(snapshot_result, snapshot_expected));
 
 ## <a name="c2-2">Challenge 2.2 Refactor the `Sokoban` class</a>
 
-In 
+In this challenge we refactor the `Sokoban` class for two reasons:
+
+1. The refactor will ultimately lead to code that is more readable
+2. To demonstrate that we can refactor the internals of the Sokoban class,
+   as long as the interface remains the same.
+
+###
+
+Recall from [Challenge 2.1](#c2-1), the `move(...)` function directly operated on the 
+`snapshot.matrix` datastructure.
+
+   
 
 # <a name="part3">Part 3. The `Viz` class</a>
 
