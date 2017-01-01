@@ -547,4 +547,46 @@ assert(snapshots_equal(snapshot_result, snapshot_expected));
 
 ## <a name="hint2-1-1">Hint 1 for Challenge 2.1</a>
 
+Implement a method in the Sokoban class called `findPlayer()` that returns
+the row and column of the player in a `snapshot`.
+
+[Back to challenge](#c2-1)
+
+<br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
+
+## <a name="hint2-1-2">Hint 2 for Challenge 2.1</a>
+
+The `findPlayer()` function should iterate over every cell in the `snapshot` (using `for` loops)
+until it finds the player.
+
+[Back to challenge](#c2-1)
+
+
+<br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
+
+## <a name="hint2-1-3">Hint 3 for Challenge 2.1</a>
+
+Here is an implementation of `findPlayer()`:
+
+```js
+class Sokoban {
+    
+    ...
+
+    findPlayer() {
+        for (var row = 0; row < this.snapshot.numRows; row++) {
+            for (var col = 0; col < this.snapshot.numCols; col++) {
+                var pieceId = this.snapshot.board[row][col];
+                if (pieceId == PLAYER) {
+                    return [row, col];
+                }
+            }
+        }
+
+        // If there is no player
+        assert(false);
+    }
+}
+```
+
 [Back to challenge](#c2-1)
