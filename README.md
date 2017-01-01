@@ -19,7 +19,8 @@ And familiarity with OOP (object-orient programming) in JavaScript.
     - [Lecture 1.2 The `Snapshot` class](#lec1-2)
 - [Part 2. The `Sokoban` class](#part2)
     - [Challenge 2.1 A player among empty squares](#c2-1)
-    - [Challenge 2.2 Refactor the `Sokoban` class with an isomorphism](#c2-2)
+    - [Lecture 2.2 Isomorphisms](#lec2-2)
+    - [Challenge 2.3 Refactor the `Sokoban` class with an isomorphism](#c2-3)
 - [Part 3. The `Viz` class](#part3)
 - [Part 4. Putting it all together](#part4)
 
@@ -543,21 +544,11 @@ assert(snapshots_equal(snapshot_result, snapshot_expected));
 - [Hint 6](#hint2-1-6)
 - [Solution](#solution2-1)
 
-## <a name="c2-2">Challenge 2.2 Refactor the `Sokoban` class with an isomorphism</a>
-
-In this challenge we refactor the `Sokoban` class for two reasons:
-
-1. The refactor will ultimately lead to code that is more readable
-2. The refactor will demonstrate how we can refactor the internals of the Sokoban class,
-   without changing the interface.
-
-But before diving into the refactor, let's learn about *isomorphisms*.
-
-### Isomorphisms
+## <a name="lec2-2">Lecture 2.2 Isomorphisms</a>
 
 First, an example:
 
-#### Example of an isomorphism
+### Example of an isomorphism
 
 There are letters (the alphabet of letters is *L*),
 and there are morse-code sounds (the alphabet of sounds is *M*).
@@ -568,7 +559,7 @@ And every sound *m* in *M* can be converted to a sound *l* in *L*.
 
 The two-way mapping between *L* and *M* is an "isomorphism between *L* and *M*."
 
-#### Definition of isomorphisms
+### Definition of "isomorphism"
 
 An isomorphism is a class that relates two datatypes, say *A* and *B*. Every isomorphism
 class has two static functions: `atob(...)` and `btoa(...)`.
@@ -590,7 +581,7 @@ And:
 
 For every element `b` of `B`: `atob(btoa(b))` must equal `b`.
 
-#### Example
+### Example
 
 ```js
 class IsoLetterMorse {
@@ -614,6 +605,14 @@ class IsoLetterMorse {
     }
 }
 ```
+
+## <a name="c2-3">Challenge 2.3 Refactor the `Sokoban` class with an isomorphism</a>
+
+In this challenge we refactor the `Sokoban` class for two reasons:
+
+1. The refactor will ultimately lead to code that is more readable
+2. The refactor will demonstrate how we can refactor the internals of the Sokoban class,
+   without changing the interface.
 
 
 ### Overview of our refactor
