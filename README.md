@@ -130,17 +130,17 @@ var GOAL_PLAYER = 6;
 /* Snapshot class *************************************************************/
 class Snapshot {
 
-    // The board argument is a 2-dimensional matrix describing board state.
+    // The matrix argument is a 2-dimensional array describing board state.
     // Each item in the matrix is a pieceId. Namely, either EMPTY, BLOCK,
     // SLIDER, PLAYER, GOAL, GOAL_SLIDER, GOAL_PLAYER.
     //
     // The gameOver argument is a boolen that is true iff the player has solved
     // the puzzle.
-    constructor(board, gameOver) {
-        this.board = board;
+    constructor(matrix, gameOver) {
+        this.matrix = matrix;
         this.gameOver = gameOver;
-        this.numRows = board.length;
-        this.numCols = board[0].length;
+        this.numRows = matrix.length;
+        this.numCols = matrix[0].length;
     }
 }
 ```
@@ -213,17 +213,17 @@ var GOAL_PLAYER = 6;
 /* Snapshot class *************************************************************/
 class Snapshot {
 
-    // The board argument is a 2-dimensional matrix describing board state.
+    // The matrix argument is a 2-dimensional array describing board state.
     // Each item in the matrix is a pieceId. Namely, either EMPTY, BLOCK,
     // SLIDER, PLAYER, GOAL, GOAL_SLIDER, GOAL_PLAYER.
     //
     // The gameOver argument is a boolen that is true iff the player has solved
     // the puzzle.
-    constructor(board, gameOver) {
-        this.board = board;
+    constructor(matrix, gameOver) {
+        this.matrix = matrix;
         this.gameOver = gameOver;
-        this.numRows = board.length;
-        this.numCols = board[0].length;
+        this.numRows = matrix.length;
+        this.numCols = matrix[0].length;
     }
 }
 ```
@@ -239,7 +239,7 @@ To help understand the exact usage of this class, here are some examples.
 //    EMPTY == 0
 //    BLOCK == 1
 
-var boardInit =  [
+var matrix =  [
    [1, 1, 1],
    [1, 0, 1],
    [0, 0, 0]
@@ -247,7 +247,7 @@ var boardInit =  [
 
 var gameOver = false;
 
-var snapshot = new Snapshot(boardInit, gameOver);
+var snapshot = new Snapshot(matrix, gameOver);
 
 VIZ = new Viz("#board", snapshot);
 ```
@@ -261,7 +261,7 @@ VIZ = new Viz("#board", snapshot);
 //    SLIDER == 2
 //    PLAYER == 3
 
-var boardInit =  [
+var matrix =  [
     [1, 1, 1],
     [2, 2, 2],
     [0, 3, 0]
@@ -269,7 +269,7 @@ var boardInit =  [
 
 var gameOver = false;
 
-var snapshot = new Snapshot(boardInit, gameOver);
+var snapshot = new Snapshot(matrix, gameOver);
 
 VIZ = new Viz("#board", snapshot);
 ```
@@ -289,7 +289,7 @@ VIZ = new Viz("#board", snapshot);
 //    GOAL_SLIDER == 5
 //    GOAL_PLAYER == 6
 
-var boardInit =  [
+var matrix =  [
     [5, 0, 1, 1, 1, 1, 1, 0],
     [1, 1, 1, 0, 0, 0, 1, 0],
     [1, 4, 3, 2, 0, 0, 1, 0],
@@ -303,7 +303,7 @@ var boardInit =  [
 
 var gameOver = false;
 
-var snapshot = new Snapshot(boardInit, gameOver);
+var snapshot = new Snapshot(matrix, gameOver);
 
 VIZ = new Viz("#board", snapshot);
 ```
@@ -319,44 +319,44 @@ function assert(condition) {
     }
 }
 
-// Snapshot test 1
-var board = [
+/******************************************************************************/
+/* Snapshot tests *************************************************************/
+/******************************************************************************/
+
+var matrix = [
     [0, 0, 0],
     [0, 0, 0],
     [0, 0, 0],
 ];
 var gameOver = false;
-var snapshot = new Snapshot(board, gameOver);
-assert(snapshot.board == board);
+var snapshot = new Snapshot(matrix, gameOver);
+assert(snapshot.matrix == matrix);
 assert(snapshot.gameOver == gameOver);
 assert(snapshot.numRows == 3);
 assert(snapshot.numCols == 3);
 
-// Snapshot test 2
-var board = [
+var matrix = [
     [0, 0, 0],
     [0, 0, 0],
 ];
 var gameOver = true;
-var snapshot = new Snapshot(board, gameOver);
-assert(snapshot.board == board);
+var snapshot = new Snapshot(matrix, gameOver);
+assert(snapshot.matrix == matrix);
 assert(snapshot.gameOver == gameOver);
 assert(snapshot.numRows == 2);
 assert(snapshot.numCols == 3);
 
-// Snapshot test 3
-var board = [
+var matrix = [
     [0, 0],
     [0, 0],
     [0, 0],
 ];
 var gameOver = true;
-var snapshot = new Snapshot(board, gameOver);
-assert(snapshot.board == board);
+var snapshot = new Snapshot(matrix, gameOver);
+assert(snapshot.matrix == matrix);
 assert(snapshot.gameOver == gameOver);
 assert(snapshot.numRows == 3);
 assert(snapshot.numCols == 2);
-
 
 ```
 
@@ -388,17 +388,17 @@ var GOAL_PLAYER = 6;
 /* Snapshot class *************************************************************/
 class Snapshot {
 
-    // The board argument is a 2-dimensional matrix describing board state.
+    // The matrix argument is a 2-dimensional array describing board state.
     // Each item in the matrix is a pieceId. Namely, either EMPTY, BLOCK,
     // SLIDER, PLAYER, GOAL, GOAL_SLIDER, GOAL_PLAYER.
     //
     // The gameOver argument is a boolen that is true iff the player has solved
     // the puzzle.
-    constructor(board, gameOver) {
-        this.board = board;
+    constructor(matrix, gameOver) {
+        this.matrix = matrix;
         this.gameOver = gameOver;
-        this.numRows = board.length;
-        this.numCols = board[0].length;
+        this.numRows = matrix.length;
+        this.numCols = matrix[0].length;
     }
 }
 
@@ -440,7 +440,7 @@ two matrices for equality.
 ```js
 // Returns true iff the two snapshots are identical
 function snapshots_equal(snapshot1, snapshot2) {
-    return matrices_equal(snapshot1.board, snapshot2.board) &&
+    return matrices_equal(snapshot1.matrix, snapshot2.matrix) &&
         snapshot1.gameOver == snapshot2.gameOver &&
         snapshot1.numRows == snapshot2.numRows &&
         snapshot1.numCols == snapshot2.numCols;
@@ -479,54 +479,54 @@ four tests for the `Sokoban(...)` class: one for each direction (up, down, left,
 /* Test case: only in bounds. Only empty squares and player *******************/
 
 // Init sokoban
-var board = [
+var matrix = [
     [0, 0],
     [0, 3],
     [0, 0],
 ];
 
-var snapshot_init = new Snapshot(board, false);
+var snapshot_init = new Snapshot(matrix, false);
 var sokoban = new Sokoban(snapshot_init);
 
 
 // Test move up
 var snapshot_result = sokoban.move("up");
-var board_expected = [
+var matrix_expected = [
     [0, 3],
     [0, 0],
     [0, 0],
 ];
-var snapshot_expected = new Snapshot(board_expected, false);
+var snapshot_expected = new Snapshot(matrix_expected, false);
 assert(snapshots_equal(snapshot_result, snapshot_expected));
 
 // Test move left
 var snapshot_result = sokoban.move("left");
-var board_expected = [
+var matrix_expected = [
     [3, 0],
     [0, 0],
     [0, 0],
 ];
-var snapshot_expected = new Snapshot(board_expected, false);
+var snapshot_expected = new Snapshot(matrix_expected, false);
 assert(snapshots_equal(snapshot_result, snapshot_expected));
 
 // Test move down
 var snapshot_result = sokoban.move("down");
-var board_expected = [
+var matrix_expected = [
     [0, 0],
     [3, 0],
     [0, 0],
 ];
-var snapshot_expected = new Snapshot(board_expected, false);
+var snapshot_expected = new Snapshot(matrix_expected, false);
 assert(snapshots_equal(snapshot_result, snapshot_expected));
 
 // Test move right
 var snapshot_result = sokoban.move("right");
-var board_expected = [
+var matrix_expected = [
     [0, 0],
     [0, 3],
     [0, 0],
 ];
-var snapshot_expected = new Snapshot(board_expected, false);
+var snapshot_expected = new Snapshot(matrix_expected, false);
 assert(snapshots_equal(snapshot_result, snapshot_expected));
 
 
@@ -582,7 +582,7 @@ class Sokoban {
     static findPlayer(snapshot) {
         for (var row = 0; row < snapshot.numRows; row++) {
             for (var col = 0; col < snapshot.numCols; col++) {
-                var pieceId = snapshot.board[row][col];
+                var pieceId = snapshot.matrix[row][col];
                 if (pieceId == PLAYER) {
                     return [row, col];
                 }
@@ -651,7 +651,7 @@ class Sokoban {
     // Returns a snapshot object that defines the game state after the player is moved
     move(direction) {
 
-        this.snapshot.board[this.playerRow][this.playerCol] = EMPTY;
+        this.snapshot.matrix[this.playerRow][this.playerCol] = EMPTY;
 
         if (direction == "up") {
             this.playerRow -= 1;
@@ -665,7 +665,7 @@ class Sokoban {
             assert(false);
         }
 
-        this.snapshot.board[this.playerRow][this.playerCol] = PLAYER;
+        this.snapshot.matrix[this.playerRow][this.playerCol] = PLAYER;
 
         return this.snapshot;
     }
@@ -687,7 +687,7 @@ class Sokoban {
     static findPlayer(snapshot) {
         for (var row = 0; row < snapshot.numRows; row++) {
             for (var col = 0; col < snapshot.numCols; col++) {
-                var pieceId = snapshot.board[row][col];
+                var pieceId = snapshot.matrix[row][col];
                 if (pieceId == PLAYER) {
                     return [row, col];
                 }
@@ -713,7 +713,7 @@ class Sokoban {
     // Returns a snapshot object that defines the game state after the player is moved
     move(direction) {
 
-        this.snapshot.board[this.playerRow][this.playerCol] = EMPTY;
+        this.snapshot.matrix[this.playerRow][this.playerCol] = EMPTY;
 
         if (direction == "up") {
             this.playerRow -= 1;
@@ -727,7 +727,7 @@ class Sokoban {
             assert(false);
         }
 
-        this.snapshot.board[this.playerRow][this.playerCol] = PLAYER;
+        this.snapshot.matrix[this.playerRow][this.playerCol] = PLAYER;
 
         return this.snapshot;
     }
