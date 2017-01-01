@@ -33,21 +33,14 @@ class Snapshot {
     }
 }
 
-/* Sokoban tests **************************************************************/
+/* Sokoban class **************************************************************/
 class Sokoban {
 
-    // The snapshot argument defines the initial gamestate
-    constructor(snapshot) {
-        this.snapshot = snapshot;
-        var [row, col] = this.findPlayer();
-        this.playerRow = row;
-        this.playerCol = col;
-    }
-
-    findPlayer() {
-        for (var row = 0; row < this.snapshot.numRows; row++) {
-            for (var col = 0; col < this.snapshot.numCols; col++) {
-                var pieceId = this.snapshot.board[row][col];
+    /* Static functions *******************************************************/
+    static findPlayer(snapshot) {
+        for (var row = 0; row < snapshot.numRows; row++) {
+            for (var col = 0; col < snapshot.numCols; col++) {
+                var pieceId = snapshot.board[row][col];
                 if (pieceId == PLAYER) {
                     return [row, col];
                 }
@@ -56,6 +49,16 @@ class Sokoban {
 
         // If there is no player
         assert(false);
+    }
+
+    /* Instance methods *******************************************************/
+
+    // The snapshot argument defines the initial gamestate
+    constructor(snapshot) {
+        this.snapshot = snapshot;
+        var [row, col] = Sokoban.findPlayer(snapshot);
+        this.playerRow = row;
+        this.playerCol = col;
     }
 
     // Moves the player in the specified direction. direction must be either:
