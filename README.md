@@ -15,15 +15,16 @@ And familiarity with OOP (object-orient programming) in JavaScript.
 ## Contents
 
 - [Part 1. Introduction & Setup](#part1)
-    - [Lecture 1. Modular design](#lec1)
-    - [Lecture 2. The `Snapshot` class](#lec2)
+    - [Lecture 1.1 Modular design](#lec1-1)
+    - [Lecture 1.2 The `Snapshot` class](#lec1-2)
 - [Part 2. The `Sokoban` class](#part2)
+    - [Challenge 2.1 `move(...)`, for player among empty squares](#c2-1)
 - [Part 3. The `Viz` class](#part3)
 - [Part 4. Putting it all together](#part4)
 
 # Part 1. Introduction & Setup
 
-## <a name="lec1">Lecture 1. Modular design</a>
+## <a name="lec1-1">Lecture 1.1 Modular design</a>
 
 I regret to report that in Lights Out and Thumb wrestling, our code was a jumbled mess of spaghetti code.
 
@@ -195,7 +196,7 @@ between these modules. Then we'd adjourn the meeting, and all the junior enginee
 implement the modules in parallel, over a period of about a month, and we'd stitch the modules
 together as we finished each module.
 
-## <a name="lec2">Lecture 2. The `Snapshot` class</a>
+## <a name="lec1-2">Lecture 1.2 The `Snapshot` class</a>
 
 Recall from the Introduction, `snapshot` objects are defined by the `Snapshot` class:
 
@@ -364,7 +365,7 @@ assert(snapshot.numCols == 2);
 Since `Sokoban` and `Viz` are independent modules, we can implement them in any order.
 Skip to [The `Viz` class](#part3) if you feel like it.
 
-## Challenge 1: `move(...)` for player among empty squares
+## <a name="c2-1">Challenge 2.1 `move(...)`, for player among empty squares</a>
 
 First:
 
