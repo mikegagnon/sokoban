@@ -423,12 +423,10 @@ class Sokoban {
 
 ## <a name="c2-1">Challenge 2.1 A player among empty squares</a>
 
-### Partial implementation of `Sokoban`
-
 We will implement `move(...)`, but only for the case where:
 
 - The player's movement stays in bounds
-- The incoming `snapshot` contains only `EMPTY` squares and one `PLAYER`
+- The incoming `snapshot` contains only `EMPTY` cells and one `PLAYER` cell
 
 #### Write tests first
 
