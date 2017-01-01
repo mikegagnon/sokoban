@@ -551,6 +551,72 @@ In this challenge we refactor the `Sokoban` class for two reasons:
 2. The refactor will demonstrate how we can refactor the internals of the Sokoban class,
    without changing the interface.
 
+But before diving into the refactor, let's learn about *isomorphisms*.
+
+### Isomorphisms
+
+First, an example:
+
+#### Example of an isomorphism
+
+There are letters (the alphabet of letters is *L*),
+and there are morse-code sounds (the alphabet of sounds *M*).
+
+Every letter *l* in *L* can be converted to a sound *m* in *M*.
+
+And every sound *m* in *M* can be converted to a sound *l* in *L*.
+
+The two-way mapping between *L* and *M* is an "isomorphism between *L* and *M*."
+
+#### Definition of isomorphisms
+
+An isomorphism is a class that relates two datatypes, say *A* and *B*. Every isomorphism
+class has two static functions: `atob(...)` and `btoa(...)`.
+
+```js
+class IsoAB {
+
+    // converts an instance of datatype A to an instance of datatype B
+    static atob(a) {...}
+    
+    // converts an instance of datatype B to an instance of datatype A
+    static btoa(b) {...}
+}
+```
+
+For every element `a` of `A`: `btoa(atob(a))` must equal `a`.
+
+And:
+
+For every element `b` of `B`: `atob(btoa(b))` must equal `b`.
+
+#### Example
+
+```js
+class IsoLetterMorse {
+
+    static letterToMorse(letter) {
+        if (letter == "a") {
+            return ".-";
+        } else if (letter == "b") {
+            return "-...";
+        } 
+            ...
+    }
+    
+    static morseToLetter(morse) {
+        if (morse == ".-") {
+            return "a";
+        } else if (morse == "-...") {
+            return "b";
+        }
+            ...
+    }
+}
+```
+
+
+
 ### Overview of refactor
 
 Recall from [Challenge 2.1](#c2-1), the `move(...)` function directly operated on the 
