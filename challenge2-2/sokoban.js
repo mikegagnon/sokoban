@@ -30,13 +30,70 @@ class Snapshot {
     }
 }
 
-/* Cell class *****************************************************************/
-class Cell {
-    constructor(pieceId) {
-        this.block = false;
-        this.slider = false;
-        this.player = false;
-        this.goal = false;
+/* Board class ****************************************************************/
+class Board {
+    constructor(cells, gameOver) {
+        this.cells = cells;
+        this.gameOver = gameOver;
+        this.numRows = cells.length;
+        this.numCols = cells[0].length;
+    }
+}
+
+class IsoSnapshotBoard {
+
+    static newMatrix(numRows, numCols) {
+        var matrix = new Array(numRows);
+        for (var row = 0; row < numRows; row++) {
+            matrix[row] = new Array(numCols);
+        }
+        return matrix;
+    }
+
+    static toBoard(snapshot) {
+
+        var numRows = snapshot.numRows;
+        var numCols = snapshot.numCols;
+
+        var cells = IsoSnapshotBoard.newMatrix(numRows, numCols);
+
+        for (var row = 0; row < numRows; row++) {
+            for (var col = 0; col < numCols; col++) {
+                var pieceId = snapshot.matrix[row][col];
+                cells[row][col] = IsoPieceidCell.toCell(pieceId);
+            }
+        }
+
+        return new Board(cells, snapshot.gameOver);
+    }
+
+    static toSnapshot(board) {
+        var numRows = board.numRows;
+        var numCols = board.numCols;
+
+        var matrix = IsoSnapshotBoard.newMatrix(numRows, numCols);
+
+        for (var row = 0; row < numRows; row++) {
+            for (var col = 0; col < numCols; col++) {
+
+                var cell = board.cells[row][col];
+                matrix[row][col] = IsoPieceidCell.toPieceid(cell);
+            }
+        }
+
+        return new Snapshot(matrix, board.gameOver);
+    }
+
+}
+
+class IsoPieceidCell {
+
+    static toCell(pieceId) {
+
+        var block = false;
+        var slider = false;
+        var player = false;
+        var goal = false;
 
         if (pieceId == BLOCK) {
             this.block = true;
@@ -53,68 +110,40 @@ class Cell {
             this.goal = true;
             this.player = true;
         }
+
+        return new Cell(block, slider, player, goal);
     }
 
-    toPieceId() {
-        if (this.block) {
+    static toPieceid(cell) {
+        if (cell.block) {
             return BLOCK;
-        } else if (this.goal) {
-            if (this.slider) {
+        } else if (cell.goal) {
+            if (cell.slider) {
                 return GOAL_SLIDER;
-            } else if (this.player) {
+            } else if (cell.player) {
                 return GOAL_PLAYER;
             } else {
                 return GOAL;
             }
-        } else if (this.slider) {
+        } else if (cell.slider) {
             return SLIDER;
-        } else if (this.player) {
+        } else if (cell.player) {
             return PLAYER;
         } else {
             return EMPTY;
         }
     }
 }
-
-/* Board class ****************************************************************/
-class Board {
-
-    static newMatrix(numRows, numCols) {
-        var matrix = new Array(numRows);
-        for (var row = 0; row < numRows; row++) {
-            matrix[row] = new Array(numCols);
-        }
-        return matrix;
-    }
-
-    constructor(snapshot) {
-        this.numRows = snapshot.numRows;
-        this.numCols = snapshot.numCols;
-
-        this.matrix = Board.newMatrix(this.numRows, this.numCols);
-
-        for (var row = 0; row < this.numRows; row++) {
-            for (var col = 0; col < this.numCols; col++) {
-                var pieceId = snapshot.matrix[row][col];
-                this.matrix[row][col] = new Cell(pieceId);
-            }
-        }
-    }
-
-    toSnapshot(gameOver) {
-        var snapshot_matrix = Board.newMatrix(this.numRows, this.numCols);
-
-        for (var row = 0; row < this.numRows; row++) {
-            for (var col = 0; col < this.numCols; col++) {
-
-                var cell = this.matrix[row][col];
-                snapshot_matrix[row][col] = cell.toPieceId();
-            }
-        }
-
-        return new Snapshot(snapshot_matrix, gameOver);
+/* Cell class *****************************************************************/
+class Cell {
+    constructor(block, slider, player, goal) {
+        this.block = block;
+        this.slider = slider;
+        this.player = player;
+        this.goal = goal;
     }
 }
+
 
 /* Sokoban class **************************************************************/
 class Sokoban {
@@ -138,8 +167,7 @@ class Sokoban {
 
     // The snapshot argument defines the initial gamestate
     constructor(snapshot) {
-        this.board = new Board(snapshot);
-        this.gameOver = snapshot.gameOver;
+        this.board = IsoSnapshotBoard.toBoard(snapshot);
 
         var [row, col] = Sokoban.findPlayer(snapshot);
         this.playerRow = row;
@@ -151,7 +179,7 @@ class Sokoban {
     // Returns a snapshot object that defines the game state after the player is moved
     move(direction) {
 
-        this.board.matrix[this.playerRow][this.playerCol].player = false;
+        this.board.cells[this.playerRow][this.playerCol].player = false;
 
         if (direction == "up") {
             this.playerRow -= 1;
@@ -165,9 +193,9 @@ class Sokoban {
             assert(false);
         }
 
-        this.board.matrix[this.playerRow][this.playerCol].player = true;
+        this.board.cells[this.playerRow][this.playerCol].player = true;
 
-        return this.board.toSnapshot(this.gameOver);
+        return IsoSnapshotBoard.toSnapshot(this.board);
     }
 }
 
