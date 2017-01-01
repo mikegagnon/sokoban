@@ -560,7 +560,7 @@ First, an example:
 #### Example of an isomorphism
 
 There are letters (the alphabet of letters is *L*),
-and there are morse-code sounds (the alphabet of sounds *M*).
+and there are morse-code sounds (the alphabet of sounds is *M*).
 
 Every letter *l* in *L* can be converted to a sound *m* in *M*.
 
