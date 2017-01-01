@@ -537,6 +537,7 @@ assert(snapshots_equal(snapshot_result, snapshot_expected));
 - [Hint 1](#hint2-1-1)
 - [Hint 2](#hint2-1-2)
 - [Hint 3](#hint2-1-3)
+- [Hint 4](#hint2-1-4)
 
 # <a name="part3">Part 3. The `Viz` class</a>
 
@@ -588,6 +589,30 @@ class Sokoban {
         // If there is no player
         assert(false);
     }
+}
+```
+
+[Back to challenge](#c2-1)
+
+<br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
+
+## <a name="hint2-1-4">Hint 4 for Challenge 2.1</a>
+
+Implement the `Sokoban` `constructor` as so:
+
+```js
+class Sokoban {
+
+    ...
+    
+    constructor(snapshot) {
+        this.snapshot = snapshot;
+        var [row, col] = Sokoban.findPlayer(snapshot);
+        this.playerRow = row;
+        this.playerCol = col;
+    }
+    
+    ...
 }
 ```
 
