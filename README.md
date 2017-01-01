@@ -538,6 +538,9 @@ assert(snapshots_equal(snapshot_result, snapshot_expected));
 - [Hint 2](#hint2-1-2)
 - [Hint 3](#hint2-1-3)
 - [Hint 4](#hint2-1-4)
+- [Hint 5](#hint2-1-5)
+- [Hint 6](#hint2-1-6)
+- [Solution](#solution2-1)
 
 # <a name="part3">Part 3. The `Viz` class</a>
 
@@ -615,5 +618,121 @@ class Sokoban {
     ...
 }
 ```
+
+[Back to challenge](#c2-1)
+
+<br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
+
+## <a name="hint2-1-5">Hint 5 for Challenge 2.1</a>
+
+The `move(...)` function needs to perform the following operations:
+
+1. On the board, set the old position of the player to EMPTY
+2. Compute the new position of the player
+3. On the board, set the new position of the player to PLAYER
+4. Return the snapshot
+
+
+[Back to challenge](#c2-1)
+
+<br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
+
+## <a name="hint2-1-6">Hint 6 for Challenge 2.1</a>
+
+Implement the `Sokoban` `move(...)` method as so:
+
+```js
+class Sokoban {
+
+    ...
+
+    // Moves the player in the specified direction. direction must be either:
+    // "up", "down", "left", or "right"
+    // Returns a snapshot object that defines the game state after the player is moved
+    move(direction) {
+
+        this.snapshot.board[this.playerRow][this.playerCol] = EMPTY;
+
+        if (direction == "up") {
+            this.playerRow -= 1;
+        } else if (direction == "down") {
+            this.playerRow += 1;
+        } else if (direction == "left") {
+            this.playerCol -= 1;
+        } else if (direction == "right") {
+            this.playerCol += 1;
+        } else {
+            assert(false);
+        }
+
+        this.snapshot.board[this.playerRow][this.playerCol] = PLAYER;
+
+        return this.snapshot;
+    }
+}
+```
+
+
+[Back to challenge](#c2-1)
+
+<br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
+
+## <a name="solution2-1">Solution for Challenge 2.1</a>
+
+```js
+/* Sokoban class **************************************************************/
+class Sokoban {
+
+    /* Static functions *******************************************************/
+    static findPlayer(snapshot) {
+        for (var row = 0; row < snapshot.numRows; row++) {
+            for (var col = 0; col < snapshot.numCols; col++) {
+                var pieceId = snapshot.board[row][col];
+                if (pieceId == PLAYER) {
+                    return [row, col];
+                }
+            }
+        }
+
+        // If there is no player
+        assert(false);
+    }
+
+    /* Instance methods *******************************************************/
+
+    // The snapshot argument defines the initial gamestate
+    constructor(snapshot) {
+        this.snapshot = snapshot;
+        var [row, col] = Sokoban.findPlayer(snapshot);
+        this.playerRow = row;
+        this.playerCol = col;
+    }
+
+    // Moves the player in the specified direction. direction must be either:
+    // "up", "down", "left", or "right"
+    // Returns a snapshot object that defines the game state after the player is moved
+    move(direction) {
+
+        this.snapshot.board[this.playerRow][this.playerCol] = EMPTY;
+
+        if (direction == "up") {
+            this.playerRow -= 1;
+        } else if (direction == "down") {
+            this.playerRow += 1;
+        } else if (direction == "left") {
+            this.playerCol -= 1;
+        } else if (direction == "right") {
+            this.playerCol += 1;
+        } else {
+            assert(false);
+        }
+
+        this.snapshot.board[this.playerRow][this.playerCol] = PLAYER;
+
+        return this.snapshot;
+    }
+}
+```
+
 
 [Back to challenge](#c2-1)
