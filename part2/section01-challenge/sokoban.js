@@ -181,7 +181,7 @@ var board_expected = [
 var snapshot_expected = new Snapshot(board_expected, false);
 assert(snapshots_equal(snapshot_result, snapshot_expected));
 
-// Test move down
+// Test move left
 var snapshot_result = sokoban.move("left");
 var board_expected = [
     [3, 0],
@@ -191,7 +191,7 @@ var board_expected = [
 var snapshot_expected = new Snapshot(board_expected, false);
 assert(snapshots_equal(snapshot_result, snapshot_expected));
 
-// Test move left
+// Test move down
 var snapshot_result = sokoban.move("down");
 var board_expected = [
     [0, 0],
