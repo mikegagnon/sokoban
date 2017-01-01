@@ -545,4 +545,4 @@ assert(snapshots_equal(snapshot_result, snapshot_expected));
 
 <br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
 
-## <a name="h2-1-1">Hint 1 for Challenge 2.1</a>
+## <a name="hint2-1-1">Hint 1 for Challenge 2.1</a>
