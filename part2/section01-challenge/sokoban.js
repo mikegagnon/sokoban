@@ -36,28 +36,6 @@ class Snapshot {
 /* Sokoban tests **************************************************************/
 class Sokoban {
 
-    /* Static functions *******************************************************/
-
-    // returns a 2-tuple [dr, dc], where:
-    //      dr == difference in row
-    //      dc == difference in column
-    static drdc(direction) {
-        if (direction == "up") {
-            return [-1, 0];
-        } else if (direction == "down") {
-            return [1, 0];
-        } else if (direction == "left") {
-            return [0, -1];
-        } else if (direction == "right") {
-            return [0, 1];
-        } else {
-            console.error("Bad direction: " + direction);
-        }
-    }
-
-    /* Instance methods *******************************************************/
-
-
     // The snapshot argument defines the initial gamestate
     constructor(snapshot) {
         this.snapshot = snapshot;
@@ -87,10 +65,17 @@ class Sokoban {
 
         this.snapshot.board[this.playerRow][this.playerCol] = EMPTY;
 
-        var [dr, dc] = Sokoban.drdc(direction);
-
-        this.playerRow += dr;
-        this.playerCol += dc;
+        if (direction == "up") {
+            this.playerRow -= 1;
+        } else if (direction == "down") {
+            this.playerRow += 1;
+        } else if (direction == "left") {
+            this.playerCol -= 1;
+        } else if (direction == "right") {
+            this.playerCol += 1;
+        } else {
+            assert(false);
+        }
 
         this.snapshot.board[this.playerRow][this.playerCol] = PLAYER;
 
