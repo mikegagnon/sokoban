@@ -19,6 +19,7 @@ And familiarity with OOP (object-orient programming) in JavaScript.
     - [Lecture 1.2 The `Snapshot` class](#lec1-2)
 - [Part 2. The `Sokoban` class](#part2)
     - [Challenge 2.1 A player among empty squares](#c2-1)
+    - [Challenge 2.2 Refactor the `Sokoban` class](#c2-2)
 - [Part 3. The `Viz` class](#part3)
 - [Part 4. Putting it all together](#part4)
 
@@ -541,6 +542,10 @@ assert(snapshots_equal(snapshot_result, snapshot_expected));
 - [Hint 5](#hint2-1-5)
 - [Hint 6](#hint2-1-6)
 - [Solution](#solution2-1)
+
+## <a name="c2-2">Challenge 2.2 Refactor the `Sokoban` class</a>
+
+In 
 
 # <a name="part3">Part 3. The `Viz` class</a>
 
