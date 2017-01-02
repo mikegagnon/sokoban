@@ -790,6 +790,10 @@ assert(snapshots_equal(snapshot_result, snapshot_expected));
 
 Implement `IsoSnapshotBoard` and `IsoPieceidCell`.
 
+- No hints for `IsoPieceidCell`
+- [Solution for `IsoPieceidCell`](#solution-IsoPieceidCell)
+
+
 #### Tests for `IsoPieceidCell`
 
 ```js
@@ -1149,3 +1153,59 @@ class Sokoban {
 
 
 [Back to challenge](#c2-1)
+
+<br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
+
+## <a name="solution-IsoPieceidCell-">Solution for Challenge 2.3, `IsoPieceidCell`</a>
+
+```js
+class IsoPieceidCell {
+
+    static toCell(pieceId) {
+
+        var block = false;
+        var slider = false;
+        var player = false;
+        var goal = false;
+
+        if (pieceId == BLOCK) {
+            block = true;
+        } else if (pieceId == SLIDER) {
+            slider = true;
+        } else if (pieceId == PLAYER) {
+            player = true;
+        } else if (pieceId == GOAL) {
+            goal = true;
+        } else if (pieceId == GOAL_SLIDER) {
+            goal = true;
+            slider = true;
+        } else if (pieceId == GOAL_PLAYER) {
+            goal = true;
+            player = true;
+        }
+
+        return new Cell(block, slider, player, goal);
+    }
+
+    static toPieceid(cell) {
+        if (cell.block) {
+            return BLOCK;
+        } else if (cell.goal) {
+            if (cell.slider) {
+                return GOAL_SLIDER;
+            } else if (cell.player) {
+                return GOAL_PLAYER;
+            } else {
+                return GOAL;
+            }
+        } else if (cell.slider) {
+            return SLIDER;
+        } else if (cell.player) {
+            return PLAYER;
+        } else {
+            return EMPTY;
+        }
+    }
+}
+```
+
