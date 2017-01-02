@@ -744,6 +744,10 @@ class Sokoban {
 }
 ```
 
+Observe the semantics of `move(...)` have changed slightly.
+
+In the old version (from [Challenge 2.1](#c2-1))
+
 ### Challenge
 
 Implement `IsoSnapshotBoard` and `IsoPieceidCell`.
