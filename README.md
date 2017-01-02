@@ -24,7 +24,7 @@ And familiarity with OOP (object-orient programming) in JavaScript.
 - [Part 3. The `Viz` class](#part3)
 - [Part 4. Putting it all together](#part4)
 
-# Part 1. Introduction & Setup
+# <a name="part1">Part 1. Introduction & Setup</a>
 
 ## <a name="lec1-1">Lecture 1.1 Modular design</a>
 
