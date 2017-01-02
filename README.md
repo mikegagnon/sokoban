@@ -742,7 +742,7 @@ class Sokoban {
         return IsoSnapshotBoard.toSnapshot(this.board);                 // <------------
     } 
 }
-```t
+```
 
 Observe: the semantics of `move(...)` have changed slightly.
 
