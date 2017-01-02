@@ -16,7 +16,7 @@ var GOAL_PLAYER = 6;
 /* Snapshot class *************************************************************/
 class Snapshot {
 
-    // The matrix argument is a 2-dimensional matrix describing board state.
+    // The matrix argument is a 2-dimensional matrix describing the board state.
     // Each item in the matrix is a pieceId. Namely, either EMPTY, BLOCK,
     // SLIDER, PLAYER, GOAL, GOAL_SLIDER, GOAL_PLAYER.
     //
@@ -32,6 +32,13 @@ class Snapshot {
 
 /* Board class ****************************************************************/
 class Board {
+
+    // The cells argument is a 2-dimensional matrix describing the board state.
+    // Each item in cells is a cell object, which is to say an instance of the
+    // Cell class.
+    //
+    // The gameOver argument is a boolen that is true iff the player has solved
+    // the puzzle.
     constructor(cells, gameOver) {
         this.cells = cells;
         this.gameOver = gameOver;
@@ -40,6 +47,19 @@ class Board {
     }
 }
 
+/* Cell class *****************************************************************/
+// Iff this.block == true, then that means there is a block in this cell
+// And so on for this.slider, this.player, and this.goal
+class Cell {
+    constructor(block, slider, player, goal) {
+        this.block = block;
+        this.slider = slider;
+        this.player = player;
+        this.goal = goal;
+    }
+}
+
+/* IsoSnapshotBoard class *****************************************************/
 class IsoSnapshotBoard {
 
     static newMatrix(numRows, numCols) {
@@ -86,6 +106,7 @@ class IsoSnapshotBoard {
 
 }
 
+/* IsoPieceidCell class *****************************************************/
 class IsoPieceidCell {
 
     static toCell(pieceId) {
@@ -132,15 +153,6 @@ class IsoPieceidCell {
         } else {
             return EMPTY;
         }
-    }
-}
-/* Cell class *****************************************************************/
-class Cell {
-    constructor(block, slider, player, goal) {
-        this.block = block;
-        this.slider = slider;
-        this.player = player;
-        this.goal = goal;
     }
 }
 
