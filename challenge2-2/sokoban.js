@@ -170,8 +170,6 @@ class Sokoban {
 
     findPlayer() {
 
-        console.log(this.board.cells);
-
         for (var row = 0; row < this.board.numRows; row++) {
             for (var col = 0; col < this.board.numCols; col++) {
                 var cell = this.board.cells[row][col];
