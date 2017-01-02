@@ -251,14 +251,6 @@ assert(snapshot.numCols == 2);
 /* sokoban.move tests *********************************************************/
 /******************************************************************************/
 
-// Returns true iff the two snapshots are identical
-function snapshots_equal(snapshot1, snapshot2) {
-    return matrices_equal(snapshot1.matrix, snapshot2.matrix) &&
-        snapshot1.gameOver == snapshot2.gameOver &&
-        snapshot1.numRows == snapshot2.numRows &&
-        snapshot1.numCols == snapshot2.numCols;
-}
-
 // Returns true iff matrix1 and matrix2 have the same dimensions and values
 function matrices_equal(matrix1, matrix2) {
 
@@ -281,6 +273,17 @@ function matrices_equal(matrix1, matrix2) {
     }
 
     return true;
+}
+
+// Returns true iff the two snapshots are identical
+function snapshots_equal(snapshot1, snapshot2) {
+    if (snapshot1.gameOver != snapshot2.gameOver ||
+        snapshot1.numRows != snapshot2.numRows ||
+        snapshot1.numCols != snapshot2.numCols) {
+        return false;
+    }
+
+    return matrices_equal(snapshot1.matrix, snapshot2.matrix);
 }
 
 /* Test case: only in bounds. Only empty squares and player *******************/
@@ -404,5 +407,17 @@ var goalPlayerCell = new Cell(false, false, true, true);
 var pieceId = IsoPieceidCell.toPieceid(goalPlayerCell)
 assert(pieceId == GOAL_PLAYER);
 
+/* Tests for IsoSnapshotBoard  **************************************************/
 
+
+function test_IsoSnapshotBoard(snapshot1) {
+    var board = IsoSnapshotBoard.toBoard(snapshot1);
+    var snapshot2 = IsoSnapshotBoard.toSnapshot(board);
+    assert(snapshots_equal(snapshot1, snapshot2));
+}
+
+var matrix = [[EMPTY]];
+var gameOver = false;
+var snapshot = new Snapshot(matrix, gameOver);
+test_IsoSnapshotBoard(snapshot);
 
