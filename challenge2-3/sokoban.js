@@ -416,8 +416,60 @@ function test_IsoSnapshotBoard(snapshot1) {
     assert(snapshots_equal(snapshot1, snapshot2));
 }
 
+// gameOver false
 var matrix = [[EMPTY]];
 var gameOver = false;
 var snapshot = new Snapshot(matrix, gameOver);
 test_IsoSnapshotBoard(snapshot);
 
+// gameOver true
+var matrix = [[EMPTY]];
+var gameOver = true;
+var snapshot = new Snapshot(matrix, gameOver);
+test_IsoSnapshotBoard(snapshot);
+
+// SLIDER
+var matrix = [[SLIDER]];
+var gameOver = false;
+var snapshot = new Snapshot(matrix, gameOver);
+test_IsoSnapshotBoard(snapshot);
+
+// PLAYER
+var matrix = [[PLAYER]];
+var gameOver = false;
+var snapshot = new Snapshot(matrix, gameOver);
+test_IsoSnapshotBoard(snapshot);
+
+// GOAL
+var matrix = [[GOAL]];
+var gameOver = false;
+var snapshot = new Snapshot(matrix, gameOver);
+test_IsoSnapshotBoard(snapshot);
+
+// GOAL_SLIDER
+var matrix = [[GOAL_SLIDER]];
+var gameOver = false;
+var snapshot = new Snapshot(matrix, gameOver);
+test_IsoSnapshotBoard(snapshot);
+
+// GOAL_PLAYER
+var matrix = [[GOAL_PLAYER]];
+var gameOver = false;
+var snapshot = new Snapshot(matrix, gameOver);
+test_IsoSnapshotBoard(snapshot);
+
+// Complex matrix
+var matrix =  [
+    [5, 0, 1, 1, 1, 1, 1, 0],
+    [1, 1, 1, 0, 0, 0, 1, 0],
+    [1, 4, 3, 2, 0, 0, 1, 0],
+    [1, 1, 1, 0, 2, 4, 1, 0],
+    [1, 4, 1, 1, 2, 0, 1, 0],
+    [1, 0, 1, 0, 4, 0, 1, 1],
+    [1, 2, 0, 0, 2, 2, 4, 1],
+    [1, 0, 0, 0, 4, 0, 0, 1],
+    [1, 1, 1, 1, 1, 1, 1, 1]
+];
+var gameOver = false;
+var snapshot = new Snapshot(matrix, gameOver);
+test_IsoSnapshotBoard(snapshot);
