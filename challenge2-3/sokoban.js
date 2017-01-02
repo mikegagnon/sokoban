@@ -346,6 +346,7 @@ function cells_equal(cell1, cell2) {
         cell1.goal == cell2.goal;
 }
 
+// Test toCell
 var cell1 = IsoPieceidCell.toCell(EMPTY);
 var cell2 = new Cell(false, false, false, false);
 assert(cells_equal(cell1, cell2));
@@ -373,3 +374,35 @@ assert(cells_equal(cell1, cell2));
 var cell1 = IsoPieceidCell.toCell(GOAL_PLAYER);
 var cell2 = new Cell(false, false, true, true);
 assert(cells_equal(cell1, cell2));
+
+// Test toPieceid
+var emptyCell = new Cell(false, false, false, false);
+var pieceId = IsoPieceidCell.toPieceid(emptyCell)
+assert(pieceId == EMPTY);
+
+var blockCell = new Cell(true, false, false, false);
+var pieceId = IsoPieceidCell.toPieceid(blockCell)
+assert(pieceId == BLOCK);
+
+var sliderCell = new Cell(false, true, false, false);
+var pieceId = IsoPieceidCell.toPieceid(sliderCell)
+assert(pieceId == SLIDER);
+
+var playerCell = new Cell(false, false, true, false);
+var pieceId = IsoPieceidCell.toPieceid(playerCell)
+assert(pieceId == PLAYER);
+
+var goalCell = new Cell(false, false, false, true);
+var pieceId = IsoPieceidCell.toPieceid(goalCell)
+assert(pieceId == GOAL);
+
+var goalSliderCell = new Cell(false, true, false, true);
+var pieceId = IsoPieceidCell.toPieceid(goalSliderCell)
+assert(pieceId == GOAL_SLIDER);
+
+var goalPlayerCell = new Cell(false, false, true, true);
+var pieceId = IsoPieceidCell.toPieceid(goalPlayerCell)
+assert(pieceId == GOAL_PLAYER);
+
+
+
