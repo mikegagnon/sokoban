@@ -286,6 +286,34 @@ function snapshots_equal(snapshot1, snapshot2) {
     return matrices_equal(snapshot1.matrix, snapshot2.matrix);
 }
 
+// Returns true iff cell1 and cell2 are identical
+function cells_equal(cell1, cell2) {
+    return cell1.block == cell2.block &&
+        cell1.slider == cell2.slider &&
+        cell1.player == cell2.player &&
+        cell1.goal == cell2.goal;
+}
+
+function boards_equal(board1, board2) {
+    if (board1.gameOver != board2.gameOver ||
+        board1.numRows != board2.numRows ||
+        board1.numCols != board2.numCols) {
+        return false;
+    }
+
+    for (var row = 0; row < board1.numRows; row++) {
+        for (var col = 0; col < board1.numCols; col++) {
+            var cell1 = board1.cells[row][col];
+            var cell2 = board2.cells[row][col];
+            if (!cells_equal(cell1, cell2)) {
+                return false;
+            }
+        }
+    }
+
+    return true;
+}
+
 /* Test case: only in bounds. Only empty squares and player *******************/
 
 // Init sokoban
@@ -339,15 +367,35 @@ var matrix_expected = [
 var snapshot_expected = new Snapshot(matrix_expected, false);
 assert(snapshots_equal(snapshot_result, snapshot_expected));
 
-/* Tests for IsoPieceidCell  **************************************************/
+// Test exiting PLAYER exiting GOAL
+var matrix = [
+    [0, 0],
+    [0, 6],
+    [0, 0],
+];
 
-// Returns true iff cell1 and cell2 are identical
-function cells_equal(cell1, cell2) {
-    return cell1.block == cell2.block &&
-        cell1.slider == cell2.slider &&
-        cell1.player == cell2.player &&
-        cell1.goal == cell2.goal;
-}
+var snapshot_init = new Snapshot(matrix, false);
+var sokoban = new Sokoban(snapshot_init);
+
+var snapshot_result = sokoban.move("up");
+var matrix_expected = [
+    [0, 3],
+    [0, 4],
+    [0, 0],
+];
+var snapshot_expected = new Snapshot(matrix_expected, false);
+assert(snapshots_equal(snapshot_result, snapshot_expected));
+
+var snapshot_result = sokoban.move("down");
+var matrix_expected = [
+    [0, 0],
+    [0, 6],
+    [0, 0],
+];
+var snapshot_expected = new Snapshot(matrix_expected, false);
+assert(snapshots_equal(snapshot_result, snapshot_expected));
+
+/* Tests for IsoPieceidCell  **************************************************/
 
 // Test toCell
 var cell1 = IsoPieceidCell.toCell(EMPTY);
@@ -409,11 +457,13 @@ assert(pieceId == GOAL_PLAYER);
 
 /* Tests for IsoSnapshotBoard  **************************************************/
 
-
 function test_IsoSnapshotBoard(snapshot1) {
-    var board = IsoSnapshotBoard.toBoard(snapshot1);
-    var snapshot2 = IsoSnapshotBoard.toSnapshot(board);
+    var board1 = IsoSnapshotBoard.toBoard(snapshot1);
+    var snapshot2 = IsoSnapshotBoard.toSnapshot(board1);
+    var board2 = IsoSnapshotBoard.toBoard(snapshot2);
+    
     assert(snapshots_equal(snapshot1, snapshot2));
+    assert(boards_equal(board1, board2));
 }
 
 // gameOver false
