@@ -622,7 +622,20 @@ We will:
 3. Implement an `IsoPieceidCell` isomorphism
 4. Modify `Sokoban` so that is uses a `Board` object instead of a `Snapshot` object
 
-### `Board` and `Cell` class definitions
+### Contents of this challenge
+
+This section contains many subsections, and may be a bit unwieldy. To help make it more wieldy, here are the subsections of this section:
+
+- [`Board` and `Cell` class definitions](#c2-3-board-cell-def)
+- [Outline of `IsoSnapshotBoard` isomorphism](#c2-3-IsoSnapshotBoard-outline)
+- [Outline of `IsoPieceidCell` isomorphism](#c2-3-IsoPieceidCell-outline")
+- [Modify Sokoban so that is uses a `Board` object instead of a `Snapshot` object](#c2-3-modify-sokoban)
+- [Tests for the new `move(...)` method](#c2-3-tests-for-new-move)
+- [The challenge](#c2-3-challege)
+- [Tests for `IsoPieceidCell`](#c2-3-tests-for-IsoPieceidCell)
+- [Tests for `IsoSnapshotBoard`](#c2-3-tests-for-IsoSnapshotBoard)
+
+### <a name="c2-3-board-cell-def">`Board` and `Cell` class definitions</a>
 
 The `Board` class is like the `Snapshot` class, except the `Board` class stores
 the game state is a matrix of `Cell` objects, whereas the `Snapshot` class
@@ -659,7 +672,7 @@ class Cell {
 }
 ```
 
-### Outline of `IsoSnapshotBoard` isomorphism
+### <a name="c2-3-IsoSnapshotBoard-outline">Outline of `IsoSnapshotBoard` isomorphism</a>
 
 ```js
 /* IsoSnapshotBoard class *****************************************************/
@@ -673,7 +686,7 @@ class IsoSnapshotBoard {
 }
 ```
 
-### Outline of `IsoPieceidCell` isomorphism
+### <a name="c2-3-IsoPieceidCell-outline">Outline of `IsoPieceidCell` isomorphism</a>
 
 ```js
 /* IsoPieceidCell class *****************************************************/
@@ -687,7 +700,7 @@ class IsoPieceidCell {
 }
 ```
 
-### Modify Sokoban so that is uses a `Board` object instead of a `Snapshot` object
+### <a name="c2-3-modify-sokoban">Modify Sokoban so that is uses a `Board` object instead of a `Snapshot` object</a>
 
 Make the following modifications:
 
@@ -754,6 +767,8 @@ Now, it can also handle `GOAL_PLAYER` pieces too.
 If it's not clear to you what's going on, study the `Cell` class (in contrast to `pieceId`) and study
 the `move(...)` method.
 
+### <a name="c2-3-tests-for-new-move">Tests for the new `move(...)` method</a>
+
 We can add several more tests for the `move(...)` method, now that it handles `GOAL_PLAYER` pieces:
 
 ```js
@@ -786,7 +801,7 @@ var snapshot_expected = new Snapshot(matrix_expected, false);
 assert(snapshots_equal(snapshot_result, snapshot_expected));
 ```
 
-### Challenge
+### <a name="c2-3-challege">The challenge</a>
 
 Implement `IsoSnapshotBoard` and `IsoPieceidCell`.
 
@@ -794,7 +809,7 @@ Implement `IsoSnapshotBoard` and `IsoPieceidCell`.
 - [Solution for `IsoPieceidCell`](#solution-IsoPieceidCell)
 
 
-#### Tests for `IsoPieceidCell`
+#### <a name="c2-3-tests-for-IsoPieceidCell">Tests for `IsoPieceidCell`</a>
 
 ```js
 /* Tests for IsoPieceidCell  **************************************************/
@@ -866,7 +881,7 @@ var pieceId = IsoPieceidCell.toPieceid(goalPlayerCell)
 assert(pieceId == GOAL_PLAYER);
 ```
 
-#### Tests for `IsoSnapshotBoard`
+#### <a name="c2-3-tests-for-IsoSnapshotBoard">Tests for `IsoSnapshotBoard`</a>
 
 ```js
 
