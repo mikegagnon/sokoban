@@ -747,7 +747,7 @@ class Sokoban {
 Observe: the semantics of `move(...)` have changed slightly.
 
 In the old version (from [Challenge 2.1](#c2-1)), `move(...)` only worked for matrices containing
-only EMPTY and PLAYER pieceIds.
+only `EMPTY` and `PLAYER` pieceIds.
 
 Now, it can also handle `GOAL_PLAYER` pieces too.
 
