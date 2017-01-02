@@ -743,6 +743,82 @@ class Sokoban {
     } 
 }
 ```
+
+### Challenge
+
+Implement `IsoSnapshotBoard` and `IsoPieceidCell`.
+
+#### Tests for `IsoPieceidCell`
+
+```js
+/* Tests for IsoPieceidCell  **************************************************/
+
+// Returns true iff cell1 and cell2 are identical
+function cells_equal(cell1, cell2) {
+    return cell1.block == cell2.block &&
+        cell1.slider == cell2.slider &&
+        cell1.player == cell2.player &&
+        cell1.goal == cell2.goal;
+}
+
+// Test toCell
+var cell1 = IsoPieceidCell.toCell(EMPTY);
+var cell2 = new Cell(false, false, false, false);
+assert(cells_equal(cell1, cell2));
+
+var cell1 = IsoPieceidCell.toCell(BLOCK);
+var cell2 = new Cell(true, false, false, false);
+assert(cells_equal(cell1, cell2));
+
+var cell1 = IsoPieceidCell.toCell(SLIDER);
+var cell2 = new Cell(false, true, false, false);
+assert(cells_equal(cell1, cell2));
+
+var cell1 = IsoPieceidCell.toCell(PLAYER);
+var cell2 = new Cell(false, false, true, false);
+assert(cells_equal(cell1, cell2));
+
+var cell1 = IsoPieceidCell.toCell(GOAL);
+var cell2 = new Cell(false, false, false, true);
+assert(cells_equal(cell1, cell2));
+
+var cell1 = IsoPieceidCell.toCell(GOAL_SLIDER);
+var cell2 = new Cell(false, true, false, true);
+assert(cells_equal(cell1, cell2));
+
+var cell1 = IsoPieceidCell.toCell(GOAL_PLAYER);
+var cell2 = new Cell(false, false, true, true);
+assert(cells_equal(cell1, cell2));
+
+// Test toPieceid
+var emptyCell = new Cell(false, false, false, false);
+var pieceId = IsoPieceidCell.toPieceid(emptyCell)
+assert(pieceId == EMPTY);
+
+var blockCell = new Cell(true, false, false, false);
+var pieceId = IsoPieceidCell.toPieceid(blockCell)
+assert(pieceId == BLOCK);
+
+var sliderCell = new Cell(false, true, false, false);
+var pieceId = IsoPieceidCell.toPieceid(sliderCell)
+assert(pieceId == SLIDER);
+
+var playerCell = new Cell(false, false, true, false);
+var pieceId = IsoPieceidCell.toPieceid(playerCell)
+assert(pieceId == PLAYER);
+
+var goalCell = new Cell(false, false, false, true);
+var pieceId = IsoPieceidCell.toPieceid(goalCell)
+assert(pieceId == GOAL);
+
+var goalSliderCell = new Cell(false, true, false, true);
+var pieceId = IsoPieceidCell.toPieceid(goalSliderCell)
+assert(pieceId == GOAL_SLIDER);
+
+var goalPlayerCell = new Cell(false, false, true, true);
+var pieceId = IsoPieceidCell.toPieceid(goalPlayerCell)
+assert(pieceId == GOAL_PLAYER);
+```
 # <a name="part3">Part 3. The `Viz` class</a>
 
 # <a name="part4">Part 4. Putting it all together</a>
