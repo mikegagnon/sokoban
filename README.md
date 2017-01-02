@@ -620,7 +620,7 @@ We will:
 2. Implement a `Cell` class that is isomorphic with `pieceId` values
 3. Implement an `IsoSnapshotBoard` isomorphism
 3. Implement an `IsoPieceidCell` isomorphism
-4. Modify Sokoban so that is uses a `Board` object instead of a `Snapshot` object
+4. Modify `Sokoban` so that is uses a `Board` object instead of a `Snapshot` object
 
 ### `Board` and `Cell` class definitions
 
