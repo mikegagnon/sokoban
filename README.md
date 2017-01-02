@@ -316,8 +316,6 @@ VIZ = new Viz("#board", snapshot);
 function assert(condition) {
     if (!condition) {
         console.error("Test failed");
-        $("html").append("<p style='color: red'>Test failed. See JS console " +
-            "for details.</p>");
     }
 }
 
@@ -611,67 +609,140 @@ class IsoLetterMorse {
 In this challenge we refactor the `Sokoban` class for two reasons:
 
 1. The refactor will ultimately lead to code that is more readable
-2. The refactor will demonstrate how we can refactor the internals of the Sokoban class,
+2. The refactor will demonstrate how we can refactor the internals of the `Sokoban` class,
    without changing the interface.
-
 
 ### Overview of our refactor
 
-We will implement a `Board` class that is isomorphic with the `Snapshot` class.
+We will:
 
-Then  we will implement an isomorphism, `IsoSnapshotBoard`, so that 
-`Snapshot` objects can be converted to `Board` objects, and vice versa.
+1. Implement a `Board` class that is isomorphic with the `Snapshot` class
+2. Implement a `Cell` class that is isomorphic with `pieceId` values
+3. Implement an `IsoSnapshotBoard` isomorphism
+3. Implement an `IsoPieceidCell` isomorphism
+4. Modify Sokoban so that is uses a `Board` object instead of a `Snapshot` object
 
-The reason we implement the `Board` class is because the `Sokoban` class
-can store gamestate 
+### `Board` and `Cell` class definitions
 
-The `Board` class is like the `Snapshot`
-
-#### `Board` class
-
-In this challenge, we will define a new data structure, called `Board` that is
-isomorphic with the `Snapshot` class. Like `Snapshot`, the `Board` data structure :
-
-- Holds a `matrix` that represents the layout of the pieces
-- Holds `numRows` and `numCols`
-
-#### `Cell` class
-
-Unlike the `Snapshot` `matrix`, the `Board` `matrix` doesn't hold `pieceId` values. Rather, the `Board` `matrix`
-holds `Cell` objects.
-
-Study this partial definition of the `Cell` class:
+The `Board` class is like the `Snapshot` class, except the `Board` class stores
+the game state is a matrix of `Cell` objects, whereas the `Snapshot` class
+stores the game state in a matrix of `pieceId` values.
 
 ```js
-class Cell {
-    constructor(pieceId) {
-        this.block = false;
-        this.slider = false;
-        this.player = false;
-        this.goal = false;
+/* Board class ****************************************************************/
+class Board {
 
-        if (pieceId == BLOCK) {
-            this.block = true;
-        } else if (pieceId == SLIDER) {
-            this.slider = true;
-        } else if (pieceId == PLAYER) {
-            this.player = true;
-        } else if (pieceId == GOAL) {
-            this.goal = true;
-        } else if (pieceId == GOAL_SLIDER) {
-            this.goal = true;
-            this.slider = true;
-        } else if (pieceId == GOAL_PLAYER) {
-            this.goal = true;
-            this.player = true;
-        }
+    // The cells argument is a 2-dimensional matrix describing the board state.
+    // Each item in cells is a cell object, which is to say an instance of the
+    // Cell class.
+    //
+    // The gameOver argument is a boolen that is true iff the player has solved
+    // the puzzle.
+    constructor(cells, gameOver) {
+        this.cells = cells;
+        this.gameOver = gameOver;
+        this.numRows = cells.length;
+        this.numCols = cells[0].length;
     }
-    
-    ...
+}
+
+/* Cell class *****************************************************************/
+// Iff this.block == true, then that means there is a block in this cell
+// And so on for this.slider, this.player, and this.goal
+class Cell {
+    constructor(block, slider, player, goal) {
+        this.block = block;
+        this.slider = slider;
+        this.player = player;
+        this.goal = goal;
+    }
 }
 ```
-   
 
+### Outline of `IsoSnapshotBoard` isomorphism
+
+```js
+/* IsoSnapshotBoard class *****************************************************/
+class IsoSnapshotBoard {
+
+    // Converts a Snapshot object to a Board objeect
+    static toBoard(snapshot) { ... }
+
+    // Converts a Board object to a Snapshot object
+    static toSnapshot(board) { ... }
+}
+```
+
+### Outline of `IsoPieceidCell` isomorphism
+
+```js
+/* IsoPieceidCell class *****************************************************/
+class IsoPieceidCell {
+
+    // Converts a pieceId value to a Cell objeect
+    static toCell(pieceId) { ... }
+
+    // Converts a Cell object to a pieceId value
+    static toPieceId(cell) { ... }
+}
+```
+
+### Modify Sokoban so that is uses a `Board` object instead of a `Snapshot` object
+
+Make the following modifications:
+
+```js
+class Sokoban {
+
+    // The snapshot argument defines the initial gamestate
+    constructor(snapshot) {
+        this.board = IsoSnapshotBoard.toBoard(snapshot); // <----------------------
+
+        var [row, col] = this.findPlayer();
+        this.playerRow = row;
+        this.playerCol = col;
+    }
+
+    findPlayer() {
+
+        for (var row = 0; row < this.board.numRows; row++) {       // <------------
+            for (var col = 0; col < this.board.numCols; col++) {   // <------------
+                var cell = this.board.cells[row][col];             // <------------
+                if (cell.player) {                                 // <------------
+                    return [row, col];
+                }
+            }
+        }
+
+        // If there is no player
+        assert(false);
+    }
+    
+    // Moves the player in the specified direction. direction must be either:
+    // "up", "down", "left", or "right"
+    // Returns a snapshot object that defines the game state after the player is moved
+    move(direction) {
+
+        this.board.cells[this.playerRow][this.playerCol].player = false; // <------------
+
+        if (direction == "up") {
+            this.playerRow -= 1;
+        } else if (direction == "down") {
+            this.playerRow += 1;
+        } else if (direction == "left") {
+            this.playerCol -= 1;
+        } else if (direction == "right") {
+            this.playerCol += 1;
+        } else {
+            assert(false);
+        }
+
+        this.board.cells[this.playerRow][this.playerCol].player = true; // <------------
+
+        return IsoSnapshotBoard.toSnapshot(this.board);                 // <------------
+    } 
+}
+```
 # <a name="part3">Part 3. The `Viz` class</a>
 
 # <a name="part4">Part 4. Putting it all together</a>
