@@ -867,9 +867,32 @@ assert(pieceId == GOAL_PLAYER);
 ```js
 
 function test_IsoSnapshotBoard(snapshot1) {
-    var board = IsoSnapshotBoard.toBoard(snapshot1);
-    var snapshot2 = IsoSnapshotBoard.toSnapshot(board);
+    var board1 = IsoSnapshotBoard.toBoard(snapshot1);
+    var snapshot2 = IsoSnapshotBoard.toSnapshot(board1);
+    var board2 = IsoSnapshotBoard.toBoard(snapshot2);
+    
     assert(snapshots_equal(snapshot1, snapshot2));
+    assert(boards_equal(board1, board2));
+}
+
+function boards_equal(board1, board2) {
+    if (board1.gameOver != board2.gameOver ||
+        board1.numRows != board2.numRows ||
+        board1.numCols != board2.numCols) {
+        return false;
+    }
+
+    for (var row = 0; row < board1.numRows; row++) {
+        for (var col = 0; col < board1.numCols; col++) {
+            var cell1 = board1.cells[row][col];
+            var cell2 = board2.cells[row][col];
+            if (!cells_equal(cell1, cell2)) {
+                return false;
+            }
+        }
+    }
+
+    return true;
 }
 
 // gameOver false
