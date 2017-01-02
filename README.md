@@ -620,7 +620,7 @@ We will:
 2. Implement a `Cell` class that is isomorphic with `pieceId` values
 3. Implement an `IsoSnapshotBoard` isomorphism
 3. Implement an `IsoPieceidCell` isomorphism
-4. Modify Sokoban so that is uses a `Board` object instead of a `Snapshot` object
+4. Modify `Sokoban` so that is uses a `Board` object instead of a `Snapshot` object
 
 ### `Board` and `Cell` class definitions
 
@@ -744,6 +744,48 @@ class Sokoban {
 }
 ```
 
+Observe: the semantics of `move(...)` have changed slightly.
+
+In the old version (from [Challenge 2.1](#c2-1)), `move(...)` only worked for matrices containing
+only `EMPTY` and `PLAYER` pieceIds.
+
+Now, it can also handle `GOAL_PLAYER` pieces too.
+
+If it's not clear to you what's going on, study the `Cell` class (in contrast to `pieceId`) and study
+the `move(...)` method.
+
+We can add several more tests for the `move(...)` method, now that it handles `GOAL_PLAYER` pieces:
+
+```js
+// Test exiting PLAYER exiting GOAL
+var matrix = [
+    [0, 0],
+    [0, 6],
+    [0, 0],
+];
+
+var snapshot_init = new Snapshot(matrix, false);
+var sokoban = new Sokoban(snapshot_init);
+
+var snapshot_result = sokoban.move("up");
+var matrix_expected = [
+    [0, 3],
+    [0, 4],
+    [0, 0],
+];
+var snapshot_expected = new Snapshot(matrix_expected, false);
+assert(snapshots_equal(snapshot_result, snapshot_expected));
+
+var snapshot_result = sokoban.move("down");
+var matrix_expected = [
+    [0, 0],
+    [0, 6],
+    [0, 0],
+];
+var snapshot_expected = new Snapshot(matrix_expected, false);
+assert(snapshots_equal(snapshot_result, snapshot_expected));
+```
+
 ### Challenge
 
 Implement `IsoSnapshotBoard` and `IsoPieceidCell`.
@@ -819,6 +861,100 @@ var goalPlayerCell = new Cell(false, false, true, true);
 var pieceId = IsoPieceidCell.toPieceid(goalPlayerCell)
 assert(pieceId == GOAL_PLAYER);
 ```
+
+#### Tests for `IsoSnapshotBoard`
+
+```js
+
+function test_IsoSnapshotBoard(snapshot1) {
+    var board1 = IsoSnapshotBoard.toBoard(snapshot1);
+    var snapshot2 = IsoSnapshotBoard.toSnapshot(board1);
+    var board2 = IsoSnapshotBoard.toBoard(snapshot2);
+    
+    assert(snapshots_equal(snapshot1, snapshot2));
+    assert(boards_equal(board1, board2));
+}
+
+function boards_equal(board1, board2) {
+    if (board1.gameOver != board2.gameOver ||
+        board1.numRows != board2.numRows ||
+        board1.numCols != board2.numCols) {
+        return false;
+    }
+
+    for (var row = 0; row < board1.numRows; row++) {
+        for (var col = 0; col < board1.numCols; col++) {
+            var cell1 = board1.cells[row][col];
+            var cell2 = board2.cells[row][col];
+            if (!cells_equal(cell1, cell2)) {
+                return false;
+            }
+        }
+    }
+
+    return true;
+}
+
+// gameOver false
+var matrix = [[EMPTY]];
+var gameOver = false;
+var snapshot = new Snapshot(matrix, gameOver);
+test_IsoSnapshotBoard(snapshot);
+
+// gameOver true
+var matrix = [[EMPTY]];
+var gameOver = true;
+var snapshot = new Snapshot(matrix, gameOver);
+test_IsoSnapshotBoard(snapshot);
+
+// SLIDER
+var matrix = [[SLIDER]];
+var gameOver = false;
+var snapshot = new Snapshot(matrix, gameOver);
+test_IsoSnapshotBoard(snapshot);
+
+// PLAYER
+var matrix = [[PLAYER]];
+var gameOver = false;
+var snapshot = new Snapshot(matrix, gameOver);
+test_IsoSnapshotBoard(snapshot);
+
+// GOAL
+var matrix = [[GOAL]];
+var gameOver = false;
+var snapshot = new Snapshot(matrix, gameOver);
+test_IsoSnapshotBoard(snapshot);
+
+// GOAL_SLIDER
+var matrix = [[GOAL_SLIDER]];
+var gameOver = false;
+var snapshot = new Snapshot(matrix, gameOver);
+test_IsoSnapshotBoard(snapshot);
+
+// GOAL_PLAYER
+var matrix = [[GOAL_PLAYER]];
+var gameOver = false;
+var snapshot = new Snapshot(matrix, gameOver);
+test_IsoSnapshotBoard(snapshot);
+
+// Complex matrix
+var matrix =  [
+    [5, 0, 1, 1, 1, 1, 1, 0],
+    [1, 1, 1, 0, 0, 0, 1, 0],
+    [1, 4, 3, 2, 0, 0, 1, 0],
+    [1, 1, 1, 0, 2, 4, 1, 0],
+    [1, 4, 1, 1, 2, 0, 1, 0],
+    [1, 0, 1, 0, 4, 0, 1, 1],
+    [1, 2, 0, 0, 2, 2, 4, 1],
+    [1, 0, 0, 0, 4, 0, 0, 1],
+    [1, 1, 1, 1, 1, 1, 1, 1]
+];
+var gameOver = false;
+var snapshot = new Snapshot(matrix, gameOver);
+test_IsoSnapshotBoard(snapshot);
+
+```
+
 # <a name="part3">Part 3. The `Viz` class</a>
 
 # <a name="part4">Part 4. Putting it all together</a>
