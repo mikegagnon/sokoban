@@ -19,6 +19,8 @@ And familiarity with OOP (object-orient programming) in JavaScript.
     - [Lecture 1.2 The `Snapshot` class](#lec1-2)
 - [Part 2. The `Sokoban` class](#part2)
     - [Challenge 2.1 A player among empty squares](#c2-1)
+    - [Lecture 2.2 Isomorphisms](#lec2-2)
+    - [Challenge 2.3 Refactor the `Sokoban` class with an isomorphism](#c2-3)
 - [Part 3. The `Viz` class](#part3)
 - [Part 4. Putting it all together](#part4)
 
@@ -314,8 +316,6 @@ VIZ = new Viz("#board", snapshot);
 function assert(condition) {
     if (!condition) {
         console.error("Test failed");
-        $("html").append("<p style='color: red'>Test failed. See JS console " +
-            "for details.</p>");
     }
 }
 
@@ -542,6 +542,207 @@ assert(snapshots_equal(snapshot_result, snapshot_expected));
 - [Hint 6](#hint2-1-6)
 - [Solution](#solution2-1)
 
+## <a name="lec2-2">Lecture 2.2 Isomorphisms</a>
+
+First, an example:
+
+### Example of an isomorphism
+
+There are letters (the alphabet of letters is *L*),
+and there are morse-code sounds (the alphabet of sounds is *M*).
+
+Every letter *l* in *L* can be converted to a sound *m* in *M*.
+
+And every sound *m* in *M* can be converted to a sound *l* in *L*.
+
+The two-way mapping between *L* and *M* is an "isomorphism between *L* and *M*."
+
+### Definition of "isomorphism"
+
+In JavaScript, an isomorphism is a class that relates two datatypes, say *A* and *B*. Every isomorphism
+class has two static functions: `toB(...)` and `toA(...)`.
+
+```js
+class IsoAB {
+
+    // converts an instance of datatype A to an instance of datatype B
+    static toB(a) {...}
+    
+    // converts an instance of datatype B to an instance of datatype A
+    static toA(b) {...}
+}
+```
+
+For every element `a` of `A`: `btoa(atob(a))` must equal `a`.
+
+And:
+
+For every element `b` of `B`: `atob(btoa(b))` must equal `b`.
+
+### Example
+
+```js
+class IsoLetterMorse {
+
+    static toMorse(letter) {
+        if (letter == "a") {
+            return ".-";
+        } else if (letter == "b") {
+            return "-...";
+        } 
+            ...
+    }
+    
+    static toLetter(morse) {
+        if (morse == ".-") {
+            return "a";
+        } else if (morse == "-...") {
+            return "b";
+        }
+            ...
+    }
+}
+```
+
+## <a name="c2-3">Challenge 2.3 Refactor the `Sokoban` class with an isomorphism</a>
+
+In this challenge we refactor the `Sokoban` class for two reasons:
+
+1. The refactor will ultimately lead to code that is more readable
+2. The refactor will demonstrate how we can refactor the internals of the `Sokoban` class,
+   without changing the interface.
+
+### Overview of our refactor
+
+We will:
+
+1. Implement a `Board` class that is isomorphic with the `Snapshot` class
+2. Implement a `Cell` class that is isomorphic with `pieceId` values
+3. Implement an `IsoSnapshotBoard` isomorphism
+3. Implement an `IsoPieceidCell` isomorphism
+4. Modify Sokoban so that is uses a `Board` object instead of a `Snapshot` object
+
+### `Board` and `Cell` class definitions
+
+The `Board` class is like the `Snapshot` class, except the `Board` class stores
+the game state is a matrix of `Cell` objects, whereas the `Snapshot` class
+stores the game state in a matrix of `pieceId` values.
+
+```js
+/* Board class ****************************************************************/
+class Board {
+
+    // The cells argument is a 2-dimensional matrix describing the board state.
+    // Each item in cells is a cell object, which is to say an instance of the
+    // Cell class.
+    //
+    // The gameOver argument is a boolen that is true iff the player has solved
+    // the puzzle.
+    constructor(cells, gameOver) {
+        this.cells = cells;
+        this.gameOver = gameOver;
+        this.numRows = cells.length;
+        this.numCols = cells[0].length;
+    }
+}
+
+/* Cell class *****************************************************************/
+// Iff this.block == true, then that means there is a block in this cell
+// And so on for this.slider, this.player, and this.goal
+class Cell {
+    constructor(block, slider, player, goal) {
+        this.block = block;
+        this.slider = slider;
+        this.player = player;
+        this.goal = goal;
+    }
+}
+```
+
+### Outline of `IsoSnapshotBoard` isomorphism
+
+```js
+/* IsoSnapshotBoard class *****************************************************/
+class IsoSnapshotBoard {
+
+    // Converts a Snapshot object to a Board objeect
+    static toBoard(snapshot) { ... }
+
+    // Converts a Board object to a Snapshot object
+    static toSnapshot(board) { ... }
+}
+```
+
+### Outline of `IsoPieceidCell` isomorphism
+
+```js
+/* IsoPieceidCell class *****************************************************/
+class IsoPieceidCell {
+
+    // Converts a pieceId value to a Cell objeect
+    static toCell(pieceId) { ... }
+
+    // Converts a Cell object to a pieceId value
+    static toPieceId(cell) { ... }
+}
+```
+
+### Modify Sokoban so that is uses a `Board` object instead of a `Snapshot` object
+
+Make the following modifications:
+
+```js
+class Sokoban {
+
+    // The snapshot argument defines the initial gamestate
+    constructor(snapshot) {
+        this.board = IsoSnapshotBoard.toBoard(snapshot); // <----------------------
+
+        var [row, col] = this.findPlayer();
+        this.playerRow = row;
+        this.playerCol = col;
+    }
+
+    findPlayer() {
+
+        for (var row = 0; row < this.board.numRows; row++) {       // <------------
+            for (var col = 0; col < this.board.numCols; col++) {   // <------------
+                var cell = this.board.cells[row][col];             // <------------
+                if (cell.player) {                                 // <------------
+                    return [row, col];
+                }
+            }
+        }
+
+        // If there is no player
+        assert(false);
+    }
+    
+    // Moves the player in the specified direction. direction must be either:
+    // "up", "down", "left", or "right"
+    // Returns a snapshot object that defines the game state after the player is moved
+    move(direction) {
+
+        this.board.cells[this.playerRow][this.playerCol].player = false; // <------------
+
+        if (direction == "up") {
+            this.playerRow -= 1;
+        } else if (direction == "down") {
+            this.playerRow += 1;
+        } else if (direction == "left") {
+            this.playerCol -= 1;
+        } else if (direction == "right") {
+            this.playerCol += 1;
+        } else {
+            assert(false);
+        }
+
+        this.board.cells[this.playerRow][this.playerCol].player = true; // <------------
+
+        return IsoSnapshotBoard.toSnapshot(this.board);                 // <------------
+    } 
+}
+```
 # <a name="part3">Part 3. The `Viz` class</a>
 
 # <a name="part4">Part 4. Putting it all together</a>
