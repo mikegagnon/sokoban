@@ -742,11 +742,49 @@ class Sokoban {
         return IsoSnapshotBoard.toSnapshot(this.board);                 // <------------
     } 
 }
+```t
+
+Observe: the semantics of `move(...)` have changed slightly.
+
+In the old version (from [Challenge 2.1](#c2-1)), `move(...)` only worked for matrices containing
+only EMPTY and PLAYER pieceIds.
+
+Now, it can also handle `GOAL_PLAYER` pieces too.
+
+If it's not clear to you what's going on, study the `Cell` class (in contrast to `pieceId`) and study
+the `move(...)` method.
+
+We can add several more tests for the `move(...)` method, now that it handles `GOAL_PLAYER` pieces:
+
+```js
+// Test exiting PLAYER exiting GOAL
+var matrix = [
+    [0, 0],
+    [0, 6],
+    [0, 0],
+];
+
+var snapshot_init = new Snapshot(matrix, false);
+var sokoban = new Sokoban(snapshot_init);
+
+var snapshot_result = sokoban.move("up");
+var matrix_expected = [
+    [0, 3],
+    [0, 4],
+    [0, 0],
+];
+var snapshot_expected = new Snapshot(matrix_expected, false);
+assert(snapshots_equal(snapshot_result, snapshot_expected));
+
+var snapshot_result = sokoban.move("down");
+var matrix_expected = [
+    [0, 0],
+    [0, 6],
+    [0, 0],
+];
+var snapshot_expected = new Snapshot(matrix_expected, false);
+assert(snapshots_equal(snapshot_result, snapshot_expected));
 ```
-
-Observe the semantics of `move(...)` have changed slightly.
-
-In the old version (from [Challenge 2.1](#c2-1))
 
 ### Challenge
 
