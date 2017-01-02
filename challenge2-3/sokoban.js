@@ -336,3 +336,36 @@ var matrix_expected = [
 var snapshot_expected = new Snapshot(matrix_expected, false);
 assert(snapshots_equal(snapshot_result, snapshot_expected));
 
+/* Tests for IsoPieceidCell  **************************************************/
+
+// Returns true iff cell1 and cell2 are identical
+function cells_equal(cell1, cell2) {
+    return cell1.block == cell2.block &&
+        cell1.slider == cell2.slider &&
+        cell1.player == cell2.player &&
+        cell1.goal == cell2.goal;
+}
+
+assert(cells_equal(IsoPieceidCell.toCell(EMPTY),
+                   new Cell(false, false, false, false)));
+
+assert(cells_equal(IsoPieceidCell.toCell(BLOCK),
+                   new Cell(true, false, false, false)));
+
+assert(cells_equal(IsoPieceidCell.toCell(SLIDER),
+                   new Cell(false, true, false, false)));
+
+assert(cells_equal(IsoPieceidCell.toCell(PLAYER),
+                   new Cell(false, false, true, false)));
+
+assert(cells_equal(IsoPieceidCell.toCell(GOAL),
+                   new Cell(false, false, false, true)));
+
+assert(cells_equal(IsoPieceidCell.toCell(GOAL_SLIDER),
+                   new Cell(false, true, false, true)));
+
+assert(cells_equal(IsoPieceidCell.toCell(GOAL_PLAYER),
+                   new Cell(false, false, true, true)));
+
+
+
