@@ -103,7 +103,6 @@ class IsoSnapshotBoard {
 
         return new Snapshot(matrix, board.gameOver);
     }
-
 }
 
 /* IsoPieceidCell class *****************************************************/
@@ -117,19 +116,19 @@ class IsoPieceidCell {
         var goal = false;
 
         if (pieceId == BLOCK) {
-            this.block = true;
+            block = true;
         } else if (pieceId == SLIDER) {
-            this.slider = true;
+            slider = true;
         } else if (pieceId == PLAYER) {
-            this.player = true;
+            player = true;
         } else if (pieceId == GOAL) {
-            this.goal = true;
+            goal = true;
         } else if (pieceId == GOAL_SLIDER) {
-            this.goal = true;
-            this.slider = true;
+            goal = true;
+            slider = true;
         } else if (pieceId == GOAL_PLAYER) {
-            this.goal = true;
-            this.player = true;
+            goal = true;
+            player = true;
         }
 
         return new Cell(block, slider, player, goal);
@@ -160,12 +159,23 @@ class IsoPieceidCell {
 /* Sokoban class **************************************************************/
 class Sokoban {
 
-    /* Static functions *******************************************************/
-    static findPlayer(snapshot) {
-        for (var row = 0; row < snapshot.numRows; row++) {
-            for (var col = 0; col < snapshot.numCols; col++) {
-                var pieceId = snapshot.matrix[row][col];
-                if (pieceId == PLAYER) {
+    // The snapshot argument defines the initial gamestate
+    constructor(snapshot) {
+        this.board = IsoSnapshotBoard.toBoard(snapshot);
+
+        var [row, col] = this.findPlayer();
+        this.playerRow = row;
+        this.playerCol = col;
+    }
+
+    findPlayer() {
+
+        console.log(this.board.cells);
+
+        for (var row = 0; row < this.board.numRows; row++) {
+            for (var col = 0; col < this.board.numCols; col++) {
+                var cell = this.board.cells[row][col];
+                if (cell.player) {
                     return [row, col];
                 }
             }
@@ -173,17 +183,6 @@ class Sokoban {
 
         // If there is no player
         assert(false);
-    }
-
-    /* Instance methods *******************************************************/
-
-    // The snapshot argument defines the initial gamestate
-    constructor(snapshot) {
-        this.board = IsoSnapshotBoard.toBoard(snapshot);
-
-        var [row, col] = Sokoban.findPlayer(snapshot);
-        this.playerRow = row;
-        this.playerCol = col;
     }
 
     // Moves the player in the specified direction. direction must be either:
