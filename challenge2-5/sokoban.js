@@ -183,26 +183,43 @@ class Sokoban {
         assert(false);
     }
 
+    // Returns true iff (row, col) is in bounds
+    inBounds(row, col) {
+        return row >= 0 &&
+               row < this.board.numRows &&
+               col >= 0 &&
+               col < this.board.numCols;
+    }
+
     // Moves the player in the specified direction. direction must be either:
     // "up", "down", "left", or "right"
     // Returns a snapshot object that defines the game state after the player is moved
     move(direction) {
 
-        this.board.cells[this.playerRow][this.playerCol].player = false;
+        var newRow = this.playerRow;
+        var newCol = this.playerCol;
 
         if (direction == "up") {
-            this.playerRow -= 1;
+            newRow -= 1;
         } else if (direction == "down") {
-            this.playerRow += 1;
+            newRow += 1;
         } else if (direction == "left") {
-            this.playerCol -= 1;
+            newCol -= 1;
         } else if (direction == "right") {
-            this.playerCol += 1;
+            newCol += 1;
         } else {
             assert(false);
         }
 
-        this.board.cells[this.playerRow][this.playerCol].player = true;
+        if (!this.inBounds(newRow, newCol)) {
+            return IsoSnapshotBoard.toSnapshot(this.board);
+        }
+
+        this.board.cells[this.playerRow][this.playerCol].player = false;
+        this.board.cells[newRow][newCol].player = true;
+
+        this.playerRow = newRow;
+        this.playerCol = newCol;
 
         return IsoSnapshotBoard.toSnapshot(this.board);
     }
@@ -394,6 +411,77 @@ var matrix_expected = [
 ];
 var snapshot_expected = new Snapshot(matrix_expected, false);
 assert(snapshots_equal(snapshot_result, snapshot_expected));
+
+// Test move out-of-bounds
+
+// move right
+var matrix = [
+    [0, 3],
+    [0, 0],
+    [0, 0],
+];
+var snapshot_init = new Snapshot(matrix, false);
+var sokoban = new Sokoban(snapshot_init);
+var snapshot_result = sokoban.move("right");
+var matrix_expected = [
+    [0, 3],
+    [0, 0],
+    [0, 0],
+];
+var snapshot_expected = new Snapshot(matrix_expected, false);
+assert(snapshots_equal(snapshot_result, snapshot_expected));
+
+// move up
+var matrix = [
+    [0, 3],
+    [0, 0],
+    [0, 0],
+];
+var snapshot_init = new Snapshot(matrix, false);
+var sokoban = new Sokoban(snapshot_init);
+var snapshot_result = sokoban.move("up");
+var matrix_expected = [
+    [0, 3],
+    [0, 0],
+    [0, 0],
+];
+var snapshot_expected = new Snapshot(matrix_expected, false);
+assert(snapshots_equal(snapshot_result, snapshot_expected));
+
+// move down
+var matrix = [
+    [0, 0],
+    [0, 0],
+    [3, 0],
+];
+var snapshot_init = new Snapshot(matrix, false);
+var sokoban = new Sokoban(snapshot_init);
+var snapshot_result = sokoban.move("down");
+var matrix_expected = [
+    [0, 0],
+    [0, 0],
+    [3, 0],
+];
+var snapshot_expected = new Snapshot(matrix_expected, false);
+assert(snapshots_equal(snapshot_result, snapshot_expected));
+
+// move left
+var matrix = [
+    [0, 0],
+    [0, 0],
+    [3, 0],
+];
+var snapshot_init = new Snapshot(matrix, false);
+var sokoban = new Sokoban(snapshot_init);
+var snapshot_result = sokoban.move("left");
+var matrix_expected = [
+    [0, 0],
+    [0, 0],
+    [3, 0],
+];
+var snapshot_expected = new Snapshot(matrix_expected, false);
+assert(snapshots_equal(snapshot_result, snapshot_expected));
+
 
 /* Tests for IsoPieceidCell  **************************************************/
 
