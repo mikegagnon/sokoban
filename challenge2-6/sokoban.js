@@ -439,7 +439,7 @@ var matrix_expected = [
 var snapshot_expected = new Snapshot(matrix_expected, false);
 assert(snapshots_equal(snapshot_result, snapshot_expected));
 
-// Test move out-of-bounds
+/* Test move out-of-bounds ****************************************************/
 
 // move right
 var matrix = [
