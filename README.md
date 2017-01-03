@@ -956,7 +956,7 @@ only `EMPTY` and `PLAYER` pieceIds.
 Now, it can also handle `GOAL_PLAYER` pieces too.
 
 If it's not clear to you what's going on, study the `Cell` class (in contrast to `pieceId`) and study
-the `move(...)` method.
+the old and new `move(...)` methods.
 
 ### Tests for the new `move(...)` method
 
