@@ -709,8 +709,15 @@ class IsoPieceidCell {
 
 Implement `IsoSnapshotBoard` and `IsoPieceidCell`.
 
+#### Hints for `IsoPieceidCell`
+
 - No hints for `IsoPieceidCell`
 - [Solution for `IsoPieceidCell`](#solution-IsoPieceidCell)
+
+#### Hints for `IsoSnapshotBoard`
+
+- [Hint 1](#hint2-3-1)
+- [Solution for `IsoSnapshotBoard`](#solution-IsoSnapshotBoard)
 
 #### <a name="c2-3-tests-for-IsoPieceidCell">Tests for `IsoPieceidCell`</a>
 
@@ -1260,3 +1267,70 @@ class IsoPieceidCell {
 }
 ```
 
+<br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
+
+## <a name="hint2-3-1">Hint 1 for Challenge 2.3</a>
+
+### For `IsoSnapshotBoard.toBoard`
+
+1. Create a new 2-D matrix and set `cells = \\ the new matrix`
+2. Iterate over each `pieceId` value in `snapshot.matrix`, convert each `pieceId`
+   value into a `Cell` object (using the `IsoPieceidCell` isomorphism),
+   and save each new `Cell` object into the new `cells` matrix.
+3. Return a new `Board` object that encapsulates `cells` and `snapshot.gameOver`
+
+### For `IsoSnapshotBoard.toSnapshot`
+
+Use a strategy similar to `IsoSnapshotBoard.toBoard` to perform the inverse of 
+`IsoSnapshotBoard.toBoard`.
+
+<br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
+
+## <a name="solution-IsoSnapshotBoard">Solution for Challenge 2.3, `IsoSnapshotBoard`</a>
+
+```js
+class IsoSnapshotBoard {
+
+    static newMatrix(numRows, numCols) {
+        var matrix = new Array(numRows);
+        for (var row = 0; row < numRows; row++) {
+            matrix[row] = new Array(numCols);
+        }
+        return matrix;
+    }
+
+    static toBoard(snapshot) {
+
+        var numRows = snapshot.numRows;
+        var numCols = snapshot.numCols;
+
+        var cells = IsoSnapshotBoard.newMatrix(numRows, numCols);
+
+        for (var row = 0; row < numRows; row++) {
+            for (var col = 0; col < numCols; col++) {
+                var pieceId = snapshot.matrix[row][col];
+                cells[row][col] = IsoPieceidCell.toCell(pieceId);
+            }
+        }
+
+        return new Board(cells, snapshot.gameOver);
+    }
+
+    static toSnapshot(board) {
+        var numRows = board.numRows;
+        var numCols = board.numCols;
+
+        var matrix = IsoSnapshotBoard.newMatrix(numRows, numCols);
+
+        for (var row = 0; row < numRows; row++) {
+            for (var col = 0; col < numCols; col++) {
+
+                var cell = board.cells[row][col];
+                matrix[row][col] = IsoPieceidCell.toPieceid(cell);
+            }
+        }
+
+        return new Snapshot(matrix, board.gameOver);
+    }
+}
+```
