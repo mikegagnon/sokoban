@@ -214,18 +214,41 @@ class Sokoban {
         return [newRow, newCol];
     }
 
-    // Returns true iff (newRow, newCol) can be moved into by a slider or player,
-    // where (newRow, newCol) are the row and column adjacent to row, col
-    // in the specified direction. For example if (row, col) == (0, 0), and
+    // push(row, col, direction)
+    //
+    // Attempts to push the player or slider in (row, col) into 
+    // (newRow, newCol), where (newRow, newCol) is adjacent to (row, col) in
+    // the given direction. For example, if (row, col) == (0, 0), and
     // direction == right, then (newRow, newCol) == (0, 1).
     //
-    // Furthermore, iff (newRow, newCol) can be moved into by a slider or player,
-    // then this function moves the slider-or-player from (row, col) into
-    // (newRow, newCol)
+    // The push attempt may or may not succeed. If the push attempt succeeds
+    // then the piece at (row, col) is moved into (newRow, newCol).
+    //
+    // Returns true iff (row, col) can be moved into by a slider or the player.
+    //      - For example, if (row, col) is empty, then returns true
+    //      - As another example, if (row, col) formerly held a slider, but
+    //        that slider has successefully been pushed into a new cell,
+    //        then (row, col) is now empty, and so returns true.
     //
     // Recall the semantics of the game: a player can push a series of sliders
     // as long as the last slider in the series can slide into an empty cell.
+    // Therefore, this function must be recursive.
     //
+    // For further clarification on the necessity of recursion, consider this
+    // example:
+    //
+    //      The player is located at (0, 0).
+    //      A slider is located at (0, 1), i.e. to the right of the player.
+    //
+    //      The player can only move to the right, iff the slider can 
+    //      move to the right.
+    //
+    //      Therefore push(0, 0, "right") depends on the result of of
+    //      push(0, 1, "right"), which depends on the result of
+    //      push(0, 2, "right").
+    //
+    // Don't bother attempting to implement push(...) until you understand
+    // the documentation for this function.
     push(row, col, direction) {
 
         if (!this.inBounds(row, col)) {
