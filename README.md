@@ -604,33 +604,37 @@ class IsoLetterMorse {
 }
 ```
 
-## <a name="c2-3">Challenge 2.3 Refactor the `Sokoban` class with an isomorphism</a>
 
-In this challenge we refactor the `Sokoban` class for two reasons:
 
-1. The refactor will ultimately lead to code that is more readable
-2. The refactor will demonstrate how we can refactor the internals of the `Sokoban` class,
-   without changing the interface.
 
-### Overview of our refactor
 
-We will:
 
-1. Implement a `Board` class that is isomorphic with the `Snapshot` class
-2. Implement a `Cell` class that is isomorphic with `pieceId` values
-3. Implement an `IsoSnapshotBoard` isomorphism
-3. Implement an `IsoPieceidCell` isomorphism
-4. Modify `Sokoban` so that is uses a `Board` object instead of a `Snapshot` object
+
+
+
+
+## <a name="c2-3">Challenge 2.3 Develop the Sokoban isomorphisms</a>
+
+In this challenge we will develop:
+
+1. a `Board` class that is isomorphic with the `Snapshot` class
+2. a `Cell` class that is isomorphic with `pieceId` values
+3. an `IsoSnapshotBoard` isomorphism (for converting between the
+  `Board` and `Snapshot` classes)
+3. an `IsoPieceidCell` isomorphism (for converting between the `Cell` class
+  and `pieceId` values)
+
+In the next lecture ([Lecture 2.4](#lec2-4)), we will refactor the `Sokoban`
+class using the above isomorphisms as our basis.
 
 ### Contents of this challenge
 
-This section contains many subsections, and may be a bit unwieldy. To help make it more wieldy, here are the subsections of this section:
+This section contains many subsections, and may be a bit unwieldy. To help make
+it more wieldy, here are the subsections of this section:
 
 - [`Board` and `Cell` class definitions](#c2-3-board-cell-def)
-- [Outline of `IsoSnapshotBoard` isomorphism](#c2-3-IsoSnapshotBoard-outline)
-- [Outline of `IsoPieceidCell` isomorphism](#c2-3-IsoPieceidCell-outline")
-- [Modify Sokoban so that is uses a `Board` object instead of a `Snapshot` object](#c2-3-modify-sokoban)
-- [Tests for the new `move(...)` method](#c2-3-tests-for-new-move)
+- [Outline of the `IsoSnapshotBoard` isomorphism](#c2-3-IsoSnapshotBoard-outline)
+- [Outline of the `IsoPieceidCell` isomorphism](#c2-3-IsoPieceidCell-outline")
 - [The challenge](#c2-3-challege)
 - [Tests for `IsoPieceidCell`](#c2-3-tests-for-IsoPieceidCell)
 - [Tests for `IsoSnapshotBoard`](#c2-3-tests-for-IsoSnapshotBoard)
@@ -700,114 +704,12 @@ class IsoPieceidCell {
 }
 ```
 
-### <a name="c2-3-modify-sokoban">Modify Sokoban so that is uses a `Board` object instead of a `Snapshot` object</a>
-
-Make the following modifications:
-
-```js
-class Sokoban {
-
-    // The snapshot argument defines the initial gamestate
-    constructor(snapshot) {
-        this.board = IsoSnapshotBoard.toBoard(snapshot); // <----------------------
-
-        var [row, col] = this.findPlayer();
-        this.playerRow = row;
-        this.playerCol = col;
-    }
-
-    findPlayer() {
-
-        for (var row = 0; row < this.board.numRows; row++) {       // <------------
-            for (var col = 0; col < this.board.numCols; col++) {   // <------------
-                var cell = this.board.cells[row][col];             // <------------
-                if (cell.player) {                                 // <------------
-                    return [row, col];
-                }
-            }
-        }
-
-        // If there is no player
-        assert(false);
-    }
-    
-    // Moves the player in the specified direction. direction must be either:
-    // "up", "down", "left", or "right"
-    // Returns a snapshot object that defines the game state after the player is moved
-    move(direction) {
-
-        this.board.cells[this.playerRow][this.playerCol].player = false; // <------------
-
-        if (direction == "up") {
-            this.playerRow -= 1;
-        } else if (direction == "down") {
-            this.playerRow += 1;
-        } else if (direction == "left") {
-            this.playerCol -= 1;
-        } else if (direction == "right") {
-            this.playerCol += 1;
-        } else {
-            assert(false);
-        }
-
-        this.board.cells[this.playerRow][this.playerCol].player = true; // <------------
-
-        return IsoSnapshotBoard.toSnapshot(this.board);                 // <------------
-    } 
-}
-```
-
-Observe: the semantics of `move(...)` have changed slightly.
-
-In the old version (from [Challenge 2.1](#c2-1)), `move(...)` only worked for matrices containing
-only `EMPTY` and `PLAYER` pieceIds.
-
-Now, it can also handle `GOAL_PLAYER` pieces too.
-
-If it's not clear to you what's going on, study the `Cell` class (in contrast to `pieceId`) and study
-the `move(...)` method.
-
-### <a name="c2-3-tests-for-new-move">Tests for the new `move(...)` method</a>
-
-We can add several more tests for the `move(...)` method, now that it handles `GOAL_PLAYER` pieces:
-
-```js
-// Test exiting PLAYER exiting GOAL
-var matrix = [
-    [0, 0],
-    [0, 6],
-    [0, 0],
-];
-
-var snapshot_init = new Snapshot(matrix, false);
-var sokoban = new Sokoban(snapshot_init);
-
-var snapshot_result = sokoban.move("up");
-var matrix_expected = [
-    [0, 3],
-    [0, 4],
-    [0, 0],
-];
-var snapshot_expected = new Snapshot(matrix_expected, false);
-assert(snapshots_equal(snapshot_result, snapshot_expected));
-
-var snapshot_result = sokoban.move("down");
-var matrix_expected = [
-    [0, 0],
-    [0, 6],
-    [0, 0],
-];
-var snapshot_expected = new Snapshot(matrix_expected, false);
-assert(snapshots_equal(snapshot_result, snapshot_expected));
-```
-
 ### <a name="c2-3-challege">The challenge</a>
 
 Implement `IsoSnapshotBoard` and `IsoPieceidCell`.
 
 - No hints for `IsoPieceidCell`
 - [Solution for `IsoPieceidCell`](#solution-IsoPieceidCell)
-
 
 #### <a name="c2-3-tests-for-IsoPieceidCell">Tests for `IsoPieceidCell`</a>
 
@@ -973,6 +875,139 @@ var snapshot = new Snapshot(matrix, gameOver);
 test_IsoSnapshotBoard(snapshot);
 
 ```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+### <a name="lec2-4">Modify `Sokoban` so that is uses a `Board` object instead of a `Snapshot` object</a>
+
+Make the following modifications:
+
+```js
+class Sokoban {
+
+    // The snapshot argument defines the initial gamestate
+    constructor(snapshot) {
+        this.board = IsoSnapshotBoard.toBoard(snapshot); // <----------------------
+
+        var [row, col] = this.findPlayer();
+        this.playerRow = row;
+        this.playerCol = col;
+    }
+
+    findPlayer() {
+
+        for (var row = 0; row < this.board.numRows; row++) {       // <------------
+            for (var col = 0; col < this.board.numCols; col++) {   // <------------
+                var cell = this.board.cells[row][col];             // <------------
+                if (cell.player) {                                 // <------------
+                    return [row, col];
+                }
+            }
+        }
+
+        // If there is no player
+        assert(false);
+    }
+    
+    // Moves the player in the specified direction. direction must be either:
+    // "up", "down", "left", or "right"
+    // Returns a snapshot object that defines the game state after the player is moved
+    move(direction) {
+
+        this.board.cells[this.playerRow][this.playerCol].player = false; // <------------
+
+        if (direction == "up") {
+            this.playerRow -= 1;
+        } else if (direction == "down") {
+            this.playerRow += 1;
+        } else if (direction == "left") {
+            this.playerCol -= 1;
+        } else if (direction == "right") {
+            this.playerCol += 1;
+        } else {
+            assert(false);
+        }
+
+        this.board.cells[this.playerRow][this.playerCol].player = true; // <------------
+
+        return IsoSnapshotBoard.toSnapshot(this.board);                 // <------------
+    } 
+}
+```
+
+Observe: the semantics of `move(...)` have changed slightly.
+
+In the old version (from [Challenge 2.1](#c2-1)), `move(...)` only worked for matrices containing
+only `EMPTY` and `PLAYER` pieceIds.
+
+Now, it can also handle `GOAL_PLAYER` pieces too.
+
+If it's not clear to you what's going on, study the `Cell` class (in contrast to `pieceId`) and study
+the `move(...)` method.
+
+### Tests for the new `move(...)` method
+
+We can add several more tests for the `move(...)` method, now that it handles `GOAL_PLAYER` pieces:
+
+```js
+// Test exiting PLAYER exiting GOAL
+var matrix = [
+    [0, 0],
+    [0, 6],
+    [0, 0],
+];
+
+var snapshot_init = new Snapshot(matrix, false);
+var sokoban = new Sokoban(snapshot_init);
+
+var snapshot_result = sokoban.move("up");
+var matrix_expected = [
+    [0, 3],
+    [0, 4],
+    [0, 0],
+];
+var snapshot_expected = new Snapshot(matrix_expected, false);
+assert(snapshots_equal(snapshot_result, snapshot_expected));
+
+var snapshot_result = sokoban.move("down");
+var matrix_expected = [
+    [0, 0],
+    [0, 6],
+    [0, 0],
+];
+var snapshot_expected = new Snapshot(matrix_expected, false);
+assert(snapshots_equal(snapshot_result, snapshot_expected));
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 # <a name="part3">Part 3. The `Viz` class</a>
 
