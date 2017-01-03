@@ -509,6 +509,123 @@ var matrix_expected = [
 var snapshot_expected = new Snapshot(matrix_expected, false);
 assert(snapshots_equal(snapshot_result, snapshot_expected));
 
+/* Test push 1 crate inbounds *************************************************/
+
+var matrix = [
+    [0, 0],
+    [2, 0],
+    [3, 0],
+];
+var snapshot_init = new Snapshot(matrix, false);
+var sokoban = new Sokoban(snapshot_init);
+var snapshot_result = sokoban.move("up");
+var matrix_expected = [
+    [2, 0],
+    [3, 0],
+    [0, 0],
+];
+var snapshot_expected = new Snapshot(matrix_expected, false);
+assert(snapshots_equal(snapshot_result, snapshot_expected));
+
+/* Test push 2 crates inbounds *************************************************/
+
+var matrix = [
+    [0, 0],
+    [2, 0],
+    [2, 0],
+    [3, 0],
+];
+var snapshot_init = new Snapshot(matrix, false);
+var sokoban = new Sokoban(snapshot_init);
+var snapshot_result = sokoban.move("up");
+var matrix_expected = [
+    [2, 0],
+    [2, 0],
+    [3, 0],
+    [0, 0],
+];
+var snapshot_expected = new Snapshot(matrix_expected, false);
+assert(snapshots_equal(snapshot_result, snapshot_expected));
+
+/* Test push 1 crate over goal ************************************************/
+
+var matrix = [
+    [0, 0],
+    [4, 0],
+    [2, 0],
+    [3, 0],
+];
+var snapshot_init = new Snapshot(matrix, false);
+var sokoban = new Sokoban(snapshot_init);
+var snapshot_result = sokoban.move("up");
+var matrix_expected = [
+    [0, 0],
+    [5, 0],
+    [3, 0],
+    [0, 0],
+];
+var snapshot_expected = new Snapshot(matrix_expected, false);
+assert(snapshots_equal(snapshot_result, snapshot_expected));
+
+/* Test push player and crate over goal ****************************************/
+
+var matrix = [
+    [0, 0],
+    [4, 0],
+    [5, 0],
+    [3, 0],
+];
+var snapshot_init = new Snapshot(matrix, false);
+var sokoban = new Sokoban(snapshot_init);
+var snapshot_result = sokoban.move("up");
+var matrix_expected = [
+    [0, 0],
+    [5, 0],
+    [6, 0],
+    [0, 0],
+];
+var snapshot_expected = new Snapshot(matrix_expected, false);
+assert(snapshots_equal(snapshot_result, snapshot_expected));
+
+/* Test push crate out of bounds **********************************************/
+
+var matrix = [
+    [2, 0],
+    [2, 0],
+    [3, 0],
+    [0, 0],
+];
+var snapshot_init = new Snapshot(matrix, false);
+var sokoban = new Sokoban(snapshot_init);
+var snapshot_result = sokoban.move("up");
+var matrix_expected = [
+    [2, 0],
+    [2, 0],
+    [3, 0],
+    [0, 0],
+];
+var snapshot_expected = new Snapshot(matrix_expected, false);
+assert(snapshots_equal(snapshot_result, snapshot_expected));
+
+/* Test push crate into block *************************************************/
+
+var matrix = [
+    [0, 0],
+    [1, 0],
+    [2, 0],
+    [3, 0],
+];
+var snapshot_init = new Snapshot(matrix, false);
+var sokoban = new Sokoban(snapshot_init);
+var snapshot_result = sokoban.move("up");
+var matrix_expected = [
+    [0, 0],
+    [1, 0],
+    [2, 0],
+    [3, 0],
+];
+var snapshot_expected = new Snapshot(matrix_expected, false);
+assert(snapshots_equal(snapshot_result, snapshot_expected));
 
 /* Tests for IsoPieceidCell  **************************************************/
 
