@@ -161,8 +161,7 @@ class Sokoban {
 
     // The snapshot argument defines the initial gamestate
     constructor(snapshot) {
-        this.board = IsoSnapshotBoard.toBoard(snapshot);
-
+        this.snapshot = snapshot;
         var [row, col] = this.findPlayer();
         this.playerRow = row;
         this.playerCol = col;
@@ -170,10 +169,10 @@ class Sokoban {
 
     findPlayer() {
 
-        for (var row = 0; row < this.board.numRows; row++) {
-            for (var col = 0; col < this.board.numCols; col++) {
-                var cell = this.board.cells[row][col];
-                if (cell.player) {
+        for (var row = 0; row < this.snapshot.numRows; row++) {
+            for (var col = 0; col < this.snapshot.numCols; col++) {
+                var pieceId = this.snapshot.matrix[row][col];
+                if (pieceId == PLAYER) {
                     return [row, col];
                 }
             }
@@ -188,7 +187,7 @@ class Sokoban {
     // Returns a snapshot object that defines the game state after the player is moved
     move(direction) {
 
-        this.board.cells[this.playerRow][this.playerCol].player = false;
+        this.snapshot.matrix[this.playerRow][this.playerCol] = EMPTY;
 
         if (direction == "up") {
             this.playerRow -= 1;
@@ -202,9 +201,9 @@ class Sokoban {
             assert(false);
         }
 
-        this.board.cells[this.playerRow][this.playerCol].player = true;
+        this.snapshot.matrix[this.playerRow][this.playerCol] = PLAYER;
 
-        return IsoSnapshotBoard.toSnapshot(this.board);
+        return this.snapshot;
     }
 }
 
@@ -362,34 +361,6 @@ var snapshot_result = sokoban.move("right");
 var matrix_expected = [
     [0, 0],
     [0, 3],
-    [0, 0],
-];
-var snapshot_expected = new Snapshot(matrix_expected, false);
-assert(snapshots_equal(snapshot_result, snapshot_expected));
-
-// Test exiting PLAYER exiting GOAL
-var matrix = [
-    [0, 0],
-    [0, 6],
-    [0, 0],
-];
-
-var snapshot_init = new Snapshot(matrix, false);
-var sokoban = new Sokoban(snapshot_init);
-
-var snapshot_result = sokoban.move("up");
-var matrix_expected = [
-    [0, 3],
-    [0, 4],
-    [0, 0],
-];
-var snapshot_expected = new Snapshot(matrix_expected, false);
-assert(snapshots_equal(snapshot_result, snapshot_expected));
-
-var snapshot_result = sokoban.move("down");
-var matrix_expected = [
-    [0, 0],
-    [0, 6],
     [0, 0],
 ];
 var snapshot_expected = new Snapshot(matrix_expected, false);
