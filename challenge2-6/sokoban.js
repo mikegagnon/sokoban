@@ -214,7 +214,20 @@ class Sokoban {
         return [newRow, newCol];
     }
 
+    // Returns true iff (newRow, newCol) can be moved into by a slider or player,
+    // where (newRow, newCol) are the row and column adjacent to row, col
+    // in the specified direction. For example if (row, col) == (0, 0), and
+    // direction == right, then (newRow, newCol) == (0, 1).
+    //
+    // Furthermore, iff (newRow, newCol) can be moved into by a slider or player,
+    // then this function moves the slider-or-player from (row, col) into
+    // (newRow, newCol)
+    //
+    // Recall the semantics of the game: a player can push a series of sliders
+    // as long as the last slider in the series can slide into an empty cell.
+    //
     push(row, col, direction) {
+
         if (!this.inBounds(row, col)) {
             return false;
         }
