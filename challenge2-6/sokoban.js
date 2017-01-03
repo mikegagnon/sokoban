@@ -57,6 +57,10 @@ class Cell {
         this.player = player;
         this.goal = goal;
     }
+
+    isEmpty() {
+        return !this.block && !this.slider && !this.player;
+    }
 }
 
 /* IsoSnapshotBoard class *****************************************************/
@@ -200,44 +204,45 @@ class Sokoban {
 
         if (cell.block) {
             return false;
-        } else if (cell.slider || cell.player) {
-            var newRow = row;
-            var newCol = col;
-
-            if (direction == "up") {
-                newRow -= 1;
-            } else if (direction == "down") {
-                newRow += 1;
-            } else if (direction == "left") {
-                newCol -= 1;
-            } else if (direction == "right") {
-                newCol += 1;
-            } else {
-                assert(false);
-            }
-
-            if (this.push(newRow, newCol, direction)) {
-
-                var newCell = this.board.cells[newRow][newCol];
-
-                if (cell.player) {
-                    this.playerRow = newRow;
-                    this.playerCol = newCol;
-                    cell.player = false;
-                    newCell.player = true;
-                } else {
-                    assert(cell.slider);
-                    cell.slider = false;
-                    newCell.slider = true;
-                }
-
-                return true;
-            } else {
-                return false;
-            }
-
-        } else {
+        } else if (cell.isEmpty()) {
             return true;
+        }
+
+        assert(cell.slider || cell.player);
+        
+        var newRow = row;
+        var newCol = col;
+
+        if (direction == "up") {
+            newRow -= 1;
+        } else if (direction == "down") {
+            newRow += 1;
+        } else if (direction == "left") {
+            newCol -= 1;
+        } else if (direction == "right") {
+            newCol += 1;
+        } else {
+            assert(false);
+        }
+
+        if (this.push(newRow, newCol, direction)) {
+
+            var newCell = this.board.cells[newRow][newCol];
+
+            if (cell.player) {
+                this.playerRow = newRow;
+                this.playerCol = newCol;
+                cell.player = false;
+                newCell.player = true;
+            } else {
+                assert(cell.slider);
+                cell.slider = false;
+                newCell.slider = true;
+            }
+
+            return true;
+        } else {
+            return false;
         }
 
 
