@@ -191,12 +191,64 @@ class Sokoban {
                col < this.board.numCols;
     }
 
+    push(row, col, direction) {
+        if (!this.inBounds(row, col)) {
+            return false;
+        }
+
+        var cell = this.board.cells[row][col];
+
+        if (cell.block) {
+            return false;
+        } else if (cell.slider || cell.player) {
+            var newRow = row;
+            var newCol = col;
+
+            if (direction == "up") {
+                newRow -= 1;
+            } else if (direction == "down") {
+                newRow += 1;
+            } else if (direction == "left") {
+                newCol -= 1;
+            } else if (direction == "right") {
+                newCol += 1;
+            } else {
+                assert(false);
+            }
+
+            if (this.push(newRow, newCol, direction)) {
+
+                var newCell = this.board.cells[newRow][newCol];
+
+                if (cell.player) {
+                    this.playerRow = newRow;
+                    this.playerCol = newCol;
+                    cell.player = false;
+                    newCell.player = true;
+                } else {
+                    assert(cell.slider);
+                    cell.slider = false;
+                    newCell.slider = true;
+                }
+
+                return true;
+            } else {
+                return false;
+            }
+
+        } else {
+            return true;
+        }
+
+
+    }
+
     // Moves the player in the specified direction. direction must be either:
     // "up", "down", "left", or "right"
     // Returns a snapshot object that defines the game state after the player is moved
     move(direction) {
 
-        var newRow = this.playerRow;
+        /*var newRow = this.playerRow;
         var newCol = this.playerCol;
 
         if (direction == "up") {
@@ -213,13 +265,15 @@ class Sokoban {
 
         if (!this.inBounds(newRow, newCol)) {
             return IsoSnapshotBoard.toSnapshot(this.board);
-        }
+        }*/
 
-        this.board.cells[this.playerRow][this.playerCol].player = false;
+        this.push(this.playerRow, this.playerCol, direction);
+
+        /*this.board.cells[this.playerRow][this.playerCol].player = false;
         this.board.cells[newRow][newCol].player = true;
 
         this.playerRow = newRow;
-        this.playerCol = newCol;
+        this.playerCol = newCol;*/
 
         return IsoSnapshotBoard.toSnapshot(this.board);
     }
