@@ -22,6 +22,7 @@ And familiarity with OOP (object-orient programming) in JavaScript.
     - [Lecture 2.2 Isomorphisms](#lec2-2)
     - [Challenge 2.3 Refactor the `Sokoban` class with an isomorphism](#c2-3)
     - [Lecture 2.4 Modify `Sokoban` so that is uses a `Board` object instead of a `Snapshot object](#lec2-4)
+    - [Challenge 2.5 Prevent out-of-bounds movement](#c2-5)
 - [Part 3. The `Viz` class](#part3)
 - [Part 4. Putting it all together](#part4)
 
@@ -1010,6 +1011,31 @@ assert(snapshots_equal(snapshot_result, snapshot_expected));
 
 
 
+## <a name="c2-5">Challenge 2.5 Prevent out-of-bounds movement</a>
+
+The player should not be able to move out of bounds.
+
+For example, if the player is in the left-most column, `move("left")` should
+do nothing; it should have no effect on the game; the game state should not
+change.
+
+### Challenge
+
+1. Modify the semantics of the `move(...)` function so that the player cannot
+   go out of bounds
+2. Write tests to verify / refute that the new `move(...)` function
+   is implemented correctly
+
+- [Hint 1](#hint2-5-1)
+- [Hint 2](#hint2-5-2)
+- [Hint 3](#hint2-5-3)
+- [Solution](#solution2-5)
+
+
+
+
+
+
 
 
 
@@ -1333,4 +1359,159 @@ class IsoSnapshotBoard {
         return new Snapshot(matrix, board.gameOver);
     }
 }
+```
+
+<br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
+
+## <a name="hint2-5-1">Hint 1 for Challenge 2.5</a>
+
+The `move` function should do the following:
+
+- Check to see if prospective movement would put the player out of bounds
+- If the movement would place the player out of bounds, then do not modify
+  the game state; rather just return the snapshot
+- If the movement is inbounds, thenL
+    1. modify `board.cells` appropriately, and
+    2. update `playerRow` and `playerCol`, and
+    3. return a snapshot of the game state
+
+<br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
+
+## <a name="hint2-5-2">Hint 2 for Challenge 2.5</a>
+
+To make your code elegant, implement an `inBounds(row, col)` function that
+returns true iff (`row`, `col`) is inbounds.
+
+<br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
+
+## <a name="hint2-5-3">Hint 3 for Challenge 2.5</a>
+
+You should write four tests:
+
+1. Attempting to move up out of bounds
+2. Attempting to move down out of bounds
+3. Attempting to move left out of bounds
+4. Attempting to move right out of bounds
+
+<br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
+
+## <a name="solution">Solution for Challenge 2.5</a>
+
+```js
+/* Sokoban class **************************************************************/
+class Sokoban {
+
+    ...
+
+    // Returns true iff (row, col) is in bounds
+    inBounds(row, col) {
+        return row >= 0 &&
+               row < this.board.numRows &&
+               col >= 0 &&
+               col < this.board.numCols;
+    }
+
+    // Moves the player in the specified direction. direction must be either:
+    // "up", "down", "left", or "right"
+    // Returns a snapshot object that defines the game state after the player is moved
+    move(direction) {
+
+        var newRow = this.playerRow;
+        var newCol = this.playerCol;
+
+        if (direction == "up") {
+            newRow -= 1;
+        } else if (direction == "down") {
+            newRow += 1;
+        } else if (direction == "left") {
+            newCol -= 1;
+        } else if (direction == "right") {
+            newCol += 1;
+        } else {
+            assert(false);
+        }
+
+        if (!this.inBounds(newRow, newCol)) {
+            return IsoSnapshotBoard.toSnapshot(this.board);
+        }
+
+        this.board.cells[this.playerRow][this.playerCol].player = false;
+        this.board.cells[newRow][newCol].player = true;
+
+        this.playerRow = newRow;
+        this.playerCol = newCol;
+
+        return IsoSnapshotBoard.toSnapshot(this.board);
+    }
+}
+
+// Test move out-of-bounds
+
+// move right
+var matrix = [
+    [0, 3],
+    [0, 0],
+    [0, 0],
+];
+var snapshot_init = new Snapshot(matrix, false);
+var sokoban = new Sokoban(snapshot_init);
+var snapshot_result = sokoban.move("right");
+var matrix_expected = [
+    [0, 3],
+    [0, 0],
+    [0, 0],
+];
+var snapshot_expected = new Snapshot(matrix_expected, false);
+assert(snapshots_equal(snapshot_result, snapshot_expected));
+
+// move up
+var matrix = [
+    [0, 3],
+    [0, 0],
+    [0, 0],
+];
+var snapshot_init = new Snapshot(matrix, false);
+var sokoban = new Sokoban(snapshot_init);
+var snapshot_result = sokoban.move("up");
+var matrix_expected = [
+    [0, 3],
+    [0, 0],
+    [0, 0],
+];
+var snapshot_expected = new Snapshot(matrix_expected, false);
+assert(snapshots_equal(snapshot_result, snapshot_expected));
+
+// move down
+var matrix = [
+    [0, 0],
+    [0, 0],
+    [3, 0],
+];
+var snapshot_init = new Snapshot(matrix, false);
+var sokoban = new Sokoban(snapshot_init);
+var snapshot_result = sokoban.move("down");
+var matrix_expected = [
+    [0, 0],
+    [0, 0],
+    [3, 0],
+];
+var snapshot_expected = new Snapshot(matrix_expected, false);
+assert(snapshots_equal(snapshot_result, snapshot_expected));
+
+// move left
+var matrix = [
+    [0, 0],
+    [0, 0],
+    [3, 0],
+];
+var snapshot_init = new Snapshot(matrix, false);
+var sokoban = new Sokoban(snapshot_init);
+var snapshot_result = sokoban.move("left");
+var matrix_expected = [
+    [0, 0],
+    [0, 0],
+    [3, 0],
+];
+var snapshot_expected = new Snapshot(matrix_expected, false);
+assert(snapshots_equal(snapshot_result, snapshot_expected));
 ```
