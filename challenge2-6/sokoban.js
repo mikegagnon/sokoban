@@ -247,34 +247,7 @@ class Sokoban {
     // "up", "down", "left", or "right"
     // Returns a snapshot object that defines the game state after the player is moved
     move(direction) {
-
-        /*var newRow = this.playerRow;
-        var newCol = this.playerCol;
-
-        if (direction == "up") {
-            newRow -= 1;
-        } else if (direction == "down") {
-            newRow += 1;
-        } else if (direction == "left") {
-            newCol -= 1;
-        } else if (direction == "right") {
-            newCol += 1;
-        } else {
-            assert(false);
-        }
-
-        if (!this.inBounds(newRow, newCol)) {
-            return IsoSnapshotBoard.toSnapshot(this.board);
-        }*/
-
         this.push(this.playerRow, this.playerCol, direction);
-
-        /*this.board.cells[this.playerRow][this.playerCol].player = false;
-        this.board.cells[newRow][newCol].player = true;
-
-        this.playerRow = newRow;
-        this.playerCol = newCol;*/
-
         return IsoSnapshotBoard.toSnapshot(this.board);
     }
 }
