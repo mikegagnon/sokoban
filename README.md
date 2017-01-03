@@ -23,6 +23,7 @@ And familiarity with OOP (object-orient programming) in JavaScript.
     - [Challenge 2.3 Refactor the `Sokoban` class with an isomorphism](#c2-3)
     - [Lecture 2.4 Modify `Sokoban` so that is uses a `Board` object instead of a `Snapshot object](#lec2-4)
     - [Challenge 2.5 Prevent out-of-bounds movement](#c2-5)
+    - [Challenge 2.6 Sliders](#c2-6)
 - [Part 3. The `Viz` class](#part3)
 - [Part 4. Putting it all together](#part4)
 
@@ -1032,6 +1033,221 @@ change.
 - [Solution](#solution2-5)
 
 
+
+
+
+
+
+
+
+
+
+
+
+## <a name="c2-6">Challenge 2.6 Sliders</a>
+
+In this challenge, we will implement the functionality that handles sliders.
+
+Recall the semantics of the Sokoban+ game: if a player pushes into a series of 
+sliders, then the player and all the sliders will all move together (assuming
+there is a vacant space for them to move into).
+
+We will write a recursive function called `push(...)` to handle player &
+crate movement.
+
+The idea is that the `move(...)` function calls `push`  on the player,
+then the player calls `push` on the adjacent slider, then that slider
+calls `push` onto the next slider, and so on... until the push
+bumps into a block, out of bounds, or an empty space.
+
+
+### `push(...)`
+
+Here is the documentation for `push(...)`:
+
+```js
+// push(row, col, direction)
+//
+// Attempts to push the player or slider from (row, col) into 
+// (newRow, newCol), where (newRow, newCol) is adjacent to (row, col) in
+// the given direction. For example, if (row, col) == (0, 0), and
+// direction == right, then (newRow, newCol) == (0, 1).
+//
+// The push attempt may or may not succeed. If the push attempt succeeds
+// then the piece at (row, col) is moved into (newRow, newCol).
+//
+// Returns true iff (row, col) can be moved into by a slider or the player.
+//      - For example, if (row, col) is empty, then returns true
+//      - As another example, if (row, col) formerly held a slider, but
+//        that slider has successefully been pushed into a new cell,
+//        then (row, col) is now empty, and so returns true.
+//
+// Recall the semantics of the game: a player can push a series of sliders
+// as long as the last slider in the series can slide into an empty cell.
+// Therefore, this function must be recursive.
+//
+// For further clarification on the necessity of recursion, consider this
+// example:
+//
+//      The player is located at (0, 0).
+//      A slider is located at (0, 1), i.e. to the right of the player.
+//
+//      The player can only move to the right, iff the slider can 
+//      move to the right.
+//
+//      Therefore push(0, 0, "right") depends on the result of of
+//      push(0, 1, "right"), which depends on the result of
+//      push(0, 2, "right").
+//
+// Don't bother attempting to implement push(...) until you understand
+// the documentation for this function.
+push(row, col, direction) { ... }
+```
+
+### Refactor `move(...)`
+
+Once you have implemented `push(...)`, the `move(...)` function simply
+becomes:
+
+```js
+// Moves the player in the specified direction. direction must be either:
+// "up", "down", "left", or "right"
+// Returns a snapshot object that defines the game state after the player is moved
+move(direction) {
+    this.push(this.playerRow, this.playerCol, direction);
+    return IsoSnapshotBoard.toSnapshot(this.board);
+}
+```
+
+### Tests
+
+```js
+/* Test push 1 crate inbounds *************************************************/
+
+var matrix = [
+    [0, 0],
+    [2, 0],
+    [3, 0],
+];
+var snapshot_init = new Snapshot(matrix, false);
+var sokoban = new Sokoban(snapshot_init);
+var snapshot_result = sokoban.move("up");
+var matrix_expected = [
+    [2, 0],
+    [3, 0],
+    [0, 0],
+];
+var snapshot_expected = new Snapshot(matrix_expected, false);
+assert(snapshots_equal(snapshot_result, snapshot_expected));
+
+/* Test push 2 crates inbounds *************************************************/
+
+var matrix = [
+    [0, 0],
+    [2, 0],
+    [2, 0],
+    [3, 0],
+];
+var snapshot_init = new Snapshot(matrix, false);
+var sokoban = new Sokoban(snapshot_init);
+var snapshot_result = sokoban.move("up");
+var matrix_expected = [
+    [2, 0],
+    [2, 0],
+    [3, 0],
+    [0, 0],
+];
+var snapshot_expected = new Snapshot(matrix_expected, false);
+assert(snapshots_equal(snapshot_result, snapshot_expected));
+
+/* Test push 1 crate over goal ************************************************/
+
+var matrix = [
+    [0, 0],
+    [4, 0],
+    [2, 0],
+    [3, 0],
+];
+var snapshot_init = new Snapshot(matrix, false);
+var sokoban = new Sokoban(snapshot_init);
+var snapshot_result = sokoban.move("up");
+var matrix_expected = [
+    [0, 0],
+    [5, 0],
+    [3, 0],
+    [0, 0],
+];
+var snapshot_expected = new Snapshot(matrix_expected, false);
+assert(snapshots_equal(snapshot_result, snapshot_expected));
+
+/* Test push player and crate over goal ****************************************/
+
+var matrix = [
+    [0, 0],
+    [4, 0],
+    [5, 0],
+    [3, 0],
+];
+var snapshot_init = new Snapshot(matrix, false);
+var sokoban = new Sokoban(snapshot_init);
+var snapshot_result = sokoban.move("up");
+var matrix_expected = [
+    [0, 0],
+    [5, 0],
+    [6, 0],
+    [0, 0],
+];
+var snapshot_expected = new Snapshot(matrix_expected, false);
+assert(snapshots_equal(snapshot_result, snapshot_expected));
+
+/* Test push crate out of bounds **********************************************/
+
+var matrix = [
+    [2, 0],
+    [2, 0],
+    [3, 0],
+    [0, 0],
+];
+var snapshot_init = new Snapshot(matrix, false);
+var sokoban = new Sokoban(snapshot_init);
+var snapshot_result = sokoban.move("up");
+var matrix_expected = [
+    [2, 0],
+    [2, 0],
+    [3, 0],
+    [0, 0],
+];
+var snapshot_expected = new Snapshot(matrix_expected, false);
+assert(snapshots_equal(snapshot_result, snapshot_expected));
+
+/* Test push crate into block *************************************************/
+
+var matrix = [
+    [0, 0],
+    [1, 0],
+    [2, 0],
+    [3, 0],
+];
+var snapshot_init = new Snapshot(matrix, false);
+var sokoban = new Sokoban(snapshot_init);
+var snapshot_result = sokoban.move("up");
+var matrix_expected = [
+    [0, 0],
+    [1, 0],
+    [2, 0],
+    [3, 0],
+];
+var snapshot_expected = new Snapshot(matrix_expected, false);
+assert(snapshots_equal(snapshot_result, snapshot_expected));
+```
+
+
+### Hints and solution
+
+- [Hint 1] steps to implementing a recursive function
+- [Hint 2] Base cases
+- [Hint 3] Recursive case
+- [Solution]
 
 
 
