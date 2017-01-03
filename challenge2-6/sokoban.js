@@ -216,7 +216,7 @@ class Sokoban {
 
     // push(row, col, direction)
     //
-    // Attempts to push the player or slider in (row, col) into 
+    // Attempts to push the player or slider from (row, col) into 
     // (newRow, newCol), where (newRow, newCol) is adjacent to (row, col) in
     // the given direction. For example, if (row, col) == (0, 0), and
     // direction == right, then (newRow, newCol) == (0, 1).
