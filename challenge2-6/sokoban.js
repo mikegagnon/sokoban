@@ -195,21 +195,7 @@ class Sokoban {
                col < this.board.numCols;
     }
 
-    push(row, col, direction) {
-        if (!this.inBounds(row, col)) {
-            return false;
-        }
-
-        var cell = this.board.cells[row][col];
-
-        if (cell.block) {
-            return false;
-        } else if (cell.isEmpty()) {
-            return true;
-        }
-
-        assert(cell.slider || cell.player);
-        
+    static getNewRowCol(row, col, direction) {
         var newRow = row;
         var newCol = col;
 
@@ -224,6 +210,26 @@ class Sokoban {
         } else {
             assert(false);
         }
+
+        return [newRow, newCol];
+    }
+
+    push(row, col, direction) {
+        if (!this.inBounds(row, col)) {
+            return false;
+        }
+
+        var cell = this.board.cells[row][col];
+
+        if (cell.block) {
+            return false;
+        } else if (cell.isEmpty()) {
+            return true;
+        }
+
+        assert(cell.slider || cell.player);
+
+        var [newRow, newCol] = Sokoban.getNewRowCol(row, col, direction);
 
         if (this.push(newRow, newCol, direction)) {
 
