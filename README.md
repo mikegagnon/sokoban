@@ -617,22 +617,20 @@ class IsoLetterMorse {
 
 One day, you will be in a conference room surrounded by your peers.
 The Senior Software Engineer on the team sits at the head of the 
-conference table. An engineer from another continent is Skyped in.
+conference table. An engineer from another continent is on video chat.
 
 Everyone is trying to figure out how to solve this one particular problem...
 
 Suddenly you have a flashback to this course. You say, "We could use
 an isomorphism. It will preserve our existing interfaces. We can avoid
-a major version change!"
+a major version change."
 
 Silence. Someone nods. Slowly, everyone nods.
 
-Then suddenly the Senior Software Engineer declares:
-"No, it won't work for this problem."
+Then suddenly the Senior Software Engineer asserts,
+"No, it won't work for this problem. The isomorphism would be prohibitively slow."
 
 And so it's back to the drawing board. But at least you looked intelligent.
-Also, in about 50% of the universes in our multiverse, the Senior Software
-Engineer declares: "Yes, an isomorphism is perfect for this problem."
 
 
 
