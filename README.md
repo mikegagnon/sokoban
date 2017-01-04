@@ -1070,19 +1070,19 @@ change.
 
 ## <a name="c2-6">Challenge 2.6 Sliders</a>
 
-In this challenge, we will implement the functionality that handles sliders.
+In this challenge, we will implement the functionality that handles sliders (aka crates).
 
 Recall the semantics of the Sokoban+ game: if a player pushes into a series of 
 sliders, then the player and all the sliders will all move together (assuming
 there is a vacant space for them to move into).
 
 We will write a recursive function called `push(...)` to handle player &
-crate movement.
+slider movement.
 
 The idea is that the `move(...)` function calls `push`  on the player,
 then the player calls `push` on the adjacent slider, then that slider
 calls `push` onto the next slider, and so on... until the push
-bumps into a block, out of bounds, or an empty space.
+bumps into a block, out of bounds, or a vacant space.
 
 
 ### `push(...)`
