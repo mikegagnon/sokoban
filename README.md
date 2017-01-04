@@ -621,9 +621,9 @@ conference table. An engineer from another continent is Skyped in.
 
 Everyone is trying to figure out how to solve this one particular problem...
 
-Suddenly you have a flashback to this course. You say, "We should use
+Suddenly you have a flashback to this course. You say, "We could use
 an isomorphism. It will preserve our existing interfaces. We can avoid
-making a major version change!"
+a major version change!"
 
 Silence. Someone nods. Slowly, everyone nods.
 
