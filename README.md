@@ -1379,6 +1379,20 @@ class Snapshot {
 }
 ```
 
+We will use a simple `style.css`:
+
+```
+.row {
+    clear: left;
+}
+
+.cell {
+    margin-left: 0px;
+    margin-top: 0px;
+    float: left;
+}
+```
+
 ### Challenge
 
 Implement the `drawBoard(...)` method of the `Viz` class, and have the `constructor` for `Viz` invoke `drawBoard`.
