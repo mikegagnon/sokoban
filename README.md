@@ -1664,7 +1664,7 @@ The `move` function should do the following:
 
 ## <a name="hint2-5-2">Hint 2 for Challenge 2.5</a>
 
-To make your code elegant, implement an `inBounds(row, col)` function that
+To make your code elegant, implement and use an `inBounds(row, col)` function that
 returns true iff (`row`, `col`) is inbounds.
 
 <br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
