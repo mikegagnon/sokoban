@@ -292,45 +292,11 @@ class Sokoban {
         }
     }
 
-    checkForVictory() {
-
-        var numGoals = 0;
-        var numOccupiedGoals = 0;
-
-        for (var row = 0; row < this.board.numRows; row++) {
-            for (var col = 0; col < this.board.numCols; col++) {
-                var cell = this.board.cells[row][col];
-                if (cell.goal) {
-                    numGoals += 1;
-
-                    if (cell.slider) {
-                        numOccupiedGoals += 1;
-                    }
-                }
-            }
-        }
-
-        if (numGoals == 0) {
-            return false;
-        } else {
-            return numGoals == numOccupiedGoals;
-        }
-
-    }
-
     // Moves the player in the specified direction. direction must be either:
     // "up", "down", "left", or "right"
     // Returns a snapshot object that defines the game state after the player is moved
     move(direction) {
-
-        if (this.board.gameOver) {
-            return IsoSnapshotBoard.toSnapshot(this.board); 
-        }
-
         this.push(this.playerRow, this.playerCol, direction);
-
-        this.board.gameOver = this.checkForVictory();
-
         return IsoSnapshotBoard.toSnapshot(this.board);
     }
 }
