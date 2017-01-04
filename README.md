@@ -370,7 +370,7 @@ Since `Sokoban` and `Viz` are independent modules, we can implement them in any 
 Skip to [The `Viz` class](#part3) if you feel like it.
 
 However, I recommend starting with `Sokoban` and finishing with `Viz`.
-This way you can experience the magic of developing a complete video game
+This way, you can experience the magic of developing a complete video game
 without graphics. Then, after completing the game, you stitch in some graphics and
 viola --- the game comes to life and works perfectly.
 
