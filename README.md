@@ -1264,6 +1264,47 @@ assert(snapshots_equal(snapshot_result, snapshot_expected));
 
 
 
+
+## <a name="c2-7">Challenge 2.7 Detect victory</a>
+
+Write a method `checkVictory()` that returns `true` iff victory has been
+achieved. Victory is achieved when every goal is covered by a slider.
+In the corner case where there are no goals, then victory has not been
+achieved.
+
+Update the `move(...)` function as follows:
+
+```js
+// Moves the player in the specified direction. direction must be either:
+// "up", "down", "left", or "right"
+// Returns a snapshot object that defines the game state after the player is moved
+move(direction) {
+
+    if (this.board.gameOver) {
+        return IsoSnapshotBoard.toSnapshot(this.board); 
+    }
+
+    this.push(this.playerRow, this.playerCol, direction);
+
+    this.board.gameOver = this.checkForVictory();
+
+    return IsoSnapshotBoard.toSnapshot(this.board);
+}
+```
+
+- [Hint 1](#hint2-7-1)
+- [Solution](#solution2-7)
+
+
+
+
+
+
+
+
+
+
+
 # <a name="part3">Part 3. The `Viz` class</a>
 
 # <a name="part4">Part 4. Putting it all together</a>
@@ -1876,6 +1917,52 @@ class Sokoban {
         } else {
             return false;
         }
+    }
+}
+```
+
+
+<br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
+
+## <a name="hint2-7-1">Hint 1 for Challenge 2.7</a>
+
+Count the number of goals on the board, and count the number of goals that have
+a slider on top. If the sum of those two counts are equal, then victory has
+been achieved.
+
+<br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
+
+## <a name="solution2-7">Solution for Challenge 2.7</a>
+
+```js
+class Sokoban {
+
+    ...
+
+    checkForVictory() {
+
+        var numGoals = 0;
+        var numOccupiedGoals = 0;
+
+        for (var row = 0; row < this.board.numRows; row++) {
+            for (var col = 0; col < this.board.numCols; col++) {
+                var cell = this.board.cells[row][col];
+                if (cell.goal) {
+                    numGoals += 1;
+
+                    if (cell.slider) {
+                        numOccupiedGoals += 1;
+                    }
+                }
+            }
+        }
+
+        if (numGoals == 0) {
+            return false;
+        } else {
+            return numGoals == numOccupiedGoals;
+        }
+
     }
 }
 ```
