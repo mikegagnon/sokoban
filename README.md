@@ -1073,6 +1073,10 @@ Here is the documentation for `push(...)`:
 // the given direction. For example, if (row, col) == (0, 0), and
 // direction == right, then (newRow, newCol) == (0, 1).
 //
+// If there is no player or slider at (row, col) --- say, because (row, col)
+// is empty or occupied by a block --- then of course no movement attempt is
+// made.
+//
 // The push attempt may or may not succeed. If the push attempt succeeds
 // then the piece at (row, col) is moved into (newRow, newCol).
 //
@@ -1244,10 +1248,10 @@ assert(snapshots_equal(snapshot_result, snapshot_expected));
 
 ### Hints and solution
 
-- [Hint 1] steps to implementing a recursive function
-- [Hint 2] Base cases
-- [Hint 3] Recursive case
-- [Solution]
+- [Hint 1](#hint2-6-1)
+- [Hint 2](#hint2-6-2)
+- [Hint 3](#hint2-6-3)
+- [Solution](#solution2-6)
 
 
 
@@ -1611,7 +1615,7 @@ You should write four tests:
 
 <br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
 
-## <a name="solution">Solution for Challenge 2.5</a>
+## <a name="solution2-5">Solution for Challenge 2.5</a>
 
 ```js
 /* Sokoban class **************************************************************/
@@ -1730,4 +1734,147 @@ var matrix_expected = [
 ];
 var snapshot_expected = new Snapshot(matrix_expected, false);
 assert(snapshots_equal(snapshot_result, snapshot_expected));
+```
+
+
+
+
+
+
+
+<br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
+
+## <a name="hint2-6-1">Hint 1 for Challenge 2.6</a>
+
+TODO: link linked lists
+
+Recall from the Linked Lists mini course:
+
+- Step 1. Base case(s)
+    - Analyze the corner cases
+    - Merge cases
+- Step 2. Recursive case
+    - Assume correctness
+    - Make one step of progress
+
+<br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
+
+## <a name="hint2-6-2">Hint 2 for Challenge 2.6</a>
+
+There are three cases where there is no need for recursion. These are the base
+cases:
+
+1. When (row, col) is out of bounds 
+2. When (row, col) contains a block
+3. When (row, col) is either empty or contains only a goal
+
+<br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
+
+## <a name="hint2-6-3">Hint 3 for Challenge 2.6</a>
+
+If it's not one of the base cases, then we know the cell is occupied by either
+a slider, or a player.
+
+Therefore, we make an attempt to move the slider or player.
+
+We invoke `push(newRow, newCol, direction)` to determine if (`newRow`, `newCol`)
+is available to be moved into.
+
+If (`newRow`, `newCol`) is available, then we remove the slider or player
+from its current cell, and place the slider or player into it's new cell at
+(`newRow`, `newCol`).
+
+If the movement succeeds, return `true` --- since (`row`, `col`) has been
+vacated.
+
+If the movement doesn't succeed, return `false` --- since (`row`, `col`) is
+occupied.
+
+<br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
+
+## <a name="solution2-6">Solution for Challenge 2.6</a>
+
+```js
+class Sokoban {
+
+    ...
+
+    // push(row, col, direction)
+    //
+    // Attempts to push the player or slider from (row, col) into 
+    // (newRow, newCol), where (newRow, newCol) is adjacent to (row, col) in
+    // the given direction. For example, if (row, col) == (0, 0), and
+    // direction == right, then (newRow, newCol) == (0, 1).
+    //
+    // If there is no player or slider at (row, col) --- say, because (row, col)
+    // is empty or occupied by a block --- then of course no movement attempt is
+    // made.
+    //
+    // The push attempt may or may not succeed. If the push attempt succeeds
+    // then the piece at (row, col) is moved into (newRow, newCol).
+    //
+    // Returns true iff (row, col) can be moved into by a slider or the player.
+    //      - For example, if (row, col) is empty, then returns true
+    //      - As another example, if (row, col) formerly held a slider, but
+    //        that slider has successefully been pushed into a new cell,
+    //        then (row, col) is now empty, and so returns true.
+    //
+    // Recall the semantics of the game: a player can push a series of sliders
+    // as long as the last slider in the series can slide into an empty cell.
+    // Therefore, this function must be recursive.
+    //
+    // For further clarification on the necessity of recursion, consider this
+    // example:
+    //
+    //      The player is located at (0, 0).
+    //      A slider is located at (0, 1), i.e. to the right of the player.
+    //
+    //      The player can only move to the right, iff the slider can 
+    //      move to the right.
+    //
+    //      Therefore push(0, 0, "right") depends on the result of of
+    //      push(0, 1, "right"), which depends on the result of
+    //      push(0, 2, "right").
+    //
+    // Don't bother attempting to implement push(...) until you understand
+    // the documentation for this function.
+    push(row, col, direction) {
+
+        if (!this.inBounds(row, col)) {
+            return false;
+        }
+
+        var cell = this.board.cells[row][col];
+
+        if (cell.block) {
+            return false;
+        } else if (cell.isEmpty()) {
+            return true;
+        }
+
+        assert(cell.slider || cell.player);
+
+        var [newRow, newCol] = Sokoban.getNewRowCol(row, col, direction);
+
+        if (this.push(newRow, newCol, direction)) {
+
+            var newCell = this.board.cells[newRow][newCol];
+
+            if (cell.player) {
+                this.playerRow = newRow;
+                this.playerCol = newCol;
+                cell.player = false;
+                newCell.player = true;
+            } else {
+                assert(cell.slider);
+                cell.slider = false;
+                newCell.slider = true;
+            }
+
+            return true;
+        } else {
+            return false;
+        }
+    }
+}
 ```

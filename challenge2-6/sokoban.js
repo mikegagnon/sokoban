@@ -221,6 +221,10 @@ class Sokoban {
     // the given direction. For example, if (row, col) == (0, 0), and
     // direction == right, then (newRow, newCol) == (0, 1).
     //
+    // If there is no player or slider at (row, col) --- say, because (row, col)
+    // is empty or occupied by a block --- then of course no movement attempt is
+    // made.
+    //
     // The push attempt may or may not succeed. If the push attempt succeeds
     // then the piece at (row, col) is moved into (newRow, newCol).
     //
@@ -286,8 +290,6 @@ class Sokoban {
         } else {
             return false;
         }
-
-
     }
 
     // Moves the player in the specified direction. direction must be either:
