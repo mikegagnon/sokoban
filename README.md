@@ -20,7 +20,7 @@ And familiarity with OOP (object-orient programming) in JavaScript.
 - [Part 2. The `Sokoban` class](#part2)
     - [Challenge 2.1 A player among empty squares](#c2-1)
     - [Lecture 2.2 Isomorphisms](#lec2-2)
-    - [Challenge 2.3 Refactor the `Sokoban` class with an isomorphism](#c2-3)
+    - [Challenge 2.3 Develop the Sokoban isomorphisms](#c2-3)
     - [Lecture 2.4 Modify `Sokoban` so that is uses a `Board` object instead of a `Snapshot` object](#lec2-4)
     - [Challenge 2.5 Prevent out-of-bounds movement](#c2-5)
     - [Challenge 2.6 Sliders](#c2-6)
