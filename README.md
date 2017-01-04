@@ -1381,7 +1381,7 @@ class Snapshot {
 
 ### Challenge
 
-Implement the `constructor` method of the `Viz` class.
+Implement the `drawBoard(...)` method of the `Viz` class, and have the `constructor` for `Viz` invoke `drawBoard`.
 
 
 
