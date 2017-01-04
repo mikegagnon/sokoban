@@ -97,11 +97,18 @@ The `Viz` class has a thin interface: there are only two methods.
 ```js
 class Viz {
     
-    // The boardId argument specifies the HTML id for the <div> element that will
-    // hold the game board
+    // Arguments:
+    //    - boardId specifies the id of the <div> that this game will be drawn
+    //      inside of.
+    //    - snapshot is the initial snapshot of the game.
+    //    - cell_size is the width of a cell (in pixels)
     //
-    // The snapshot argument defines the initial gamestate
-    constructor(boardId, snapshot) {...}
+    // The constructor creates a grid of cells in HTML. Each row of cells is contained
+    // within a <div> with class == "row", and each cell itself is represented by a 
+    // <div> with class == "cell".
+    //
+    // Then the constructor invokes drawGame(snapshot)
+    constructor(boardId, snapshot, cell_size) {...}
     
     // The snapshot argument defines the game state that is to be drawn on the web page
     drawGame(snapshot) {...}
