@@ -24,6 +24,7 @@ And familiarity with OOP (object-orient programming) in JavaScript.
     - [Lecture 2.4 Modify `Sokoban` so that is uses a `Board` object instead of a `Snapshot object](#lec2-4)
     - [Challenge 2.5 Prevent out-of-bounds movement](#c2-5)
     - [Challenge 2.6 Sliders](#c2-6)
+    - [Challenge 2.7 Detect victory](#c2-7)
 - [Part 3. The `Viz` class](#part3)
 - [Part 4. Putting it all together](#part4)
 
