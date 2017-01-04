@@ -925,7 +925,7 @@ test_IsoSnapshotBoard(snapshot);
 
 
 
-### <a name="lec2-4">Modify `Sokoban` so that is uses a `Board` object instead of a `Snapshot` object</a>
+## <a name="lec2-4">Lecture 2.4 Modify `Sokoban` so that is uses a `Board` object instead of a `Snapshot` object</a>
 
 Make the following modifications:
 
