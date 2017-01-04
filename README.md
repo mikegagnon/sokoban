@@ -26,6 +26,7 @@ And familiarity with OOP (object-orient programming) in JavaScript.
     - [Challenge 2.6 Sliders](#c2-6)
     - [Challenge 2.7 Detect victory](#c2-7)
 - [Part 3. The `Viz` class](#part3)
+    - [Challenge 3.1](#c3-3)
 - [Part 4. Putting it all together](#part4)
 
 # <a name="part1">Part 1. Introduction & Setup</a>
@@ -1330,7 +1331,77 @@ move(direction) {
 
 # <a name="part3">Part 3. The `Viz` class</a>
 
+## <a name="c3-3">Challenge 3.3</a>
+
+Recall from [Lecture 1.1](#lec1-1), the `Viz` class is simple:
+
+```js
+class Viz {
+    
+    // The boardId argument specifies the HTML id for the <div> element that will
+    // hold the game board
+    //
+    // The snapshot argument defines the initial gamestate
+    constructor(boardId, snapshot) {...}
+    
+    // The snapshot argument defines the game state that is to be drawn on the web page
+    drawGame(snapshot) {...}
+}
+```
+
+And for convenience, we'll restate the `Snapshot` class here:
+
+```js
+// pieceId values
+var EMPTY = 0;
+var BLOCK = 1;
+var SLIDER = 2;
+var PLAYER = 3;
+var GOAL = 4;
+var GOAL_SLIDER = 5;
+var GOAL_PLAYER = 6;
+
+/* Snapshot class *************************************************************/
+class Snapshot {
+
+    // The matrix argument is a 2-dimensional array describing board state.
+    // Each item in the matrix is a pieceId. Namely, either EMPTY, BLOCK,
+    // SLIDER, PLAYER, GOAL, GOAL_SLIDER, GOAL_PLAYER.
+    //
+    // The gameOver argument is a boolen that is true iff the player has solved
+    // the puzzle.
+    constructor(matrix, gameOver) {
+        this.matrix = matrix;
+        this.gameOver = gameOver;
+        this.numRows = matrix.length;
+        this.numCols = matrix[0].length;
+    }
+}
+```
+
+### Challenge
+
+Implement the `constructor` method of the `Viz` class.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 # <a name="part4">Part 4. Putting it all together</a>
+
 
 
 # Hints
