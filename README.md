@@ -1811,9 +1811,7 @@ assert(snapshots_equal(snapshot_result, snapshot_expected));
 
 ## <a name="hint2-6-1">Hint 1 for Challenge 2.6</a>
 
-TODO: link linked lists
-
-Recall from the Linked Lists mini course:
+Recall from the [Linked Lists mini course](https://github.com/mikegagnon/linked-lists/blob/master/README.md#lec5):
 
 - Step 1. Base case(s)
     - Analyze the corner cases
