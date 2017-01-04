@@ -292,11 +292,45 @@ class Sokoban {
         }
     }
 
+    checkForVictory() {
+
+        var numGoals = 0;
+        var numOccupiedGoals = 0;
+
+        for (var row = 0; row < this.board.numRows; row++) {
+            for (var col = 0; col < this.board.numCols; col++) {
+                var cell = this.board.cells[row][col];
+                if (cell.goal) {
+                    numGoals += 1;
+
+                    if (cell.slider) {
+                        numOccupiedGoals += 1;
+                    }
+                }
+            }
+        }
+
+        if (numGoals == 0) {
+            return false;
+        } else {
+            return numGoals == numOccupiedGoals;
+        }
+
+    }
+
     // Moves the player in the specified direction. direction must be either:
     // "up", "down", "left", or "right"
     // Returns a snapshot object that defines the game state after the player is moved
     move(direction) {
+
+        if (this.board.gameOver) {
+            return IsoSnapshotBoard.toSnapshot(this.board); 
+        }
+
         this.push(this.playerRow, this.playerCol, direction);
+
+        this.board.gameOver = this.checkForVictory();
+
         return IsoSnapshotBoard.toSnapshot(this.board);
     }
 }
@@ -599,7 +633,7 @@ assert(snapshots_equal(snapshot_result, snapshot_expected));
 /* Test push 1 crate over goal ************************************************/
 
 var matrix = [
-    [0, 0],
+    [0, 4],
     [4, 0],
     [2, 0],
     [3, 0],
@@ -608,7 +642,7 @@ var snapshot_init = new Snapshot(matrix, false);
 var sokoban = new Sokoban(snapshot_init);
 var snapshot_result = sokoban.move("up");
 var matrix_expected = [
-    [0, 0],
+    [0, 4],
     [5, 0],
     [3, 0],
     [0, 0],
@@ -675,6 +709,72 @@ var matrix_expected = [
 ];
 var snapshot_expected = new Snapshot(matrix_expected, false);
 assert(snapshots_equal(snapshot_result, snapshot_expected));
+
+/* Tests for ignoring movement for gameover  **********************************/
+
+var matrix = [
+    [0, 5],
+    [3, 0],
+    [0, 0],
+    [0, 0],
+];
+var gameOver = true;
+var snapshot_init = new Snapshot(matrix, gameOver);
+var sokoban = new Sokoban(snapshot_init);
+var snapshot_result = sokoban.move("up");
+var matrix_expected = [
+    [0, 5],
+    [3, 0],
+    [0, 0],
+    [0, 0],
+];
+var snapshot_expected = new Snapshot(matrix_expected, gameOver);
+assert(snapshots_equal(snapshot_result, snapshot_expected));
+
+/* Tests for detecting victory ************************************************/
+
+var matrix = [
+    [0, 0],
+    [4, 0],
+    [2, 0],
+    [3, 0],
+];
+var gameOver = false;
+var snapshot_init = new Snapshot(matrix, gameOver);
+var sokoban = new Sokoban(snapshot_init);
+var snapshot_result = sokoban.move("up");
+var matrix_expected = [
+    [0, 0],
+    [5, 0],
+    [3, 0],
+    [0, 0],
+];
+var gameOver = true;
+var snapshot_expected = new Snapshot(matrix_expected, gameOver);
+assert(snapshots_equal(snapshot_result, snapshot_expected));
+
+
+
+var matrix = [
+    [0, 5],
+    [4, 0],
+    [2, 0],
+    [3, 0],
+];
+var gameOver = false;
+var snapshot_init = new Snapshot(matrix, gameOver);
+var sokoban = new Sokoban(snapshot_init);
+var snapshot_result = sokoban.move("up");
+var matrix_expected = [
+    [0, 5],
+    [5, 0],
+    [3, 0],
+    [0, 0],
+];
+var gameOver = true;
+var snapshot_expected = new Snapshot(matrix_expected, gameOver);
+assert(snapshots_equal(snapshot_result, snapshot_expected));
+
 
 /* Tests for IsoPieceidCell  **************************************************/
 
@@ -804,3 +904,5 @@ var matrix =  [
 var gameOver = false;
 var snapshot = new Snapshot(matrix, gameOver);
 test_IsoSnapshotBoard(snapshot);
+
+

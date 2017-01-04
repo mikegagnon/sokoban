@@ -1168,7 +1168,7 @@ assert(snapshots_equal(snapshot_result, snapshot_expected));
 /* Test push 1 crate over goal ************************************************/
 
 var matrix = [
-    [0, 0],
+    [0, 4],
     [4, 0],
     [2, 0],
     [3, 0],
@@ -1177,7 +1177,7 @@ var snapshot_init = new Snapshot(matrix, false);
 var sokoban = new Sokoban(snapshot_init);
 var snapshot_result = sokoban.move("up");
 var matrix_expected = [
-    [0, 0],
+    [0, 4],
     [5, 0],
     [3, 0],
     [0, 0],
