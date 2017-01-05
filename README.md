@@ -2341,7 +2341,6 @@ class Viz {
 
                 var filename = undefined;
 
-                
                 // determine filename based off of pieceId
 
                 var cellId = "#" + Viz.getCellId(row, col);
