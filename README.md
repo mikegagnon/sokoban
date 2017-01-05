@@ -1547,9 +1547,13 @@ Save the following image files into your Sokoban directory:
 
 <img src="goal.png">
 
-<img src="goal_slider.png">
+<img src="slider-goal.png">
 
-<img src="goal_player.png">
+<img src="empty-win.png">
+
+<img src="player-win.png">
+
+
 
 
 
