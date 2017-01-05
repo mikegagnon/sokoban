@@ -1608,6 +1608,12 @@ When viewed in your browser, the page should look like this (not to scale):
 
 <img src="drawGame-test.png">
 
+Then, in `index.html`, change the value of `gameOver` to true. 
+This change, when viewed in your browser, the page should look like this
+(not to scale):
+
+<img src="drawGame-test-win.png">
+
 
 ### Hints
 
