@@ -20,12 +20,13 @@ And familiarity with OOP (object-orient programming) in JavaScript.
 - [Part 2. The `Sokoban` class](#part2)
     - [Challenge 2.1 A player among empty squares](#c2-1)
     - [Lecture 2.2 Isomorphisms](#lec2-2)
-    - [Challenge 2.3 Refactor the `Sokoban` class with an isomorphism](#c2-3)
-    - [Lecture 2.4 Modify `Sokoban` so that is uses a `Board` object instead of a `Snapshot object](#lec2-4)
+    - [Challenge 2.3 Develop the Sokoban isomorphisms](#c2-3)
+    - [Lecture 2.4 Modify `Sokoban` so that is uses a `Board` object instead of a `Snapshot` object](#lec2-4)
     - [Challenge 2.5 Prevent out-of-bounds movement](#c2-5)
     - [Challenge 2.6 Sliders](#c2-6)
     - [Challenge 2.7 Detect victory](#c2-7)
 - [Part 3. The `Viz` class](#part3)
+    - [Challenge 3.1](#c3-1)
 - [Part 4. Putting it all together](#part4)
 
 # <a name="part1">Part 1. Introduction & Setup</a>
@@ -96,11 +97,18 @@ The `Viz` class has a thin interface: there are only two methods.
 ```js
 class Viz {
     
-    // The boardId argument specifies the HTML id for the <div> element that will
-    // hold the game board
+    // Arguments:
+    //    - boardId specifies the id of the <div> that this game will be drawn
+    //      inside of.
+    //    - snapshot is the initial snapshot of the game.
+    //    - cell_size is the width of a cell (in pixels)
     //
-    // The snapshot argument defines the initial gamestate
-    constructor(boardId, snapshot) {...}
+    // The constructor creates a grid of cells in HTML. Each row of cells is contained
+    // within a <div> with class == "row", and each cell itself is represented by a 
+    // <div> with class == "cell".
+    //
+    // Then the constructor invokes drawGame(snapshot)
+    constructor(boardId, snapshot, cell_size) {...}
     
     // The snapshot argument defines the game state that is to be drawn on the web page
     drawGame(snapshot) {...}
@@ -617,22 +625,20 @@ class IsoLetterMorse {
 
 One day, you will be in a conference room surrounded by your peers.
 The Senior Software Engineer on the team sits at the head of the 
-conference table. An engineer from another continent is Skyped in.
+conference table. An engineer from another continent is on video chat.
 
 Everyone is trying to figure out how to solve this one particular problem...
 
 Suddenly you have a flashback to this course. You say, "We could use
 an isomorphism. It will preserve our existing interfaces. We can avoid
-a major version change!"
+a major version change."
 
 Silence. Someone nods. Slowly, everyone nods.
 
-Then suddenly the Senior Software Engineer declares:
-"No, it won't work for this problem."
+Then suddenly the Senior Software Engineer asserts,
+"No, it won't work for this problem. The isomorphism would be prohibitively slow."
 
 And so it's back to the drawing board. But at least you looked intelligent.
-Also, in about 50% of the universes in our multiverse, the Senior Software
-Engineer declares: "Yes, an isomorphism is perfect for this problem."
 
 
 
@@ -927,7 +933,7 @@ test_IsoSnapshotBoard(snapshot);
 
 
 
-### <a name="lec2-4">Modify `Sokoban` so that is uses a `Board` object instead of a `Snapshot` object</a>
+## <a name="lec2-4">Lecture 2.4 Modify `Sokoban` so that is uses a `Board` object instead of a `Snapshot` object</a>
 
 Make the following modifications:
 
@@ -1072,19 +1078,19 @@ change.
 
 ## <a name="c2-6">Challenge 2.6 Sliders</a>
 
-In this challenge, we will implement the functionality that handles sliders.
+In this challenge, we will implement the functionality that handles sliders (aka crates).
 
 Recall the semantics of the Sokoban+ game: if a player pushes into a series of 
 sliders, then the player and all the sliders will all move together (assuming
 there is a vacant space for them to move into).
 
 We will write a recursive function called `push(...)` to handle player &
-crate movement.
+slider movement.
 
 The idea is that the `move(...)` function calls `push`  on the player,
 then the player calls `push` on the adjacent slider, then that slider
 calls `push` onto the next slider, and so on... until the push
-bumps into a block, out of bounds, or an empty space.
+bumps into a block, out of bounds, or a vacant space.
 
 
 ### `push(...)`
@@ -1332,7 +1338,201 @@ move(direction) {
 
 # <a name="part3">Part 3. The `Viz` class</a>
 
+## <a name="c3-1">Challenge 3.1</a>
+
+Recall from [Lecture 1.1](#lec1-1), the `Viz` class is simple:
+
+```js
+class Viz {
+    
+    // Arguments:
+    //    - boardId specifies the id of the <div> that this game will be drawn
+    //      inside of.
+    //    - snapshot is the initial snapshot of the game.
+    //    - cell_size is the width of a cell (in pixels)
+    //
+    // The constructor creates a grid of cells in HTML. Each row of cells is contained
+    // within a <div> with class == "row", and each cell itself is represented by a 
+    // <div> with class == "cell".
+    //
+    // Then the constructor invokes drawGame(snapshot)
+    constructor(boardId, snapshot, cell_size) {...}
+    
+    // The snapshot argument defines the game state that is to be drawn on the web page
+    drawGame(snapshot) {...}
+}
+```
+
+And for convenience, we'll restate the `Snapshot` class here:
+
+```js
+// pieceId values
+var EMPTY = 0;
+var BLOCK = 1;
+var SLIDER = 2;
+var PLAYER = 3;
+var GOAL = 4;
+var GOAL_SLIDER = 5;
+var GOAL_PLAYER = 6;
+
+/* Snapshot class *************************************************************/
+class Snapshot {
+
+    // The matrix argument is a 2-dimensional array describing board state.
+    // Each item in the matrix is a pieceId. Namely, either EMPTY, BLOCK,
+    // SLIDER, PLAYER, GOAL, GOAL_SLIDER, GOAL_PLAYER.
+    //
+    // The gameOver argument is a boolen that is true iff the player has solved
+    // the puzzle.
+    constructor(matrix, gameOver) {
+        this.matrix = matrix;
+        this.gameOver = gameOver;
+        this.numRows = matrix.length;
+        this.numCols = matrix[0].length;
+    }
+}
+```
+
+
+### Challenge
+
+Implement the `constructor(...)` method for `Viz`.
+
+To test our `constructor`, we will use the following `index.html` and `style.css` for this challenge:
+
+#### `style.css`:
+
+```
+.row {
+    clear: left;
+}
+
+.cell {
+    margin-left: 1px;
+    margin-top: 1px;
+    float: left;
+    background-color: gray;
+}
+```
+
+#### `index.html`
+
+```html
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Sokoban+</title>
+    <link rel="stylesheet" type="text/css" href="style.css">
+    <script src="jquery.js"></script>
+    <script src="sokoban.js"></script>
+  </head>
+  <body>
+    <div id="board"></div>
+  </body>
+  <script>
+    /* Testing out Viz ********************************************************/
+
+    var boardInit =  [
+        [0,0,0],
+        [0,0,0],
+        [0,0,0],
+        [0,0,0],
+    ];
+
+    var gameOver = false;
+
+    var snapshot = new Snapshot(boardInit, gameOver);
+
+    var cell_size = 32;
+
+    var viz = new Viz("#board", snapshot, cell_size);
+  </script>
+</html>
+```
+
+#### Further clarification
+
+To clarify what the constructor should do: after the `Viz` object is created (via the `constructor`), the dynamic HTML for the page will look like this:
+
+```html
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Sokoban+</title>
+    <link rel="stylesheet" type="text/css" href="style.css">
+    <script src="jquery.js"></script>
+    <script src="sokoban.js"></script>
+  </head>
+  <body>
+    <div id="board">
+        <div id="row-0" class="row">
+            <div id="cell-0-0" class="cell" style="width: 32px; height: 32px;"></div>
+            <div id="cell-0-1" class="cell" style="width: 32px; height: 32px;"></div>
+            <div id="cell-0-2" class="cell" style="width: 32px; height: 32px;"></div>
+        </div>
+        <div id="row-1" class="row">
+            <div id="cell-1-0" class="cell" style="width: 32px; height: 32px;"></div>
+            <div id="cell-1-1" class="cell" style="width: 32px; height: 32px;"></div>
+            <div id="cell-1-2" class="cell" style="width: 32px; height: 32px;"></div>
+        </div>
+        <div id="row-2" class="row">
+            <div id="cell-2-0" class="cell" style="width: 32px; height: 32px;"></div>
+            <div id="cell-2-1" class="cell" style="width: 32px; height: 32px;"></div>
+            <div id="cell-2-2" class="cell" style="width: 32px; height: 32px;"></div>
+        </div>
+        <div id="row-3" class="row">
+            <div id="cell-3-0" class="cell" style="width: 32px; height: 32px;"></div>
+            <div id="cell-3-1" class="cell" style="width: 32px; height: 32px;"></div>
+            <div id="cell-3-2" class="cell" style="width: 32px; height: 32px;"></div>
+        </div>
+    </div>
+  </body>
+  <script>
+    /* Testing out Viz ********************************************************/
+
+    var boardInit =  [
+        [0,0,0],
+        [0,0,0],
+        [0,0,0],
+        [0,0,0],
+    ];
+
+    var gameOver = false;
+
+    var snapshot = new Snapshot(boardInit, gameOver);
+
+    var cell_size = 32;
+
+    var viz = new Viz("#board", snapshot, cell_size);
+  </script>
+</html>
+```
+
+#### Even more clarification
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 # <a name="part4">Part 4. Putting it all together</a>
+
 
 
 # Hints
@@ -1666,7 +1866,7 @@ The `move` function should do the following:
 
 ## <a name="hint2-5-2">Hint 2 for Challenge 2.5</a>
 
-To make your code elegant, implement an `inBounds(row, col)` function that
+To make your code elegant, implement and use an `inBounds(row, col)` function that
 returns true iff (`row`, `col`) is inbounds.
 
 <br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
@@ -1813,9 +2013,7 @@ assert(snapshots_equal(snapshot_result, snapshot_expected));
 
 ## <a name="hint2-6-1">Hint 1 for Challenge 2.6</a>
 
-TODO: link linked lists
-
-Recall from the Linked Lists mini course:
+Recall from the [Linked Lists mini course](https://github.com/mikegagnon/linked-lists/blob/master/README.md#lec5):
 
 - Step 1. Base case(s)
     - Analyze the corner cases
