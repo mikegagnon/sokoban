@@ -26,7 +26,7 @@ And familiarity with OOP (object-orient programming) in JavaScript.
     - [Challenge 2.6 Sliders](#c2-6)
     - [Challenge 2.7 Detect victory](#c2-7)
 - [Part 3. The `Viz` class](#part3)
-    - [Challenge 3.1](#c3-3)
+    - [Challenge 3.1](#c3-1)
 - [Part 4. Putting it all together](#part4)
 
 # <a name="part1">Part 1. Introduction & Setup</a>
