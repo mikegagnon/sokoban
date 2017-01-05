@@ -1548,18 +1548,18 @@ jQuery one liner:
 $("img").remove();
 ```
 
-For every (row, col) do the following:
+Then, for every (row, col) do the following:
 
 - Determine which image file should be drawn to the grid (depending on
   the pieceId value in `snapshot.matrix[row][col]`)
 - Add the image file to the appropriate cell by appending an `<img>` tag
-  to the cell. The `<img>` tag should look something like
+  to the cell (using jQuery). The `<img>` tag should look something like
   `<img src="empty.png" width="32">`, except:
   - instead of `empty.png` use the appropriate image filename, and
   - instead of `32` use `this.cell_size`
 
 
-Now implement `drawGame()`.
+### Hints
 
 - [Hint 1]
 - [Hint 2]
