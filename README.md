@@ -1510,7 +1510,9 @@ To clarify what the constructor should do: after the `Viz` object is created (vi
 
 #### Even more clarification
 
+Here is a screenshot of `index.html` after implementing and executing the `constructor` for `Viz`:
 
+<img src="c3-3-output.png">
 
 
 
