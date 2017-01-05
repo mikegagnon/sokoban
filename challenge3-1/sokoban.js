@@ -58,6 +58,7 @@ class Viz {
         this.numCols = snapshot.numCols;
         this.cell_size = cell_size;
         this.drawCells();
+        this.drawGame(snapshot);
     }
     
     drawCells() {
