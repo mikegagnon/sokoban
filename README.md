@@ -1396,9 +1396,9 @@ class Snapshot {
 
 ### Challenge
 
-Implement the `constructor` method for Viz.
+Implement the `constructor(...)` method for `Viz`.
 
-To test our `Viz` constructor, we will use the following `index.html` and `style.css` for this challenge:
+To test our `constructor`, we will use the following `index.html` and `style.css` for this challenge:
 
 #### `style.css`:
 
@@ -1414,7 +1414,6 @@ To test our `Viz` constructor, we will use the following `index.html` and `style
     background-color: gray;
 }
 ```
-
 
 #### `index.html`
 
@@ -1508,6 +1507,10 @@ To clarify what the constructor should do: after the `Viz` object is created (vi
   </script>
 </html>
 ```
+
+#### Even more clarification
+
+
 
 
 
