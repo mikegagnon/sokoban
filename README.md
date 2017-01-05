@@ -1527,11 +1527,33 @@ Here is a screenshot of `index.html` after implementing and executing the `const
 
 
 
+
+
+
+
+
+
 ## <a name="c3-2">Challenge 3.2 Implement `drawGame(...)`</a>
 
 Save the following image files into your Sokoban directory:
 
 <img src="empty.png">
+
+<img src="block.png">
+
+<img src="slider.png">
+
+<img src="player.png">
+
+<img src="goal.png">
+
+<img src="goal_slider.png">
+
+<img src="goal_player.png">
+
+
+
+
 
 
 
