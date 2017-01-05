@@ -1758,8 +1758,6 @@ Thus, our `index.html` file looks as follows:
 You now have a complete `Sokoban` game that works perfectly.
 
 
-# Hints
-
 <br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
 
 ## <a name="hint2-1-1">Hint 1 for Challenge 2.1</a>
