@@ -81,10 +81,51 @@ class Viz {
         }
     }
 
+    getImgTag(filename) {
+        return "<img src='" + filename + "' width='" + this.cell_size + "'>";
+    }
+
     // The snapshot argument defines the game state that is to be drawn on the
     // web page
     drawGame(snapshot) {
 
+        $("img").remove();
+
+        for (var row = 0; row < this.numRows; row++) {
+            for (var col = 0; col < this.numCols; col++) {
+                var pieceId = snapshot.matrix[row][col];
+
+                var filename = undefined;
+
+                // TODO: victory
+                if (pieceId == BLOCK) {
+                    filename = "block.png";
+                } else if (pieceId == GOAL_SLIDER) {
+                    filename = "slider-goal.png";
+                } else if (pieceId == GOAL_PLAYER) {
+                    filename = "player.png";
+                } else if (pieceId == GOAL) {
+                    filename = "goal.png";
+                } else if (pieceId == SLIDER) {
+                    filename = "slider.png";
+                } else if (pieceId == PLAYER) {
+                    if (snapshot.gameOver) {
+                        filename = "player-win.png";
+                    } else {
+                        filename = "player.png";
+                    }
+                } else {
+                    if (snapshot.gameOver) {
+                        filename = "empty-win.png";
+                    } else {
+                        filename = "empty.png"
+                    }
+                }
+
+                var cellId = "#" + Viz.getCellId(row, col);
+                $(cellId).append(this.getImgTag(filename));
+            }
+        }
     }
 }
 
