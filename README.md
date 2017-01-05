@@ -1537,21 +1537,7 @@ Here is a screenshot of `index.html` after implementing and executing the `const
 
 Save the following image files into your Sokoban directory:
 
-<img src="empty.png">
-
-<img src="block.png">
-
-<img src="slider.png">
-
-<img src="player.png">
-
-<img src="goal.png">
-
-<img src="slider-goal.png">
-
-<img src="empty-win.png">
-
-<img src="player-win.png">
+<img src="empty.png"> <img src="block.png"> <img src="slider.png"> <img src="player.png"> <img src="goal.png"> <img src="slider-goal.png"> <img src="empty-win.png"> <img src="player-win.png">
 
 
 
