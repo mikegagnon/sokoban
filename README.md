@@ -2341,6 +2341,44 @@ class Viz {
 
                 var filename = undefined;
 
+                
+                // determine filename based off of pieceId
+
+                var cellId = "#" + Viz.getCellId(row, col);
+                var imgTag = this.getImgTag(filename)
+                $(cellId).append(imgTag);
+            }
+        }
+    }
+}
+```
+
+
+<br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
+
+## <a name="solution3-2">Solution for Challenge 3.2</a>
+
+```js
+class Viz {
+
+    ...
+
+    getImgTag(filename) {
+        return "<img src='" + filename + "' width='" + this.cell_size + "'>";
+    }
+
+    // The snapshot argument defines the game state that is to be drawn on the
+    // web page
+    drawGame(snapshot) {
+
+        $("img").remove();
+
+        for (var row = 0; row < this.numRows; row++) {
+            for (var col = 0; col < this.numCols; col++) {
+                var pieceId = snapshot.matrix[row][col];
+
+                var filename = undefined;
+
                 // TODO: victory
                 if (pieceId == BLOCK) {
                     filename = "block.png";
@@ -2374,8 +2412,3 @@ class Viz {
     }
 }
 ```
-
-
-<br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
-
-## <a name="solution3-2">Solution for Challenge 3.2</a>

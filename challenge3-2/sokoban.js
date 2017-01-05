@@ -97,7 +97,6 @@ class Viz {
 
                 var filename = undefined;
 
-                // TODO: victory
                 if (pieceId == BLOCK) {
                     filename = "block.png";
                 } else if (pieceId == GOAL_SLIDER) {
