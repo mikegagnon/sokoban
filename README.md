@@ -1514,7 +1514,10 @@ Here is a screenshot of `index.html` after implementing and executing the `const
 
 <img src="c3-3-output.png">
 
+#### Hints
 
+- [Hint 1](#hint3-1-1)
+- [Solution](#solution3-1)
 
 
 
@@ -2191,3 +2194,16 @@ class Sokoban {
     }
 }
 ```
+
+
+<br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
+
+## <a name="hint3-1-1">Hint 1 for Challenge 3.1</a>
+
+Use an approach that is similar to the
+[grid-drawing lecutre for Thumb Wrestling](https://github.com/mikegagnon/thumb-wrestling/blob/master/README.md#lec3).
+
+<br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
+
+## <a name="solution3-1">Solution for Challenge 3.1</a>
+
