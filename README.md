@@ -28,8 +28,9 @@ And familiarity with OOP (object-orient programming) in JavaScript.
 - [Part 3. The `Viz` class](#part3)
     - [Challenge 3.1 Implement `constructor(...)`](#c3-1)
     - [Challenge 3.2 Implement `drawGame(...`)](#c3-2)
-    
 - [Part 4. Putting it all together](#part4)
+    - [Lecture 4-1](#lec4-1)
+    
 
 # <a name="part1">Part 1. Introduction & Setup</a>
 
@@ -1621,6 +1622,10 @@ This change, when viewed in your browser, the page should look like this
 - [Solution](#solution3-2)
 
 
+
+
+
+## <a name="lec4-1">Lecture 4-1 </a>
 
 
 
