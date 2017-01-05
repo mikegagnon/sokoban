@@ -1661,7 +1661,7 @@ We need to implement the "controller," which does the following:
   [Thumb Wrestling](https://github.com/mikegagnon/thumb-wrestling/blob/master/README.md#lec2).
 - Declare two global variables `VIZ` and `SOKOBAN` to hold references
   to a `Viz` object and a `Sokoban` object
-- Whenver an arrow key is pressed, invoke `SOKOBAN.move(direction` and 
+- Whenver an arrow key is pressed, invoke `SOKOBAN.move(direction)` and 
   `VIZ.drawGame(snapshot)`
 
 Thus, our controller is as follows:
