@@ -1539,7 +1539,30 @@ Save the following image files into your Sokoban directory:
 
 <img src="empty.png"> <img src="block.png"> <img src="slider.png"> <img src="player.png"> <img src="goal.png"> <img src="slider-goal.png"> <img src="empty-win.png"> <img src="player-win.png">
 
+### Outline of `drawGame()`
 
+First, `drawGame` should remove every `<img>` tag from the page. Use the following
+jQuery one liner:
+
+```js
+$("img").remove();
+```
+
+For every (row, col) do the following:
+
+- Determine which image file should be drawn to the grid (depending on
+  the pieceId value in `snapshot.matrix[row][col]`)
+- Add the image file to the appropriate cell by appending an `<img>` tag
+  to the cell. The `<img>` tag should look something like
+  `<img src="empty.png" width="32">`, except:
+  - instead of `empty.png` use the appropriate image filename, and
+  - instead of `32` use `this.cell_size`
+
+
+Now implement `drawGame()`.
+
+- [Hint 1]
+- [Hint 2]
 
 
 
