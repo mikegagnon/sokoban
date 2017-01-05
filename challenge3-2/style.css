@@ -1,0 +1,11 @@
+
+.row {
+    clear: left;
+}
+
+.cell {
+    margin-left: 1px;
+    margin-top: 1px;
+    float: left;
+    background-color: gray;
+}
