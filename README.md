@@ -26,7 +26,8 @@ And familiarity with OOP (object-orient programming) in JavaScript.
     - [Challenge 2.6 Sliders](#c2-6)
     - [Challenge 2.7 Detect victory](#c2-7)
 - [Part 3. The `Viz` class](#part3)
-    - [Challenge 3.1](#c3-1)
+    - [Challenge 3.1 Implement `constructor(...)`](#c3-1)
+    - [Challenge 3.2 Implement `drawGame(...`)](#c3-2)
     
 - [Part 4. Putting it all together](#part4)
 
@@ -1339,7 +1340,7 @@ move(direction) {
 
 # <a name="part3">Part 3. The `Viz` class</a>
 
-## <a name="c3-1">Challenge 3.1 Implement `constructor`</a>
+## <a name="c3-1">Challenge 3.1 Implement `constructor(...)`</a>
 
 Recall from [Lecture 1.1](#lec1-1), the `Viz` class is simple:
 
@@ -1521,6 +1522,16 @@ Here is a screenshot of `index.html` after implementing and executing the `const
 - [Solution](#solution3-1)
 
 
+
+
+
+
+
+## <a name="c3-2">Challenge 3.2 Implement `drawGame(...)`</a>
+
+Save the following image files into your Sokoban directory:
+
+<img src="empty.png">
 
 
 
