@@ -27,6 +27,7 @@ And familiarity with OOP (object-orient programming) in JavaScript.
     - [Challenge 2.7 Detect victory](#c2-7)
 - [Part 3. The `Viz` class](#part3)
     - [Challenge 3.1](#c3-1)
+    
 - [Part 4. Putting it all together](#part4)
 
 # <a name="part1">Part 1. Introduction & Setup</a>
@@ -1338,7 +1339,7 @@ move(direction) {
 
 # <a name="part3">Part 3. The `Viz` class</a>
 
-## <a name="c3-1">Challenge 3.1</a>
+## <a name="c3-1">Challenge 3.1 Implement `constructor`</a>
 
 Recall from [Lecture 1.1](#lec1-1), the `Viz` class is simple:
 
