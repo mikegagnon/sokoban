@@ -1650,7 +1650,7 @@ This change, when viewed in your browser, the page should look like this
 At this point you should have correct implementations for the
 `Viz` and `Sokoban` classes.
 
-Combing them into one `sokoban.js` file.
+Combine them into one `sokoban.js` file.
 
 ### Controller
 
