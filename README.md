@@ -1707,7 +1707,7 @@ document.onkeydown = keydown;
 
 We update our `index.html` file to do the following:
 
-- Initialize a matrix of pieceId values, named `boardInt`
+- Initialize a matrix of pieceId values, named `boardInit`
 - Create a `snapshot` object by invoking the `Snapshot` constructor
 - Set `SOKOBAN` to a new `Sokoban` object by invoking the `Sokoban` constructor
 - Set `VIZ` to a new `Viz` object by invoking the `Viz` constructor
