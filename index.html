@@ -1,27 +1,14 @@
 <!DOCTYPE html>
 <html>
-<head>
-  <title>Sokoban+</title>
-  <link rel="stylesheet" type="text/css" href="style.css">
-  <script src="jquery.js"></script>
-  <script src="sokoban.js"></script>
-</head>
-<body>
-
-  <div id="board"></div>
-
-  <br>
-  <br>
-  <ul style="clear: left;">
-    <li><b>Goal</b>: Cover every pink dot with a crate
-    <li><b>Controls:</b> Use the arrow keys
-    <li><b>Restart:</b> Reload the page
-  </ul>
-
-</body>
-
-
-
+  <head>
+    <title>Sokoban+</title>
+    <link rel="stylesheet" type="text/css" href="style.css">
+    <script src="jquery.js"></script>
+    <script src="sokoban.js"></script>
+  </head>
+  <body>
+    <div id="board"></div>
+  </body>
 <script type="text/javascript">
 
   var boardInit =  [
@@ -40,9 +27,10 @@
 
   var snapshot = new Snapshot(boardInit, gameOver);
 
+  var cell_size = 32;
+
   SOKOBAN = new Sokoban(snapshot);
-  VIZ = new Viz("#board", snapshot);
+  VIZ = new Viz("#board", snapshot, cell_size);
 
 </script>
-
 </html>

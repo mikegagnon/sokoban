@@ -1,10 +1,8 @@
-
-var CELL_SIZE = 35;
-
-var SOKOBAN = undefined;
-var VIZ = undefined;
-
-// TODO: isValid
+function assert(condition) {
+    if (!condition) {
+        console.error("Assertion failed");
+    }
+}
 
 // pieceId values
 var EMPTY = 0;
@@ -18,46 +16,52 @@ var GOAL_PLAYER = 6;
 /* Snapshot class *************************************************************/
 class Snapshot {
 
-    // The board argument is a 2-dimensional matrix describing board state.
+    // The matrix argument is a 2-dimensional matrix describing the board state.
     // Each item in the matrix is a pieceId. Namely, either EMPTY, BLOCK,
     // SLIDER, PLAYER, GOAL, GOAL_SLIDER, GOAL_PLAYER.
     //
     // The gameOver argument is a boolen that is true iff the player has solved
     // the puzzle.
-    constructor(board, gameOver) {
-        this.board = board;
-        this.numRows = board.length;
-        this.numCols = board[0].length;
+    constructor(matrix, gameOver) {
+        this.matrix = matrix;
         this.gameOver = gameOver;
+        this.numRows = matrix.length;
+        this.numCols = matrix[0].length;
     }
 }
 
 /* Viz class ******************************************************************/
 class Viz {
-
+    
     /* Static functions *******************************************************/
 
     static getCellId(row, col) {
         return "cell-" + row + "-" + col;
     }
 
-    static getImgTag(filename) {
-        return "<img src='" + filename + "' width='" + CELL_SIZE + "'>";
-    }
-
     /* Instance methods *******************************************************/
 
-    // TODO: rm numRows, numCols, and take a snapshot object
-    constructor(boardId, snapshot) {
+    // Arguments:
+    //    - boardId specifies the id of the <div> that this game will be drawn
+    //      inside of.
+    //    - snapshot is the initial snapshot of the game.
+    //    - cell_size is the width of a cell (in pixels)
+    //
+    // The constructor creates a grid of cells in HTML. Each row of cells is
+    // contained within a <div> with class == "row", and each cell itself is
+    // represented by a <div> with class == "cell".
+    //
+    // Then the constructor invokes drawGame(snapshot)
+    constructor(boardId, snapshot, cell_size) {
         this.boardId = boardId;
         this.numRows = snapshot.numRows;
         this.numCols = snapshot.numCols;
-        this.drawBoard();
+        this.cell_size = cell_size;
+        this.drawCells();
         this.drawGame(snapshot);
     }
-
-    drawBoard() {
-
+    
+    drawCells() {
         for (var row = 0; row < this.numRows; row++) {
 
             var rowId = "row-" + row;
@@ -70,24 +74,29 @@ class Viz {
                 var cellId = Viz.getCellId(row, col);
                 var cellTag = "<div id='" + cellId + "' class='cell'></div>";
                 $("#" + rowId).append(cellTag);
-                $("#" + cellId).css("width", CELL_SIZE);
-                $("#" + cellId).css("height", CELL_SIZE);
+                $("#" + cellId).css("width", this.cell_size);
+                $("#" + cellId).css("height", this.cell_size);
 
             }
         }
     }
 
+    getImgTag(filename) {
+        return "<img src='" + filename + "' width='" + this.cell_size + "'>";
+    }
+
+    // The snapshot argument defines the game state that is to be drawn on the
+    // web page
     drawGame(snapshot) {
 
         $("img").remove();
 
         for (var row = 0; row < this.numRows; row++) {
             for (var col = 0; col < this.numCols; col++) {
-                var pieceId = snapshot.board[row][col];
+                var pieceId = snapshot.matrix[row][col];
 
                 var filename = undefined;
 
-                // TODO: victory
                 if (pieceId == BLOCK) {
                     filename = "block.png";
                 } else if (pieceId == GOAL_SLIDER) {
@@ -113,259 +122,316 @@ class Viz {
                 }
 
                 var cellId = "#" + Viz.getCellId(row, col);
-                $(cellId).append(Viz.getImgTag(filename));
+                var imgTag = this.getImgTag(filename)
+                $(cellId).append(imgTag);
             }
         }
     }
 }
 
-/* Sokoban class **************************************************************/
-class Sokoban {
+/* Board class ****************************************************************/
+class Board {
 
-    /* Static functions *******************************************************/
+    // The cells argument is a 2-dimensional matrix describing the board state.
+    // Each item in cells is a cell object, which is to say an instance of the
+    // Cell class.
+    //
+    // The gameOver argument is a boolen that is true iff the player has solved
+    // the puzzle.
+    constructor(cells, gameOver) {
+        this.cells = cells;
+        this.gameOver = gameOver;
+        this.numRows = cells.length;
+        this.numCols = cells[0].length;
+    }
+}
 
-    // returns a 2-tuple [dr, dc], where:
-    //      dr == difference in row
-    //      dc == difference in column
-    static drdc(direction) {
-        if (direction == "up") {
-            return [-1, 0];
-        } else if (direction == "down") {
-            return [1, 0];
-        } else if (direction == "left") {
-            return [0, -1];
-        } else if (direction == "right") {
-            return [0, 1];
-        } else {
-            console.error("Bad direction: " + direction);
-        }
+/* Cell class *****************************************************************/
+// Iff this.block == true, then that means there is a block in this cell
+// And so on for this.slider, this.player, and this.goal
+class Cell {
+    constructor(block, slider, player, goal) {
+        this.block = block;
+        this.slider = slider;
+        this.player = player;
+        this.goal = goal;
     }
 
-    /* Instance methods *******************************************************/
-
-    // TODO: change to snapshot
-    constructor(snapshot) {
-        this.playerRow = undefined;
-        this.playerCol = undefined;
-        this.matrix = undefined;
-        this.numRows = snapshot.numRows;
-        this.numCols = snapshot.numCols;
-        this.numGoals = 0;
-        this.gameOver = snapshot.gameOver;
-        this.initGameState(snapshot);
+    isEmpty() {
+        return !this.block && !this.slider && !this.player;
     }
+}
 
-    newMatrix() {
+/* IsoSnapshotBoard class *****************************************************/
+class IsoSnapshotBoard {
 
-        var matrix = new Array(this.numRows);
-
-        for (var row = 0; row < this.numRows; row++) {
-            matrix[row] = new Array(this.numCols);
+    static newMatrix(numRows, numCols) {
+        var matrix = new Array(numRows);
+        for (var row = 0; row < numRows; row++) {
+            matrix[row] = new Array(numCols);
         }
-
         return matrix;
     }
 
-    // TODO: handle new piece codes
-    initGameState(snapshot) {
-        this.matrix = this.newMatrix();
+    static toBoard(snapshot) {
 
-        for (var row = 0; row < this.numRows; row++) {
-            for (var col = 0; col < this.numCols; col++) {
-                var piece = boardInit[row][col];
-                var cell = new Cell(row, col, this);
+        var numRows = snapshot.numRows;
+        var numCols = snapshot.numCols;
 
-                cell.addPiece(piece);
+        var cells = IsoSnapshotBoard.newMatrix(numRows, numCols);
 
-                if (piece == GOAL) {
-                    this.numGoals += 1;
-                } else if (piece == PLAYER) {
-                    this.playerRow = row;
-                    this.playerCol = col;
-                }
-
-                this.matrix[row][col] = cell;
-            }
-        }
-    }
-
-    inBounds(row, col) {
-        return row >= 0 &&
-               row < this.numRows &&
-               col >= 0 &&
-               col < this.numCols;
-    }
-
-    checkForVictory() {
-        var occupiedGoals = 0;
-
-        for (var row = 0; row < this.numRows; row++) {
-            for (var col = 0; col < this.numCols; col++) {
-                var cell = this.matrix[row][col];
-                if (cell.goal && cell.slider) {
-                    occupiedGoals += 1;
-                }
+        for (var row = 0; row < numRows; row++) {
+            for (var col = 0; col < numCols; col++) {
+                var pieceId = snapshot.matrix[row][col];
+                cells[row][col] = IsoPieceidCell.toCell(pieceId);
             }
         }
 
-        if (occupiedGoals == this.numGoals) {
-            this.gameOver = true;
-        }
+        return new Board(cells, snapshot.gameOver);
     }
 
-    getSnapshot() {
-        var board = this.newMatrix();
+    static toSnapshot(board) {
+        var numRows = board.numRows;
+        var numCols = board.numCols;
 
-        for (var row = 0; row < this.numRows; row++) {
-            for (var col = 0; col < this.numCols; col++) {
-                board[row][col] = this.matrix[row][col].getPieceId();
+        var matrix = IsoSnapshotBoard.newMatrix(numRows, numCols);
+
+        for (var row = 0; row < numRows; row++) {
+            for (var col = 0; col < numCols; col++) {
+
+                var cell = board.cells[row][col];
+                matrix[row][col] = IsoPieceidCell.toPieceid(cell);
             }
         }
 
-        return new Snapshot(board, this.gameOver);
+        return new Snapshot(matrix, board.gameOver);
     }
-
-    move(direction) {
-
-        if (this.gameOver) {
-            return this.getSnapshot();
-        }
-
-        var [row, col] = [this.playerRow, this.playerCol];
-        var [dr, dc] = Sokoban.drdc(direction);
-        var [newRow, newCol] = [row + dr, col + dc];
-
-        if (!this.inBounds(newRow, newCol)) {
-            return this.getSnapshot();;
-        } else {
-            var cell = this.matrix[row][col];
-            if (cell.nudge(direction)) {
-                cell.push(direction);
-            }
-        }
-
-        this.checkForVictory();
-
-        return this.getSnapshot();
-    }
-
 }
 
-/* Cell ***********************************************************************/
-class Cell {
+/* IsoPieceidCell class *****************************************************/
+class IsoPieceidCell {
 
-    constructor(row, col, sokoban) {
-        this.sokoban = sokoban;
-        this.row = row;
-        this.col = col;
-        this.block = false;
-        this.slider = false;
-        this.player = false;
-        this.goal = false;
+    static toCell(pieceId) {
+
+        var block = false;
+        var slider = false;
+        var player = false;
+        var goal = false;
+
+        if (pieceId == BLOCK) {
+            block = true;
+        } else if (pieceId == SLIDER) {
+            slider = true;
+        } else if (pieceId == PLAYER) {
+            player = true;
+        } else if (pieceId == GOAL) {
+            goal = true;
+        } else if (pieceId == GOAL_SLIDER) {
+            goal = true;
+            slider = true;
+        } else if (pieceId == GOAL_PLAYER) {
+            goal = true;
+            player = true;
+        }
+
+        return new Cell(block, slider, player, goal);
     }
 
-    getPieceId() {
-        if (this.block) {
+    static toPieceid(cell) {
+        if (cell.block) {
             return BLOCK;
-        } else if (this.goal) {
-            if (this.slider) {
+        } else if (cell.goal) {
+            if (cell.slider) {
                 return GOAL_SLIDER;
-            } else if (this.player) {
+            } else if (cell.player) {
                 return GOAL_PLAYER;
             } else {
                 return GOAL;
             }
-        } else if (this.slider) {
+        } else if (cell.slider) {
             return SLIDER;
-        } else if (this.player) {
+        } else if (cell.player) {
             return PLAYER;
         } else {
             return EMPTY;
         }
     }
+}
 
-    // TODO: replace with getPieceId?
-    getMovablePiece() {
-        if (this.slider) {
-            return SLIDER;
-        } else if (this.player) {
-            return PLAYER;
-        } else {
-            console.error("cannot call getMovablePiece() on an immovable piece");
-        }
+
+/* Sokoban class **************************************************************/
+class Sokoban {
+
+    // The snapshot argument defines the initial gamestate
+    constructor(snapshot) {
+        this.board = IsoSnapshotBoard.toBoard(snapshot);
+
+        var [row, col] = this.findPlayer();
+        this.playerRow = row;
+        this.playerCol = col;
     }
 
-    addPiece(piece) {
-        if (piece == BLOCK) {
-            this.block = true;
-        } else if (piece == SLIDER) {
-            this.slider = true;
-        } else if (piece == PLAYER) {
-            this.player = true;
-        } else if (piece == GOAL) {
-            this.goal = true;
-        } else if (piece == EMPTY) {
-            // do nothing
-        } else {
-            console.error("Unrecognized piece: " + piece);
-        }
-    }
+    findPlayer() {
 
-    removePiece(piece) {
-        if (piece == SLIDER) {
-            this.slider = false;
-        } else if (piece == PLAYER) {
-            this.player = false;
-        } else {
-            console.error("cannot remove an immovable piece");
-        }
-    }
-
-    // This cell is being "pushed" in the direction of dir
-    // This function may only be called on a cell, if that cell contains
-    // exactly one movable piece (i.e. PLAYER or SLIDER)
-    push(dir) {
-        if (this.slider || this.player) {
-            var [dr, dc] = Sokoban.drdc(dir);
-            var newRow = this.row + dr;
-            var newCol = this.col + dc;
-            var newCell = this.sokoban.matrix[newRow][newCol];
-
-            newCell.push(dir);
-
-            var piece = this.getMovablePiece();
-            newCell.addPiece(piece);
-            this.removePiece(piece);
-
-            if (piece == PLAYER) {
-                this.sokoban.playerRow = newRow;
-                this.sokoban.playerCol = newCol;
+        for (var row = 0; row < this.board.numRows; row++) {
+            for (var col = 0; col < this.board.numCols; col++) {
+                var cell = this.board.cells[row][col];
+                if (cell.player) {
+                    return [row, col];
+                }
             }
         }
+
+        // If there is no player
+        assert(false);
     }
 
-    // This cell is being "nudged" in the direction of dir
-    // Returns true iff the cell can be "pushed"
-    nudge(dir) {
+    // Returns true iff (row, col) is in bounds
+    inBounds(row, col) {
+        return row >= 0 &&
+               row < this.board.numRows &&
+               col >= 0 &&
+               col < this.board.numCols;
+    }
 
-        if (this.block) {
+    static getNewRowCol(row, col, direction) {
+        var newRow = row;
+        var newCol = col;
+
+        if (direction == "up") {
+            newRow -= 1;
+        } else if (direction == "down") {
+            newRow += 1;
+        } else if (direction == "left") {
+            newCol -= 1;
+        } else if (direction == "right") {
+            newCol += 1;
+        } else {
+            assert(false);
+        }
+
+        return [newRow, newCol];
+    }
+
+    // push(row, col, direction)
+    //
+    // Attempts to push the player or slider from (row, col) into 
+    // (newRow, newCol), where (newRow, newCol) is adjacent to (row, col) in
+    // the given direction. For example, if (row, col) == (0, 0), and
+    // direction == right, then (newRow, newCol) == (0, 1).
+    //
+    // If there is no player or slider at (row, col) --- say, because (row, col)
+    // is empty or occupied by a block --- then of course no movement attempt is
+    // made.
+    //
+    // The push attempt may or may not succeed. If the push attempt succeeds
+    // then the piece at (row, col) is moved into (newRow, newCol).
+    //
+    // Returns true iff (row, col) can be moved into by a slider or the player.
+    //      - For example, if (row, col) is empty, then returns true
+    //      - As another example, if (row, col) formerly held a slider, but
+    //        that slider has successefully been pushed into a new cell,
+    //        then (row, col) is now empty, and so returns true.
+    //
+    // Recall the semantics of the game: a player can push a series of sliders
+    // as long as the last slider in the series can slide into an empty cell.
+    // Therefore, this function must be recursive.
+    //
+    // For further clarification on the necessity of recursion, consider this
+    // example:
+    //
+    //      The player is located at (0, 0).
+    //      A slider is located at (0, 1), i.e. to the right of the player.
+    //
+    //      The player can only move to the right, iff the slider can 
+    //      move to the right.
+    //
+    //      Therefore push(0, 0, "right") depends on the result of of
+    //      push(0, 1, "right"), which depends on the result of
+    //      push(0, 2, "right").
+    //
+    // Don't bother attempting to implement push(...) until you understand
+    // the documentation for this function.
+    push(row, col, direction) {
+
+        if (!this.inBounds(row, col)) {
             return false;
-        } else if (this.slider || this.player) {
-            var [dr, dc] = Sokoban.drdc(dir);
-            var newRow = this.row + dr;
-            var newCol = this.col + dc;
+        }
 
-            if (this.sokoban.inBounds(newRow, newCol)) {
-                var newCell = this.sokoban.matrix[newRow][newCol];
-                return newCell.nudge(dir);
-            } else {
-                return false;
-            }
-        } else {
+        var cell = this.board.cells[row][col];
+
+        if (cell.block) {
+            return false;
+        } else if (cell.isEmpty()) {
             return true;
         }
+
+        assert(cell.slider || cell.player);
+
+        var [newRow, newCol] = Sokoban.getNewRowCol(row, col, direction);
+
+        if (this.push(newRow, newCol, direction)) {
+
+            var newCell = this.board.cells[newRow][newCol];
+
+            if (cell.player) {
+                this.playerRow = newRow;
+                this.playerCol = newCol;
+                cell.player = false;
+                newCell.player = true;
+            } else {
+                assert(cell.slider);
+                cell.slider = false;
+                newCell.slider = true;
+            }
+
+            return true;
+        } else {
+            return false;
+        }
     }
 
+    checkForVictory() {
+
+        var numGoals = 0;
+        var numOccupiedGoals = 0;
+
+        for (var row = 0; row < this.board.numRows; row++) {
+            for (var col = 0; col < this.board.numCols; col++) {
+                var cell = this.board.cells[row][col];
+                if (cell.goal) {
+                    numGoals += 1;
+
+                    if (cell.slider) {
+                        numOccupiedGoals += 1;
+                    }
+                }
+            }
+        }
+
+        if (numGoals == 0) {
+            return false;
+        } else {
+            return numGoals == numOccupiedGoals;
+        }
+
+    }
+
+    // Moves the player in the specified direction. direction must be either:
+    // "up", "down", "left", or "right"
+    // Returns a snapshot object that defines the game state after the player is moved
+    move(direction) {
+
+        if (this.board.gameOver) {
+            return IsoSnapshotBoard.toSnapshot(this.board); 
+        }
+
+        this.push(this.playerRow, this.playerCol, direction);
+
+        this.board.gameOver = this.checkForVictory();
+
+        return IsoSnapshotBoard.toSnapshot(this.board);
+    }
 }
 
 /* Controller *****************************************************************/
@@ -381,6 +447,9 @@ function getPlayerMovment(keyCode) {
 
     return keyCodeMap[keyCode];
 }
+
+var SOKOBAN = undefined; // global variable to hold the Sokoban class
+var VIZ = undefined;     // global variable to hold the Viz class
 
 function keydown(event) {
 
@@ -400,3 +469,506 @@ function keydown(event) {
 
 document.onkeydown = keydown;
 
+/******************************************************************************/
+/* Snapshot tests *************************************************************/
+/******************************************************************************/
+
+var matrix = [
+    [0, 0, 0],
+    [0, 0, 0],
+    [0, 0, 0],
+];
+var gameOver = false;
+var snapshot = new Snapshot(matrix, gameOver);
+assert(snapshot.matrix == matrix);
+assert(snapshot.gameOver == gameOver);
+assert(snapshot.numRows == 3);
+assert(snapshot.numCols == 3);
+
+var matrix = [
+    [0, 0, 0],
+    [0, 0, 0],
+];
+var gameOver = true;
+var snapshot = new Snapshot(matrix, gameOver);
+assert(snapshot.matrix == matrix);
+assert(snapshot.gameOver == gameOver);
+assert(snapshot.numRows == 2);
+assert(snapshot.numCols == 3);
+
+var matrix = [
+    [0, 0],
+    [0, 0],
+    [0, 0],
+];
+var gameOver = true;
+var snapshot = new Snapshot(matrix, gameOver);
+assert(snapshot.matrix == matrix);
+assert(snapshot.gameOver == gameOver);
+assert(snapshot.numRows == 3);
+assert(snapshot.numCols == 2);
+
+/******************************************************************************/
+/* sokoban.move tests *********************************************************/
+/******************************************************************************/
+
+// Returns true iff matrix1 and matrix2 have the same dimensions and values
+function matrices_equal(matrix1, matrix2) {
+
+    var numRows1 = matrix1.length;
+    var numCols1 = matrix1[0].length;
+
+    var numRows2 = matrix2.length;
+    var numCols2 = matrix2[0].length;
+
+    if (numRows1 != numRows2 || numCols1 != numCols2) {
+        return false;
+    }
+
+    for (var row = 0; row < numRows1; row++) {
+        for (var col = 0; col < numCols1; col++) {
+            if (matrix1[row][col] != matrix2[row][col]) {
+                return false;
+            }
+        }
+    }
+
+    return true;
+}
+
+// Returns true iff the two snapshots are identical
+function snapshots_equal(snapshot1, snapshot2) {
+    if (snapshot1.gameOver != snapshot2.gameOver ||
+        snapshot1.numRows != snapshot2.numRows ||
+        snapshot1.numCols != snapshot2.numCols) {
+        return false;
+    }
+
+    return matrices_equal(snapshot1.matrix, snapshot2.matrix);
+}
+
+// Returns true iff cell1 and cell2 are identical
+function cells_equal(cell1, cell2) {
+    return cell1.block == cell2.block &&
+        cell1.slider == cell2.slider &&
+        cell1.player == cell2.player &&
+        cell1.goal == cell2.goal;
+}
+
+function boards_equal(board1, board2) {
+    if (board1.gameOver != board2.gameOver ||
+        board1.numRows != board2.numRows ||
+        board1.numCols != board2.numCols) {
+        return false;
+    }
+
+    for (var row = 0; row < board1.numRows; row++) {
+        for (var col = 0; col < board1.numCols; col++) {
+            var cell1 = board1.cells[row][col];
+            var cell2 = board2.cells[row][col];
+            if (!cells_equal(cell1, cell2)) {
+                return false;
+            }
+        }
+    }
+
+    return true;
+}
+
+/* Test case: only in bounds. Only empty squares and player *******************/
+
+// Init sokoban
+var matrix = [
+    [0, 0],
+    [0, 3],
+    [0, 0],
+];
+
+var snapshot_init = new Snapshot(matrix, false);
+var sokoban = new Sokoban(snapshot_init);
+
+
+// Test move up
+var snapshot_result = sokoban.move("up");
+var matrix_expected = [
+    [0, 3],
+    [0, 0],
+    [0, 0],
+];
+var snapshot_expected = new Snapshot(matrix_expected, false);
+assert(snapshots_equal(snapshot_result, snapshot_expected));
+
+// Test move left
+var snapshot_result = sokoban.move("left");
+var matrix_expected = [
+    [3, 0],
+    [0, 0],
+    [0, 0],
+];
+var snapshot_expected = new Snapshot(matrix_expected, false);
+assert(snapshots_equal(snapshot_result, snapshot_expected));
+
+// Test move down
+var snapshot_result = sokoban.move("down");
+var matrix_expected = [
+    [0, 0],
+    [3, 0],
+    [0, 0],
+];
+var snapshot_expected = new Snapshot(matrix_expected, false);
+assert(snapshots_equal(snapshot_result, snapshot_expected));
+
+// Test move right
+var snapshot_result = sokoban.move("right");
+var matrix_expected = [
+    [0, 0],
+    [0, 3],
+    [0, 0],
+];
+var snapshot_expected = new Snapshot(matrix_expected, false);
+assert(snapshots_equal(snapshot_result, snapshot_expected));
+
+// Test exiting PLAYER exiting GOAL
+var matrix = [
+    [0, 0],
+    [0, 6],
+    [0, 0],
+];
+
+var snapshot_init = new Snapshot(matrix, false);
+var sokoban = new Sokoban(snapshot_init);
+
+var snapshot_result = sokoban.move("up");
+var matrix_expected = [
+    [0, 3],
+    [0, 4],
+    [0, 0],
+];
+var snapshot_expected = new Snapshot(matrix_expected, false);
+assert(snapshots_equal(snapshot_result, snapshot_expected));
+
+var snapshot_result = sokoban.move("down");
+var matrix_expected = [
+    [0, 0],
+    [0, 6],
+    [0, 0],
+];
+var snapshot_expected = new Snapshot(matrix_expected, false);
+assert(snapshots_equal(snapshot_result, snapshot_expected));
+
+/* Test move out-of-bounds ****************************************************/
+
+// move right
+var matrix = [
+    [0, 3],
+    [0, 0],
+    [0, 0],
+];
+var snapshot_init = new Snapshot(matrix, false);
+var sokoban = new Sokoban(snapshot_init);
+var snapshot_result = sokoban.move("right");
+var matrix_expected = [
+    [0, 3],
+    [0, 0],
+    [0, 0],
+];
+var snapshot_expected = new Snapshot(matrix_expected, false);
+assert(snapshots_equal(snapshot_result, snapshot_expected));
+
+// move up
+var matrix = [
+    [0, 3],
+    [0, 0],
+    [0, 0],
+];
+var snapshot_init = new Snapshot(matrix, false);
+var sokoban = new Sokoban(snapshot_init);
+var snapshot_result = sokoban.move("up");
+var matrix_expected = [
+    [0, 3],
+    [0, 0],
+    [0, 0],
+];
+var snapshot_expected = new Snapshot(matrix_expected, false);
+assert(snapshots_equal(snapshot_result, snapshot_expected));
+
+// move down
+var matrix = [
+    [0, 0],
+    [0, 0],
+    [3, 0],
+];
+var snapshot_init = new Snapshot(matrix, false);
+var sokoban = new Sokoban(snapshot_init);
+var snapshot_result = sokoban.move("down");
+var matrix_expected = [
+    [0, 0],
+    [0, 0],
+    [3, 0],
+];
+var snapshot_expected = new Snapshot(matrix_expected, false);
+assert(snapshots_equal(snapshot_result, snapshot_expected));
+
+// move left
+var matrix = [
+    [0, 0],
+    [0, 0],
+    [3, 0],
+];
+var snapshot_init = new Snapshot(matrix, false);
+var sokoban = new Sokoban(snapshot_init);
+var snapshot_result = sokoban.move("left");
+var matrix_expected = [
+    [0, 0],
+    [0, 0],
+    [3, 0],
+];
+var snapshot_expected = new Snapshot(matrix_expected, false);
+assert(snapshots_equal(snapshot_result, snapshot_expected));
+
+/* Test push 1 crate inbounds *************************************************/
+
+var matrix = [
+    [0, 0],
+    [2, 0],
+    [3, 0],
+];
+var snapshot_init = new Snapshot(matrix, false);
+var sokoban = new Sokoban(snapshot_init);
+var snapshot_result = sokoban.move("up");
+var matrix_expected = [
+    [2, 0],
+    [3, 0],
+    [0, 0],
+];
+var snapshot_expected = new Snapshot(matrix_expected, false);
+assert(snapshots_equal(snapshot_result, snapshot_expected));
+
+/* Test push 2 crates inbounds *************************************************/
+
+var matrix = [
+    [0, 0],
+    [2, 0],
+    [2, 0],
+    [3, 0],
+];
+var snapshot_init = new Snapshot(matrix, false);
+var sokoban = new Sokoban(snapshot_init);
+var snapshot_result = sokoban.move("up");
+var matrix_expected = [
+    [2, 0],
+    [2, 0],
+    [3, 0],
+    [0, 0],
+];
+var snapshot_expected = new Snapshot(matrix_expected, false);
+assert(snapshots_equal(snapshot_result, snapshot_expected));
+
+/* Test push 1 crate over goal ************************************************/
+
+var matrix = [
+    [0, 4],
+    [4, 0],
+    [2, 0],
+    [3, 0],
+];
+var snapshot_init = new Snapshot(matrix, false);
+var sokoban = new Sokoban(snapshot_init);
+var snapshot_result = sokoban.move("up");
+var matrix_expected = [
+    [0, 4],
+    [5, 0],
+    [3, 0],
+    [0, 0],
+];
+var snapshot_expected = new Snapshot(matrix_expected, false);
+assert(snapshots_equal(snapshot_result, snapshot_expected));
+
+/* Test push player and crate over goal ****************************************/
+
+var matrix = [
+    [0, 0],
+    [4, 0],
+    [5, 0],
+    [3, 0],
+];
+var snapshot_init = new Snapshot(matrix, false);
+var sokoban = new Sokoban(snapshot_init);
+var snapshot_result = sokoban.move("up");
+var matrix_expected = [
+    [0, 0],
+    [5, 0],
+    [6, 0],
+    [0, 0],
+];
+var snapshot_expected = new Snapshot(matrix_expected, false);
+assert(snapshots_equal(snapshot_result, snapshot_expected));
+
+/* Test push crate out of bounds **********************************************/
+
+var matrix = [
+    [2, 0],
+    [2, 0],
+    [3, 0],
+    [0, 0],
+];
+var snapshot_init = new Snapshot(matrix, false);
+var sokoban = new Sokoban(snapshot_init);
+var snapshot_result = sokoban.move("up");
+var matrix_expected = [
+    [2, 0],
+    [2, 0],
+    [3, 0],
+    [0, 0],
+];
+var snapshot_expected = new Snapshot(matrix_expected, false);
+assert(snapshots_equal(snapshot_result, snapshot_expected));
+
+/* Test push crate into block *************************************************/
+
+var matrix = [
+    [0, 0],
+    [1, 0],
+    [2, 0],
+    [3, 0],
+];
+var snapshot_init = new Snapshot(matrix, false);
+var sokoban = new Sokoban(snapshot_init);
+var snapshot_result = sokoban.move("up");
+var matrix_expected = [
+    [0, 0],
+    [1, 0],
+    [2, 0],
+    [3, 0],
+];
+var snapshot_expected = new Snapshot(matrix_expected, false);
+assert(snapshots_equal(snapshot_result, snapshot_expected));
+
+/* Tests for IsoPieceidCell  **************************************************/
+
+// Test toCell
+var cell1 = IsoPieceidCell.toCell(EMPTY);
+var cell2 = new Cell(false, false, false, false);
+assert(cells_equal(cell1, cell2));
+
+var cell1 = IsoPieceidCell.toCell(BLOCK);
+var cell2 = new Cell(true, false, false, false);
+assert(cells_equal(cell1, cell2));
+
+var cell1 = IsoPieceidCell.toCell(SLIDER);
+var cell2 = new Cell(false, true, false, false);
+assert(cells_equal(cell1, cell2));
+
+var cell1 = IsoPieceidCell.toCell(PLAYER);
+var cell2 = new Cell(false, false, true, false);
+assert(cells_equal(cell1, cell2));
+
+var cell1 = IsoPieceidCell.toCell(GOAL);
+var cell2 = new Cell(false, false, false, true);
+assert(cells_equal(cell1, cell2));
+
+var cell1 = IsoPieceidCell.toCell(GOAL_SLIDER);
+var cell2 = new Cell(false, true, false, true);
+assert(cells_equal(cell1, cell2));
+
+var cell1 = IsoPieceidCell.toCell(GOAL_PLAYER);
+var cell2 = new Cell(false, false, true, true);
+assert(cells_equal(cell1, cell2));
+
+// Test toPieceid
+var emptyCell = new Cell(false, false, false, false);
+var pieceId = IsoPieceidCell.toPieceid(emptyCell)
+assert(pieceId == EMPTY);
+
+var blockCell = new Cell(true, false, false, false);
+var pieceId = IsoPieceidCell.toPieceid(blockCell)
+assert(pieceId == BLOCK);
+
+var sliderCell = new Cell(false, true, false, false);
+var pieceId = IsoPieceidCell.toPieceid(sliderCell)
+assert(pieceId == SLIDER);
+
+var playerCell = new Cell(false, false, true, false);
+var pieceId = IsoPieceidCell.toPieceid(playerCell)
+assert(pieceId == PLAYER);
+
+var goalCell = new Cell(false, false, false, true);
+var pieceId = IsoPieceidCell.toPieceid(goalCell)
+assert(pieceId == GOAL);
+
+var goalSliderCell = new Cell(false, true, false, true);
+var pieceId = IsoPieceidCell.toPieceid(goalSliderCell)
+assert(pieceId == GOAL_SLIDER);
+
+var goalPlayerCell = new Cell(false, false, true, true);
+var pieceId = IsoPieceidCell.toPieceid(goalPlayerCell)
+assert(pieceId == GOAL_PLAYER);
+
+/* Tests for IsoSnapshotBoard  **************************************************/
+
+function test_IsoSnapshotBoard(snapshot1) {
+    var board1 = IsoSnapshotBoard.toBoard(snapshot1);
+    var snapshot2 = IsoSnapshotBoard.toSnapshot(board1);
+    var board2 = IsoSnapshotBoard.toBoard(snapshot2);
+    
+    assert(snapshots_equal(snapshot1, snapshot2));
+    assert(boards_equal(board1, board2));
+}
+
+// gameOver false
+var matrix = [[EMPTY]];
+var gameOver = false;
+var snapshot = new Snapshot(matrix, gameOver);
+test_IsoSnapshotBoard(snapshot);
+
+// gameOver true
+var matrix = [[EMPTY]];
+var gameOver = true;
+var snapshot = new Snapshot(matrix, gameOver);
+test_IsoSnapshotBoard(snapshot);
+
+// SLIDER
+var matrix = [[SLIDER]];
+var gameOver = false;
+var snapshot = new Snapshot(matrix, gameOver);
+test_IsoSnapshotBoard(snapshot);
+
+// PLAYER
+var matrix = [[PLAYER]];
+var gameOver = false;
+var snapshot = new Snapshot(matrix, gameOver);
+test_IsoSnapshotBoard(snapshot);
+
+// GOAL
+var matrix = [[GOAL]];
+var gameOver = false;
+var snapshot = new Snapshot(matrix, gameOver);
+test_IsoSnapshotBoard(snapshot);
+
+// GOAL_SLIDER
+var matrix = [[GOAL_SLIDER]];
+var gameOver = false;
+var snapshot = new Snapshot(matrix, gameOver);
+test_IsoSnapshotBoard(snapshot);
+
+// GOAL_PLAYER
+var matrix = [[GOAL_PLAYER]];
+var gameOver = false;
+var snapshot = new Snapshot(matrix, gameOver);
+test_IsoSnapshotBoard(snapshot);
+
+// Complex matrix
+var matrix =  [
+    [5, 0, 1, 1, 1, 1, 1, 0],
+    [1, 1, 1, 0, 0, 0, 1, 0],
+    [1, 4, 3, 2, 0, 0, 1, 0],
+    [1, 1, 1, 0, 2, 4, 1, 0],
+    [1, 4, 1, 1, 2, 0, 1, 0],
+    [1, 0, 1, 0, 4, 0, 1, 1],
+    [1, 2, 0, 0, 2, 2, 4, 1],
+    [1, 0, 0, 0, 4, 0, 0, 1],
+    [1, 1, 1, 1, 1, 1, 1, 1]
+];
+var gameOver = false;
+var snapshot = new Snapshot(matrix, gameOver);
+test_IsoSnapshotBoard(snapshot);

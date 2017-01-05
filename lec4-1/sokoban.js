@@ -1,7 +1,3 @@
-
-var SOKOBAN = undefined;
-var VIZ = undefined;
-
 function assert(condition) {
     if (!condition) {
         console.error("Assertion failed");
@@ -451,6 +447,9 @@ function getPlayerMovment(keyCode) {
 
     return keyCodeMap[keyCode];
 }
+
+var SOKOBAN = undefined; // global variable to hold the Sokoban class
+var VIZ = undefined;     // global variable to hold the Viz class
 
 function keydown(event) {
 
