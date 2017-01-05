@@ -1,12 +1,30 @@
 <!DOCTYPE html>
 <html>
-<head>
-  <title>Sokoban+</title>
-  <link rel="stylesheet" type="text/css" href="style.css">
-  <script src="jquery.js"></script>
-  <script src="sokoban.js"></script>
-</head>
-<body>
-  <div id="board"></div>
-</body>
+  <head>
+    <title>Sokoban+</title>
+    <link rel="stylesheet" type="text/css" href="style.css">
+    <script src="jquery.js"></script>
+    <script src="sokoban.js"></script>
+  </head>
+  <body>
+    <div id="board"></div>
+  </body>
+  <script>
+    /* Testing out Viz ********************************************************/
+
+    var boardInit =  [
+        [0,0,0],
+        [0,0,0],
+        [0,0,0],
+        [0,0,0],
+    ];
+
+    var gameOver = false;
+
+    var snapshot = new Snapshot(boardInit, gameOver);
+
+    var cell_size = 32;
+
+    var viz = new Viz("#board", snapshot, cell_size);
+  </script>
 </html>

@@ -33,14 +33,53 @@ class Snapshot {
 /* Viz class ******************************************************************/
 class Viz {
     
-    // The boardId argument specifies the HTML id for the <div> element that
-    // will hold the game board
-    //
-    // The snapshot argument defines the initial gamestate
-    constructor(boardId, snapshot) {
+    /* Static functions *******************************************************/
 
+    static getCellId(row, col) {
+        return "cell-" + row + "-" + col;
+    }
+
+    /* Instance methods *******************************************************/
+
+    // Arguments:
+    //    - boardId specifies the id of the <div> that this game will be drawn
+    //      inside of.
+    //    - snapshot is the initial snapshot of the game.
+    //    - cell_size is the width of a cell (in pixels)
+    //
+    // The constructor creates a grid of cells in HTML. Each row of cells is
+    // contained within a <div> with class == "row", and each cell itself is
+    // represented by a <div> with class == "cell".
+    //
+    // Then the constructor invokes drawGame(snapshot)
+    constructor(boardId, snapshot, cell_size) {
+        this.boardId = boardId;
+        this.numRows = snapshot.numRows;
+        this.numCols = snapshot.numCols;
+        this.cell_size = cell_size;
+        this.drawCells();
     }
     
+    drawCells() {
+        for (var row = 0; row < this.numRows; row++) {
+
+            var rowId = "row-" + row;
+            var rowTag = "<div id='" + rowId + "' class='row'></div>"
+
+            $(this.boardId).append(rowTag);
+
+            for (var col = 0; col < this.numCols; col++) {
+
+                var cellId = Viz.getCellId(row, col);
+                var cellTag = "<div id='" + cellId + "' class='cell'></div>";
+                $("#" + rowId).append(cellTag);
+                $("#" + cellId).css("width", this.cell_size);
+                $("#" + cellId).css("height", this.cell_size);
+
+            }
+        }
+    }
+
     // The snapshot argument defines the game state that is to be drawn on the
     // web page
     drawGame(snapshot) {
@@ -48,16 +87,3 @@ class Viz {
     }
 }
 
-/* Testing out Viz ************************************************************/
-
-var boardInit =  [
-[1,0,0],
-[0,1,0],
-[0,0,1],
-];
-
-var gameOver = false;
-
-var snapshot = new Snapshot(boardInit, gameOver);
-
-var viz = new Viz("#board", snapshot);
