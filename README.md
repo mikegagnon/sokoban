@@ -2207,3 +2207,62 @@ Use an approach that is similar to the
 
 ## <a name="solution3-1">Solution for Challenge 3.1</a>
 
+```js
+/* Viz class ******************************************************************/
+class Viz {
+    
+    /* Static functions *******************************************************/
+
+    static getCellId(row, col) {
+        return "cell-" + row + "-" + col;
+    }
+
+    /* Instance methods *******************************************************/
+
+    // Arguments:
+    //    - boardId specifies the id of the <div> that this game will be drawn
+    //      inside of.
+    //    - snapshot is the initial snapshot of the game.
+    //    - cell_size is the width of a cell (in pixels)
+    //
+    // The constructor creates a grid of cells in HTML. Each row of cells is
+    // contained within a <div> with class == "row", and each cell itself is
+    // represented by a <div> with class == "cell".
+    //
+    // Then the constructor invokes drawGame(snapshot)
+    constructor(boardId, snapshot, cell_size) {
+        this.boardId = boardId;
+        this.numRows = snapshot.numRows;
+        this.numCols = snapshot.numCols;
+        this.cell_size = cell_size;
+        this.drawCells();
+        this.drawGame(snapshot);
+    }
+    
+    drawCells() {
+        for (var row = 0; row < this.numRows; row++) {
+
+            var rowId = "row-" + row;
+            var rowTag = "<div id='" + rowId + "' class='row'></div>"
+
+            $(this.boardId).append(rowTag);
+
+            for (var col = 0; col < this.numCols; col++) {
+
+                var cellId = Viz.getCellId(row, col);
+                var cellTag = "<div id='" + cellId + "' class='cell'></div>";
+                $("#" + rowId).append(cellTag);
+                $("#" + cellId).css("width", this.cell_size);
+                $("#" + cellId).css("height", this.cell_size);
+
+            }
+        }
+    }
+
+    // The snapshot argument defines the game state that is to be drawn on the
+    // web page
+    drawGame(snapshot) {
+
+    }
+}
+```
