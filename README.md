@@ -1393,7 +1393,14 @@ class Snapshot {
 }
 ```
 
-We will use a simple `style.css`:
+
+### Challenge
+
+Implement the `constructor` method for Viz.
+
+To test our `Viz` constructor, we will use the following `index.html` and `style.css` for this challenge:
+
+#### `style.css`:
 
 ```
 .row {
@@ -1401,15 +1408,108 @@ We will use a simple `style.css`:
 }
 
 .cell {
-    margin-left: 0px;
-    margin-top: 0px;
+    margin-left: 1px;
+    margin-top: 1px;
     float: left;
+    background-color: gray;
 }
 ```
 
-### Challenge
 
-Implement the `drawBoard(...)` method of the `Viz` class, and have the `constructor` for `Viz` invoke `drawBoard`.
+#### `index.html`
+
+```html
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Sokoban+</title>
+    <link rel="stylesheet" type="text/css" href="style.css">
+    <script src="jquery.js"></script>
+    <script src="sokoban.js"></script>
+  </head>
+  <body>
+    <div id="board"></div>
+  </body>
+  <script>
+    /* Testing out Viz ********************************************************/
+
+    var boardInit =  [
+        [0,0,0],
+        [0,0,0],
+        [0,0,0],
+        [0,0,0],
+    ];
+
+    var gameOver = false;
+
+    var snapshot = new Snapshot(boardInit, gameOver);
+
+    var cell_size = 32;
+
+    var viz = new Viz("#board", snapshot, cell_size);
+  </script>
+</html>
+```
+
+#### Further clarification
+
+To clarify what the constructor should do: after the `Viz` object is created (via the `constructor`), the dynamic HTML for the page will look like this:
+
+```html
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Sokoban+</title>
+    <link rel="stylesheet" type="text/css" href="style.css">
+    <script src="jquery.js"></script>
+    <script src="sokoban.js"></script>
+  </head>
+  <body>
+    <div id="board">
+        <div id="row-0" class="row">
+            <div id="cell-0-0" class="cell" style="width: 32px; height: 32px;"></div>
+            <div id="cell-0-1" class="cell" style="width: 32px; height: 32px;"></div>
+            <div id="cell-0-2" class="cell" style="width: 32px; height: 32px;"></div>
+        </div>
+        <div id="row-1" class="row">
+            <div id="cell-1-0" class="cell" style="width: 32px; height: 32px;"></div>
+            <div id="cell-1-1" class="cell" style="width: 32px; height: 32px;"></div>
+            <div id="cell-1-2" class="cell" style="width: 32px; height: 32px;"></div>
+        </div>
+        <div id="row-2" class="row">
+            <div id="cell-2-0" class="cell" style="width: 32px; height: 32px;"></div>
+            <div id="cell-2-1" class="cell" style="width: 32px; height: 32px;"></div>
+            <div id="cell-2-2" class="cell" style="width: 32px; height: 32px;"></div>
+        </div>
+        <div id="row-3" class="row">
+            <div id="cell-3-0" class="cell" style="width: 32px; height: 32px;"></div>
+            <div id="cell-3-1" class="cell" style="width: 32px; height: 32px;"></div>
+            <div id="cell-3-2" class="cell" style="width: 32px; height: 32px;"></div>
+        </div>
+    </div>
+  </body>
+  <script>
+    /* Testing out Viz ********************************************************/
+
+    var boardInit =  [
+        [0,0,0],
+        [0,0,0],
+        [0,0,0],
+        [0,0,0],
+    ];
+
+    var gameOver = false;
+
+    var snapshot = new Snapshot(boardInit, gameOver);
+
+    var cell_size = 32;
+
+    var viz = new Viz("#board", snapshot, cell_size);
+  </script>
+</html>
+```
+
+
 
 
 
