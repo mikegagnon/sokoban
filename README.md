@@ -1647,6 +1647,115 @@ This change, when viewed in your browser, the page should look like this
 
 ## <a name="lec4-1">Lecture 4.1</a>
 
+At this point you should have correct implementations for the
+`Viz` and `Sokoban` classes.
+
+Combing them into one `sokoban.js` file.
+
+### Controller
+
+We need to implement the "controller," which does the following:
+
+- Receives input from the user via the arrow keys. Our approach
+  here is very similar to the approach we used in
+  [Thumb Wrestling](https://github.com/mikegagnon/thumb-wrestling/blob/master/README.md#lec2).
+- Declare two global variables `VIZ` and `SOKOBAN` to hold references
+  to a `Viz` object and a `Sokoban` object
+- Whenver an arrow key is pressed, invoke `SOKOBAN.move(direction` and 
+  `VIZ.drawGame(snapshot)`
+
+Thus, our controller is as follows:
+
+```js
+/* Controller *****************************************************************/
+
+function getPlayerMovment(keyCode) {
+
+    var keyCodeMap = {
+        38: "up",
+        40: "down",
+        37: "left",
+        39: "right"
+    };
+
+    return keyCodeMap[keyCode];
+}
+
+var SOKOBAN = undefined; // global variable to hold the Sokoban class
+var VIZ = undefined;     // global variable to hold the Viz class
+
+function keydown(event) {
+
+    var direction = getPlayerMovment(event.keyCode);
+
+    // If the user pressed a key we're uninterested in
+    if (direction == undefined) {
+        return;
+    }
+
+    // disable browser scrolling on arrow keys
+    event.preventDefault();
+
+    var snapshot = SOKOBAN.move(direction);
+    VIZ.drawGame(snapshot);
+}
+
+document.onkeydown = keydown;
+```
+
+### `index.html`
+
+We update our `index.html` file to do the following:
+
+- Initialize a matrix of pieceId values, named `boardInt`
+- Create a `snapshot` object by invoking the `Snapshot` constructor
+- Set `SOKOBAN` to a new `Sokoban` object by invoking the `Sokoban` constructor
+- Set `VIZ` to a new `Viz` object by invoking the `Viz` constructor
+
+Thus, our `index.html` file looks as follows:
+
+```html
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Sokoban+</title>
+    <link rel="stylesheet" type="text/css" href="style.css">
+    <script src="jquery.js"></script>
+    <script src="sokoban.js"></script>
+  </head>
+  <body>
+    <div id="board"></div>
+  </body>
+  <script type="text/javascript">
+
+    var boardInit =  [
+      [0, 0, 1, 1, 1, 1, 1, 0],
+      [1, 1, 1, 0, 0, 0, 1, 0],
+      [1, 4, 3, 2, 0, 0, 1, 0],
+      [1, 1, 1, 0, 2, 4, 1, 0],
+      [1, 4, 1, 1, 2, 0, 1, 0],
+      [1, 0, 1, 0, 4, 0, 1, 1],
+      [1, 2, 0, 0, 2, 2, 4, 1],
+      [1, 0, 0, 0, 4, 0, 0, 1],
+      [1, 1, 1, 1, 1, 1, 1, 1]
+    ];
+
+    var gameOver = false;
+
+    var snapshot = new Snapshot(boardInit, gameOver);
+
+    var cell_size = 32;
+
+    SOKOBAN = new Sokoban(snapshot);
+    VIZ = new Viz("#board", snapshot, cell_size);
+
+  </script>
+</html>
+```
+
+### Congratulations
+
+You now have a complete `Sokoban` game that works perfectly.
 
 
 # Hints
