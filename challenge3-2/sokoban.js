@@ -123,7 +123,8 @@ class Viz {
                 }
 
                 var cellId = "#" + Viz.getCellId(row, col);
-                $(cellId).append(this.getImgTag(filename));
+                var imgTag = this.getImgTag(filename)
+                $(cellId).append(imgTag);
             }
         }
     }
