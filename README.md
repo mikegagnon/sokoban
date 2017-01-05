@@ -1559,6 +1559,56 @@ Then, for every (row, col) do the following:
   - instead of `32` use `this.cell_size`
 
 
+### `index.html`
+
+Use the following `index.html` file to test your `drawGame()`
+implementation:
+
+```html
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Sokoban+</title>
+    <link rel="stylesheet" type="text/css" href="style.css">
+    <script src="jquery.js"></script>
+    <script src="sokoban.js"></script>
+  </head>
+  <body>
+    <div id="board"></div>
+  </body>
+  <script>
+    /* Testing out Viz ********************************************************/
+
+    // Recall:
+    //    EMPTY == 0
+    //    BLOCK == 1
+    //    SLIDER == 2
+    //    PLAYER == 3
+    //    GOAL == 4
+    //    GOAL_SLIDER == 5
+    //    GOAL_PLAYER == 6
+
+    var boardInit =  [
+        [0, 1, 2, 3, 4, 5, 6],
+        [6, 5, 4, 3, 2, 1, 0]
+    ];
+
+    var gameOver = false;
+
+    var snapshot = new Snapshot(boardInit, gameOver);
+
+    var cell_size = 32;
+
+    var viz = new Viz("#board", snapshot, cell_size);
+  </script>
+</html>
+```
+
+When viewed in your browser, the page should look like this (not to scale):
+
+<img src="drawGame-test.png">
+
+
 ### Hints
 
 - [Hint 1](#hint3-2-1)
